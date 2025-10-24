@@ -10,6 +10,9 @@ $stmt=$conn->prepare($query);
 $stmt->bindParam(":studentId",$studentId);
 $stmt->execute();
 $row=$stmt->fetch();
+$success_message = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : '';
+$err = isset($err) ? $err : 0;
+$err_request = isset($_REQUEST['err']) ? $_REQUEST['err'] : 0;
 ?>
 
 <!doctype html>
@@ -45,38 +48,39 @@ $row=$stmt->fetch();
 <body>
 <div class="container-fluid content">
     <div class="row ">
-        <?php if ($_SESSION['success_message']) { ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <?php echo $_SESSION['success_message']; ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php unset($_SESSION['success_message']);  ?>
-                <?php } ?>
+        <?php if ($success_message) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php echo $success_message; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php } ?>
         <div class="col-md-1"></div>
         <div class="col-md-10 ">
             <div class="header">
                 <h2>STUDENT PROFILE</h2>
             </div>
             <form class="row" action="student-profile-process.php" method="post">
-                 <?php if ($_REQUEST["err"] == 1) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your Number is not Valid
+                <?php if ($err == 1): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Error! Your number is not valid
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 2) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your E-Mail is not filled
+                    </div>
+                <?php endif; ?>
+                <?php if ($err == 2): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Error! Your email is not filled
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 3) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your Password is not filled
+                    </div>
+                <?php endif; ?>
+
+                <?php if ($err == 3): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    Error! Your password is not filled
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 4) { ?>
+                    </div>
+                <?php endif; ?>
+                <?php if ($err == 4) { ?>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>Error!</strong> You have entered the same password as before. Please choose a new password.
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

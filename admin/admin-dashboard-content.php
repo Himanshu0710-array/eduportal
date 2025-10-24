@@ -2,7 +2,7 @@
     <style>
         .left-side
         {
-            background-color:#343a40;
+            background-color:#003366;
             color:white;
             height:200vh;
         }
@@ -30,17 +30,18 @@
         {
             background-color:#495057 !important;
         }
-        /* .left-btn-1
+        .left-btn-1
+        {
             transition: background-color 0.3s ease;
             margin-top:20px;
-        } */
+        }
         .left-btn-1:hover
         {
             background-color:#495057 !important;
         }
         .right-side
         {
-            background-color:#F8F9FA;
+            background-color:#edf4fb;
         }
         .welcome-text
         {
@@ -107,11 +108,31 @@
                     </div>
                     <div class="dropdown ">
                       <button class="btn dropdown-toggle w-100 nav-link left-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Special Course
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item w-100" href="add-special-course.php">Add Special Course</a></li>
+                        <li><a class="dropdown-item w-100" href="add-module.php">Add Modules</a></li>
+                        <li><a class="dropdown-item w-100" href="special-course-table.php">Special Course Table</a></li>
+                        <li><a class="dropdown-item w-100" href="special-course-module.php">Module Table</a></li>
+                      </ul>
+                    </div>
+                    <div class="dropdown ">
+                      <button class="btn dropdown-toggle w-100 nav-link left-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Subject
                       </button>
                       <ul class="dropdown-menu">
                         <li><a class="dropdown-item w-100" href="add-subject.php">Add Subject</a></li>
                         <li><a class="dropdown-item w-100" href="subject-table.php">Subject Table</a></li>
+                      </ul>
+                    </div>
+                    <div class="dropdown ">
+                      <button class="btn dropdown-toggle w-100 nav-link left-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Teacher
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li><a class="dropdown-item w-100" href="add-teacher.php">Add Teacher</a></li>
+                        <li><a class="dropdown-item w-100" href="teacher-table.php">Teacher Table</a></li>
                       </ul>
                     </div>
                     <div class="dropdown ">
@@ -168,14 +189,6 @@
                       <ul class="dropdown-menu">
                         <li><a class="dropdown-item w-100" href="add-session.php">Add Session</a></li>
                         <li><a class="dropdown-item w-100" href="session-table.php">Session-table</a></li>
-                      </ul>
-                    </div>
-                    <div class="dropdown ">
-                      <button class="btn dropdown-toggle w-100 nav-link left-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        sahu
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li><a class="dropdown-item w-100" href="sahu.php">Sahu</a></li>
                       </ul>
                     </div>
                     <a href="logout-admin.php" class="btn left-btn w-100 nav-link">

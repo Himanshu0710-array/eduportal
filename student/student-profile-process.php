@@ -4,19 +4,12 @@ session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-session_start();
 include "../database-connect.php";
- 
 
-$studentId              =   $_REQUEST["studentId"];
-$studentNumber          =   $_REQUEST["studentNumber"];
-$studentEmail           =   $_REQUEST["studentEmail"];
-$studentPassword        =   $_REQUEST["studentPassword"];
-
-$_SESSION["studentNumber"] = $studentNumber;
-$_SESSION["studentEmail"] = $studentEmail;
-$_SESSION["studentPassword"] = $studentPassword;
-
+$studentId       = $_REQUEST["studentId"];
+$studentNumber   = $_REQUEST["studentNumber"];
+$studentEmail    = $_REQUEST["studentEmail"];
+$studentPassword = $_REQUEST["studentPassword"];
 
 if(strlen($studentNumber)<=0 || strlen($studentNumber)>10)
 {
@@ -35,18 +28,17 @@ if(strlen($studentPassword)<=0)
 }
 
 $query = "UPDATE tblstudent SET studentNumber = :studentNumber, studentEmail = :studentEmail, studentPassword = :studentPassword WHERE studentId = :studentId";
-$stmt=$conn->prepare($query);
+$stmt = $conn->prepare($query);
 $stmt->bindParam(":studentId",$studentId);
 $stmt->bindParam(":studentNumber",$studentNumber);
 $stmt->bindParam(":studentEmail",$studentEmail);
 $stmt->bindParam(":studentPassword",$studentPassword);
 
-
 if($stmt->execute())
 {
      $_SESSION['success_message'] = "Data Updated Successfully";
 }
-session_destroy();
+
 header("location:student-profile.php");
 exit;
 ?>

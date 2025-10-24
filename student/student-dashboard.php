@@ -10,314 +10,264 @@ $studentDetail = $stmt3->fetch();
 $courseId = $studentDetail["courseId"];
 $academicYearId = $studentDetail["academicYearId"];
 
+function percent($x,$y){
+    return ($y>0) ? number_format($x/$y*100,2) : 0;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Student Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { background: #f8f9fa; }
+.card { border-radius: 10px; margin-bottom: 15px; font-size: 0.9rem; }
+.card-header { font-weight: 600; }
+.table td, .table th { padding: .4rem; font-size: 0.85rem; }
+.progress { height: 8px; }
+canvas { max-height: 150px !important; }
+.notice-box { border-bottom:1px solid #ddd; padding:5px 0; display:flex; justify-content:space-between; align-items:center; }
+.notice-box small { font-size:0.8rem; color:#555; }
+</style>
+</head>
+<body>
+<div class="container-fluid py-3">
+<div class="row mb-2 g-2">
+<div class="col-lg-4 col-md-12">
+<div class="card shadow-sm animate__animated animate__slideInDown">
+<div class="card-body d-flex align-items-center">
+<?php
+$imagePath = !empty($studentDetail['studentImage']) ? 'uploads/' . $studentDetail['studentImage'] : ($studentDetail['studentGender'] == '1' ? "images/female-logo.jpg" : "images/male-logo.jpg");
+?>
+<img src="<?php echo $imagePath; ?>" class="rounded-circle me-3" style="width:80px;height:80px;object-fit:cover;">
+<div>
+<h6 class="mb-1">Welcome, <?php echo $studentDetail['studentName']; ?></h6>
+<p class="mb-0 text-muted">Keep learning, keep growing!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="col-lg-8 col-md-12">
+<div class="card shadow-sm animate__animated animate__slideInRight">
+<div class="card-header bg-primary text-white">
+Notice Board
+</div>
+<div class="card-body" style="max-height:180px; overflow-y:auto;">
+<?php
+$noticestmt = $conn->prepare("SELECT * FROM tblnotice WHERE studentId=:studentId AND academicYearId=:academicYearId ORDER BY id DESC");
+$noticestmt->bindParam(":studentId", $studentId);
+$noticestmt->bindParam(":academicYearId", $academicYearId);
+$noticestmt->execute();
+while($notices=$noticestmt->fetch()){ ?>
+<div class="notice-box">
+<div>
+<small><?php echo date('d-m-Y', strtotime($notices['noticeDate'])); ?></small>
+<p class="mb-0"><?php echo substr($notices['notice'],0,50); ?>...</p>
+</div>
+<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#noticeModal<?php echo $notices['id']; ?>">Read More</button>
+</div>
+<?php } ?>
+</div>
+</div>
+</div>
+</div>
 
- 
-$totalstmt=$conn->prepare("SELECT * FROM tblattendence WHERE courseId=:courseId AND academicYearId=:academicYearId AND studentId=:studentId");
-$totalstmt->bindParam(":courseId",$courseId);
-$totalstmt->bindParam(":academicYearId",$academicYearId);
-$totalstmt->bindParam(":studentId",$studentId);
-$totalstmt->execute();
+<div class="row mb-2 g-2">
+<div class="col-lg-4 col-md-6">
+<div class="card shadow-sm">
+<div class="card-header bg-info text-white">Subjects & Attendance</div>
+<div class="card-body p-2">
+<table class="table table-hover table-striped mb-2">
+<thead>
+<tr><th>Subject</th><th>Att%</th></tr>
+</thead>
+<tbody>
+<?php
+$subjectstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId=:courseId AND academicYearId=:academicYearId");
+$subjectstmt->bindParam(":courseId",$courseId);
+$subjectstmt->bindParam(":academicYearId",$academicYearId);
+$subjectstmt->execute();
 
-$totalClasses = $totalstmt->rowCount();
+$attendanceLabels=[]; 
+$attendanceData=[];
+$totalAttended = 0; 
+$totalClasses = 0;
 
+while($subject=$subjectstmt->fetch()){
+$subjectId = $subject['subjectId'];
+$stmt=$conn->prepare("SELECT COUNT(*) FROM tblattendence WHERE studentId=:studentId AND subjectId=:subjectId");
+$stmt->bindParam(":studentId",$studentId);
+$stmt->bindParam(":subjectId",$subjectId);
+$stmt->execute();
+$subjectTotalClass = $stmt->fetchColumn();
 
-$attendstmt=$conn->prepare("SELECT * FROM tblattendence WHERE courseId=:courseId AND academicYearId=:academicYearId AND studentId=:studentId AND attendence = 1");
-$attendstmt->bindParam(":courseId",$courseId);
-$attendstmt->bindParam(":academicYearId",$academicYearId);
-$attendstmt->bindParam(":studentId",$studentId);
-$attendstmt->execute();
+$stmt=$conn->prepare("SELECT COUNT(*) FROM tblattendence WHERE studentId=:studentId AND subjectId=:subjectId AND attendence=1");
+$stmt->bindParam(":studentId",$studentId);
+$stmt->bindParam(":subjectId",$subjectId);
+$stmt->execute();
+$subjectAttended = $stmt->fetchColumn();
 
-$ClassesAttended = $attendstmt->rowCount();
+$percentVal = percent($subjectAttended,$subjectTotalClass);
 
-function percent($x,$y)
-{
-    if($y>0)
-    {
-       return number_format( $x/$y * 100 , 2);
-    } else{
-        echo " ";
-    }
+$attendanceLabels[] = $subject['subjectName'];
+$attendanceData[] = $percentVal;
+
+$totalAttended += $subjectAttended;
+$totalClasses += $subjectTotalClass;
+?>
+<tr>
+<td><?php echo $subject['subjectName']; ?></td>
+<td>
+<div class="progress mb-1"><div class="progress-bar bg-info" style="width:<?php echo $percentVal; ?>%"></div></div>
+<small><?php echo $percentVal; ?>%</small>
+</td>
+</tr>
+<?php } ?>
+</tbody>
+</table>
+<?php $overallAttendance = percent($totalAttended, $totalClasses); ?>
+<div class="mt-2 p-2 bg-light text-center rounded">
+<strong>Overall Attendance: </strong><?php echo $overallAttendance; ?>%
+</div>
+<canvas id="attendanceChart" class="mt-2"></canvas>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 col-md-6">
+<div class="card shadow-sm">
+<div class="card-header bg-success text-white">Upcoming Tests</div>
+<div class="card-body p-2">
+<?php
+$today = date('Y-m-d');
+$teststmt = $conn->prepare("SELECT * FROM tbltest WHERE courseId=:courseId AND academicYearId=:academicYearId AND dateOfTest >= :today ORDER BY dateOfTest ASC");
+$teststmt->bindParam(":courseId", $courseId);
+$teststmt->bindParam(":academicYearId", $academicYearId);
+$teststmt->bindParam(":today", $today);
+$teststmt->execute();
+?>
+<table class="table table-hover table-striped mb-2">
+<thead>
+<tr><th>Subject</th><th>Test</th><th>Date</th></tr>
+</thead>
+<tbody>
+<?php while($test=$teststmt->fetch()){
+$testId = $test['testId'];
+$testDetailStmt = $conn->prepare("SELECT * FROM tblTestDetail WHERE testId=:testId");
+$testDetailStmt->bindParam(":testId",$testId);
+$testDetailStmt->execute();
+$testDetail = $testDetailStmt->fetch();
+
+$subStmt=$conn->prepare("SELECT subjectName FROM tblsubject WHERE subjectId=:subjectId");
+$subStmt->bindParam(":subjectId",$test['subjectId']);
+$subStmt->execute();
+$sub = $subStmt->fetch();
+?>
+<tr>
+<td><?php echo $sub['subjectName']; ?></td>
+<td><?php echo $testDetail['testName']; ?></td>
+<td><?php echo date('d-m-Y',strtotime($test['dateOfTest'])); ?></td>
+</tr>
+<?php } ?>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 col-md-12">
+<div class="card shadow-sm">
+<div class="card-header bg-warning text-dark">Fees Details</div>
+<div class="card-body p-2">
+<?php
+$fstmt = $conn->prepare("
+SELECT 
+COALESCE(SUM(totalFees),0) AS totalFees,
+COALESCE(SUM(paidFees),0) AS totalPaid,
+COALESCE(SUM(discountMoney),0) AS discount
+FROM tblfees
+WHERE studentId=:studentId AND academicYearId=:academicYearId
+");
+$fstmt->bindParam(":studentId",$studentId);
+$fstmt->bindParam(":academicYearId",$academicYearId);
+$fstmt->execute();
+$fees = $fstmt->fetch();
+
+if($fees['totalFees'] == 0){
+    $totalFees = $fees['totalFees']; // just for display, assume 100 units
+    $totalPaid = 0;
+    $discount = 0;
+    $dueFees = $totalFees;
+} else {
+    $totalFees = $fees['totalFees'];
+    $totalPaid = $fees['totalPaid'];
+    $discount = $fees['discount'];
+    $dueFees = $totalFees - $totalPaid - $discount;
 }
 
-$currentAttendence = percent($ClassesAttended,$totalClasses);
-
 ?>
-<title>Student Dashboard</title>
+<p class="mb-1"><strong>Total:</strong> ₹<?php echo $totalFees; ?> | <strong>Paid:</strong> ₹<?php echo $totalPaid; ?> | <strong>Discount:</strong> ₹<?php echo $discount; ?> | <strong>Due:</strong> ₹<?php echo $dueFees; ?></p>
+<canvas id="feesChart"></canvas>
+</div>
+</div>
+</div>
+</div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<?php
+$noticestmt->execute();
+while($notices=$noticestmt->fetch()){
+?>
+<div class="modal fade" id="noticeModal<?php echo $notices['id']; ?>" tabindex="-1" aria-labelledby="noticeModalLabel<?php echo $notices['id']; ?>" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header bg-primary text-white">
+<h5 class="modal-title" id="noticeModalLabel<?php echo $notices['id']; ?>">Notice Details</h5>
+<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+<p><b>Date:</b> <?php echo date('d-m-Y', strtotime($notices['noticeDate'])); ?></p>
+<p><?php echo $notices['notice']; ?></p>
+<p><b>Minimum Attendance Required:</b> <?php echo $notices['cutOffAttendence']; ?>%</p>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<?php } ?>
 
-<body class="">
-    <div class="container-fluid ">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 data box-1 animate__animated animate__slideInDown animate__slow">
-                <div class="row">
-                    <div class="col-md-4 image text-center">
-                        <?php
-                        $query = "SELECT * FROM tblstudent WHERE studentId=:studentId";
-                        $stmt = $conn->prepare($query);
-                        $stmt->bindParam(":studentId", $studentId);
-                        $stmt->execute();
-                        $result = $stmt->fetch();
-                    
-                        $imagePath = !empty($result['studentImage']) ? 'uploads/' . $result['studentImage'] : ($result['studentGender'] == '1' ? "images/female-logo.jpg" : "images/male-logo.jpg");
-                        ?>
-                    
-                        <img src="<?php echo $imagePath; ?>" alt="Profile" style="width:150px; height:150px; border-radius:50%; object-fit:cover; cursor:pointer;" data-bs-target="#uploadModal">
-                    </div>
-                    <div class="col-md-7 text-box-1">
-                        <p class="admin-name"><strong>Welcome, <?php echo $result['studentName']; ?></strong></p>
-                        <p class="student-quote">Keep learning, keep growing!</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 animate__animated animate__slideInRight animate__slow">
-                <div class="container-fluid data box-2">
-                    <div class="row">
-                        <div class="col"></div>
-                        <div class="col text-center"><strong>Notice Board</strong></div>
-                        <div class="col"></div>
-                    </div>
-                    <div>
-                        <?php
-                        $noticestmt=$conn->prepare("SELECT * FROM tblnotice WHERE studentId=:studentId ORDER BY id DESC");
-                        $noticestmt->bindParam(":studentId",$studentId);
-                        $noticestmt->execute();
-                        
-                        while($notices=$noticestmt->fetch())
-                        {
-                        ?>
-                        <div class="notice-boxes">
-                            <p class="notice-date"><b>Notice Date : </b><?php echo date('d-m-Y', strtotime($notices['noticeDate']));?></p>
-                            <div>
-                                
-                                <span style="color: red;">SHORT ATTENDENCE NOTICE !!</span>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#noticeModal<?php echo $notices['id']; ?>">
-                                    Read More
-                                </button>
-                            </div>
-                        </div>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col data-2 box-test box-1  animate__animated animate__slideInUp animate__slow">
-                <div><span class="text"><strong>Subjects</strong></span></div>
-                <div class="container-fluid">
-                    <table class="table table-bordered tbl-subject table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Subject</th>
-                                <th>Attendance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $studentstmt = $conn->prepare("SELECT * FROM tblstudent WHERE studentId=:studentId");
-                            $studentstmt->bindParam(":studentId", $studentId);
-                            $studentstmt->execute();
-                            $student = $studentstmt->fetch();
+<script>
+const feesCtx = document.getElementById('feesChart').getContext('2d');
+new Chart(feesCtx,{
+    type:'doughnut',
+    data:{
+        labels:['Paid','Pending','Discount'],
+        datasets:[{
+            data:[<?php echo $totalPaid; ?>,<?php echo $dueFees; ?>,<?php echo $discount; ?>],
+            backgroundColor:['rgba(75,192,192,0.7)','rgba(255,99,132,0.7)','rgba(255,206,86,0.7)']
+        }]
+    }
+});
 
-                            $subjectstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId=:courseId AND academicYearId=:academicYearId");
-                            $subjectstmt->bindParam(":courseId", $student["courseId"]);
-                            $subjectstmt->bindParam(":academicYearId", $student["academicYearId"]);
-                            $subjectstmt->execute();
-                            
-                            
+const attCtx = document.getElementById('attendanceChart').getContext('2d');
+new Chart(attCtx,{
+type:'bar',
+data:{
+labels:<?php echo json_encode($attendanceLabels); ?>,
+datasets:[{
+label:'Attendance %',
+data:<?php echo json_encode($attendanceData); ?>,
+backgroundColor:'rgba(54,162,235,0.7)'
+}]
+},
+options:{scales:{y:{beginAtZero:true,max:100}}}
+});
+</script>
 
-                            while ($subject = $subjectstmt->fetch()) {
-                                $subjectId = $subject["subjectId"];
-
-                                $stmt = $conn->prepare("SELECT * FROM tblattendence WHERE studentId=:studentId AND subjectId=:subjectId");
-                                $stmt->bindParam(":studentId", $studentId);
-                                $stmt->bindParam(":subjectId", $subjectId);
-                                $stmt->execute();
-                                $totalClass = $stmt->rowCount();
-
-                                $stmt = $conn->prepare("SELECT * FROM tblattendence WHERE studentId=:studentId AND subjectId=:subjectId AND attendence=1");
-                                $stmt->bindParam(":studentId", $studentId);
-                                $stmt->bindParam(":subjectId", $subjectId);
-                                $stmt->execute();
-                                $attended = $stmt->rowCount();
-                                
-                                
-                                $attendancePercent = percent($attended , $totalClass);
-                            ?>
-                                <tr>
-                                    <td><?php echo $subject['subjectName']; ?></td>
-                                    <td>
-                                        <?php echo $attendancePercent . '%'; ?>
-                                        <div class="progress " style="height: 10px;  widht:10px;">
-                                            <div class="progress-bar bg-primary" role="progressbar" style="width:<?php echo $attendancePercent; ?>%;" aria-valuenow="<?php echo $attendancePercent; ?>" aria-valuemin="0" aria-valuemax="100">
-                                                
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                    <a href="attendence-student.php" class="btn btn-primary btn-sm btn-attendence">View Details</a>
-                </div>
-            </div>
-            <div class="col data-1 box-test box-1 animate__animated animate__slideInUp animate__slow">
-                <?php
-                    $courseId = $result["courseId"];
-                    $academicYearId = $result["academicYearId"];
-                    $teststmt=$conn->prepare("SELECT * FROM tbltest WHERE courseId=:courseId AND academicYearId=:academicYearId");
-                    $teststmt->bindParam(":courseId",$courseId);
-                    $teststmt->bindParam(":academicYearId",$academicYearId);
-                    $teststmt->execute(); 
-                ?>
-                <span class="text"><strong>Tests Details</strong></span>
-                <div class="container-fluid">
-                    <table class="table table-bordered tbl-subject table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th scope="col">Subject</th>
-                                <th scope="col">Test Type</th>
-                                <th scope="col">Date Of Test</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            while($test=$teststmt->fetch())
-                            {
-                            $testId = $test["testId"];
-                            $testIdstmt = $conn->prepare("SELECT * FROM tblTestDetail WHERE testId=:testId");
-                            $testIdstmt->bindParam(":testId", $testId);
-                            $testIdstmt->execute();
-                            
-                           
-                            $testDetail = $testIdstmt->fetch();
-                            
-                            
-
-                            
-                            $subjectId  =   $test["subjectId"];
-                            
-                            $stmt9=$conn->prepare("SELECT * FROM tblsubject WHERE subjectId=:subjectId");
-                            $stmt9->bindParam(":subjectId",$subjectId);
-                            $stmt9->execute();
-                            $subjects=$stmt9->fetch();
-                            ?>
-                            <tr>
-                                <td><?php echo $subjects['subjectName']; ?></td>
-                                <td><?php echo $testDetail['testName']; ?></td>
-                                <td><?php echo date('d-m-Y', strtotime($test['dateOfTest']))?></td>
-                            </tr>
-                            <?php
-                            }
-                            ?>
-                        </tbody>
-                </table> 
-                <a href="test-student.php" class="btn btn-primary btn-sm btn-attendence">View Details</a>
-                </div>
-            </div>
-            <div class="col data-1 box-test box-1 animate__animated animate__slideInUp animate__slow">
-                <div>
-                    <span class="text"><strong>Fees Details</strong></span>
-                </div>
-                <div class="container-fluid">
-                    <div>
-                        <?php
-                            $academicYearId=$student["academicYearId"];
-                            $fstmt=$conn->prepare("SELECT *,(SELECT SUM(paidFees) FROM tblfees WHERE studentId=:studentId AND academicYearId=:academicYearId ) AS totalPaid FROM tblfees WHERE studentId=:studentId AND academicYearId=:academicYearId");
-                            $fstmt->bindParam(":studentId",$studentId);
-                            $fstmt->bindParam(":academicYearId",$academicYearId);
-                            $fstmt->execute();
-                            $fees=$fstmt->fetch();
-                            $totalPaid = $fees["totalPaid"];
-                        ?>
-                        <p><strong>Total Fees:</strong> ₹<?php echo $fees['totalFees'] ?></p>
-                        <p><strong>Paid:</strong> ₹<?php echo $totalPaid ?></p>
-                        <p><strong>Discount:</strong> ₹<?php echo $fees['discountMoney'] ?></p>
-                        <?php
-                            function subtract($a, $b , $c) {
-                                return $a - $b -$c;
-                            }
-                            
-                            $dueFees = subtract($fees["totalFees"], $totalPaid , $fees["discountMoney"]);
-                        ?>
-                        <p><strong>Due:</strong> ₹<?php echo  $dueFees ;
-                        ?></p>
-                        <?php
-                            if($dueFees == 0)
-                            {
-                             ?>
-                             <p><strong>Status:</strong> <span style="color: green;">Paid</span></p>
-                             <?php
-                            } 
-                            else 
-                            {
-                                ?>
-                                <p><strong>Status:</strong> <span style="color: red;">Pending</span></p>
-                            <?php
-                            }
-                            ?>
-                        <a href="fees-student.php" class="btn btn-primary btn-sm">View Details</a>
-                    </div>   
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php
-        $noticestmt->execute();
-        while($notices=$noticestmt->fetch())
-        {
-    ?>
-    <div class="modal fade" id="noticeModal<?php echo $notices['id']; ?>" tabindex="-1" aria-labelledby="noticeModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="noticeModalLabel">Notice Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <?php
-                    $id = $notices["id"];
-                    $noticestmt2 = $conn->prepare("SELECT * FROM tblnotice WHERE id<=:id ORDER BY id DESC");
-                    $noticestmt2->bindParam(":id", $id);
-                    $noticestmt2->execute();
-                    $noticeDetail = $noticestmt2->fetch();
-
-                    
-                    $studentstmt=$conn->prepare("SELECT * FROM tblstudent WHERE studentId=:studentId");
-                    $studentstmt->bindParam(":studentId",$studentId);
-                    $studentstmt->execute();
-                    $students=$studentstmt->fetch();
-                    
-                    
-                    
-                    ?>
-                    <p><b>Notice Date:</b> <?php echo date('d-m-Y', strtotime($noticeDetail['noticeDate'])); ?></p>
-                    <p><b>Dear:</b> <?php echo $students['studentName']; ?></p>
-                    <p><?php echo $noticeDetail['notice']; ?></p>
-                    <p><b>Your Current Attendance: </b> 
-                       <span style="color: red;">
-                           <?php 
-                           if($currentAttendence > 0)
-                           {
-                           echo $currentAttendence; 
-                           } else{
-                              echo "0"; 
-                           }
-                           ?>%
-                           </span>
-                    </p>
-                    <p><b>Minimum Attendance Required: </b> 
-                       <span style="color: green;"><?php echo $noticeDetail['cutOffAttendence']; ?>%</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <?php
-        }
-    ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<?php include "../splitting-student/footer.php"; ?>
 </body>
 </html>
-<?php include "../splitting-student/footer.php"; ?>

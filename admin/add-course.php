@@ -1,8 +1,6 @@
 <?php
   include "admin-dashboard-top.php";
-  include "admin-dashboard-navbar.php";
   include "admin-dashboard-content.php";
-
 ?>
 
 <!doctype html>
@@ -41,30 +39,34 @@
     <div class="col-md-10 form-section">
         <body>
             <form class="fees-content" action="add-course-process.php" method="POST">
-                <?php if ($_REQUEST["err"] == 1) { ?>
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 1) { ?>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>Error!</strong> Course Name is not filled
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php } ?>
-                <?php if ($_REQUEST["err"] == 2) { ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 2) { ?>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>Error!</strong> Course Duration is not selected
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php } ?>
-                <?php if ($_REQUEST["err"] == 3) { ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 3) { ?>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>Error!</strong> Total Fees is not Filled
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php } ?>
-                <?php if ($_REQUEST["err"] == 4) { ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 4) { ?>
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                     <strong>Error!</strong> Session is not selected
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php } ?>
+
                 <div class="heading-fees">
                     <h3>ADD COURSE</h3>
                 </div>

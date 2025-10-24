@@ -1,6 +1,5 @@
 <?php
   include "admin-dashboard-top.php";
-  include "admin-dashboard-navbar.php";
   include "admin-dashboard-content.php";
   include "../database-connect.php";
   $sessionId  = $_REQUEST["sessionId"];
@@ -45,12 +44,12 @@
     <div class="col-md-10 form-section">
         <body>
             <form class="fees-content" action="update-session-process.php" method="POST">
-                <?php if ($_REQUEST["err"] == 1) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> Session Name not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 1): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Session Name not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
                 <div class="heading-fees">
                     <h3>ADD SESSION</h3>
                 </div>

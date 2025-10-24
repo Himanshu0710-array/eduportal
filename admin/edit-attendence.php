@@ -1,11 +1,13 @@
 <?php
   include "admin-dashboard-top.php";
-  include "admin-dashboard-navbar.php";
   include "admin-dashboard-content.php";
 
   $studentId=$_REQUEST['studentId'];
-  $stmt=$conn->prepare("SELECT * FROM tblattendence where studentId=:studentId");
+  $subjectId = $_REQUEST["subjectId"];
+
+  $stmt=$conn->prepare("SELECT * FROM tblattendence where studentId=:studentId AND subjectId=:subjectId");
   $stmt->bindParam(":studentId",$studentId);
+  $stmt->bindParam(":subjectId",$subjectId);
   $stmt->execute();
   $row=$stmt->fetch();
 ?>
@@ -92,7 +94,6 @@
                         <input type="text" name="academicYearName"  class="form-control" placeholder="Academic Year" value="<?php echo $years['academicYearName'] ?>" readonly>
                     </div>
                     <?php
-                    $subjectId =   $row["subjectId"];
                     $subjectstmt=$conn->prepare("SELECT * FROM tblsubject WHERE subjectId=:subjectId");
                     $subjectstmt->bindParam(":subjectId",$subjectId);
                     $subjectstmt->execute();

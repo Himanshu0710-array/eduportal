@@ -14,6 +14,10 @@ $stmt->bindParam(":studentId", $studentId);
 $stmt->execute();
 $row = $stmt->fetch();
 
+$err = 0; // default
+if (isset($_GET['err'])) {
+    $err = (int) $_GET['err'];
+}
 
 ?>
 
@@ -48,90 +52,106 @@ $row = $stmt->fetch();
                 <h2>STUDENT PROFILE</h2>
             </div>
             <form class="row" action="manage-student-process.php" method="post">
-                <?php if ($_REQUEST["err"] == 1) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your name is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 2) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your dob is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 3) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your course is not selected
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 4) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your session is not selected
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 5) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your number is not valid
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 6) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your gender is not selected
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 7) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your email is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 8) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your password is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 9) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your father name is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 10) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your mother name is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 11) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your parents number is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 12) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your parents email is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 13) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your date of registration number is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 14) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> your address is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
+                <?php if ($err == 1): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your name is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 2): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your DOB is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 3): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your course is not selected
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 4): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your session is not selected
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 5): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your number is not valid
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 6): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your gender is not selected
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 7): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your email is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 8): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your password is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 9): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your father’s name is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 10): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your mother’s name is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 11): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your parent’s number is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 12): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your parent’s email is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 13): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your registration date is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($err) && $err == 14): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Error! Your address is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+
+    
                 <input type="hidden" name="studentId" value="<?php echo $row["studentId"]; ?>">
 
                 <div class="col-md-6 left1">

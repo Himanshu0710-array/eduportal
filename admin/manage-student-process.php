@@ -45,64 +45,75 @@ $_SESSION["address"]            =   $address;
 
 
 if (strlen($studentName) <= 0) {
-    header("location:manage-student.php?err=1");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=1");
     exit;
+
 }
 if (strlen($dob) <= 0) {
-    header("location:manage-student.php?err=2");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=2");
     exit;
+
 }
 if ($courseId == -1) {
-    header("location:manage-student.php?err=3");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=3");
     exit;
+
 }
-if ($sessionId == -1) {
-    header("location:manage-student.php?err=4");
+if ($sessionId== -1) {
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=4");
     exit;
+
 }
-if (strlen($studentNumber) != 10) { // Ensures exactly 10 digits
-    header("location:manage-student.php?err=5");
+if (strlen($studentNumber) <= 0) {
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=5");
     exit;
+
 }
 if ($studentGender == -1) {
-    header("location:manage-student.php?err=6");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=6");
     exit;
+
 }
 if (strlen($studentEmail) <= 0) {
-    header("location:manage-student.php?err=7");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=7");
     exit;
+
 }
 if (strlen($studentPassword) <= 0) {
-    header("location:manage-student.php?err=8");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=8");
     exit;
+
 }
 if (strlen($fatherName) <= 0) {
-    header("location:manage-student.php?err=9");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=9");
     exit;
+
 }
 if (strlen($motherName) <= 0) {
-    header("location:manage-student.php?err=10");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=10");
     exit;
+
 }
-if (strlen($parentNumber) != 10) { // Ensures exactly 10 digits
-    header("location:manage-student.php?err=11");
+if (strlen($parentNumber) <= 0) {
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=11");
     exit;
+
 }
 if (strlen($parentEmail) <= 0) {
-    header("location:manage-student.php?err=12");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=12");
     exit;
+
 }
 if (strlen($dateOfRegistration) <= 0) {
-    header("location:manage-student.php?err=13");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=13");
     exit;
+
 }
 if (strlen($address) <= 0) {
-    header("location:manage-student.php?err=14");
+    header("Location: /himanshu/admin/manage-student.php?studentId=" . $studentId . "&err=14");
     exit;
+
 }
-
-
-
 
 $query = "UPDATE tblstudent SET 
             studentName = :studentName, dob = :dob, courseId = :courseId, sessionId = :sessionId, 

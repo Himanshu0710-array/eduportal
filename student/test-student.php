@@ -8,11 +8,11 @@ $stmt=$conn->prepare("SELECT * FROM tblstudent WHERE studentId=:studentId");
 $stmt->bindParam(":studentId",$studentId);
 $stmt->execute();
 $student=$stmt->fetch();
+
 function marks($x , $y)
 {
     return $x/$y * 100;
 }
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -117,15 +117,10 @@ function marks($x , $y)
                             $resultstmt->execute();
                             $result=$resultstmt->fetch();
                             $resultCount = $resultstmt->rowCount();
-                            if($resultCount > 0)
-                            {
-                            ?>
-                            <td><?php echo $result['marksObtained']; ?></td>
-                            <?php
-                            } else{
-                            ?>
-                            <td><?php echo "-"; ?></td>
-                            <?php
+                            if($resultCount > 0) {
+                                echo "<td>".$result['marksObtained']."</td>";
+                            } else {
+                                echo "<td>-</td>";
                             }
                             ?>
                             <td><?php echo date('d-m-Y', strtotime($test['dateOfTest'])); ?></td>
@@ -141,18 +136,16 @@ function marks($x , $y)
                             </td>
                             <?php
                                 $status = $test["testStatus"];
-                                if($status == 1 || $result=$resultstmt->fetch()) 
-                                {
+                                if($status == 1 && $resultCount > 0) {
                                     $marksObtained = $result['marksObtained'];
                                     $percent = marks($marksObtained , $test['maximumMarks']);
-                                    if($percent > 35)
-                                    {
+                                    if($percent > 35) {
                                         echo "<td><span style='color: green; font-weight: bold;'>Pass</span></td>";
                                     } else {
                                         echo "<td><span style='color: red; font-weight: bold;'>Fail</span></td>";
                                     }
                                 } else {
-                                    echo "<td><span class='text-danger '>Upcoming</span></td>";
+                                    echo "<td><span class='text-danger'>Upcoming</span></td>";
                                 }
                             ?>
                         </tr>
@@ -166,4 +159,4 @@ function marks($x , $y)
      </div>  
   </body>
 </html>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

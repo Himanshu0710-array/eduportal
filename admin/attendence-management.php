@@ -53,39 +53,44 @@
             <div class="col-md-10 content-add-admin">
                 <h3 class="heading-add-admin">ATTENDENCE MANAGEMENT</h3>
                 <form class="row" action="attendence-management-process.php" method="POST">
-                    <?php if ($_REQUEST["err"] == 1) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Date Of Attendence is Not Filled
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 1) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Date Of Attendance is Not Filled
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    <?php if ($_REQUEST["err"] == 2) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Course Is not Selected
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 2) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Course Is Not Selected
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    <?php if ($_REQUEST["err"] == 3) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Academic Year Is Not Selected
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 3) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Academic Year Is Not Selected
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    <?php if ($_REQUEST["err"] == 4) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Subject Is Not Selected
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 4) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Subject Is Not Selected
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    <?php if ($_REQUEST["err"] == 5) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Session Is Not Selected
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 5) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Session Is Not Selected
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
+
                     <div>
                         <label for="exampleFormControlInput1" class="form-label"><b>Date Of Attendence</b></label>
-                        <input class="form-control" type="date" placeholder="DD/MM/YY" value="<?php echo $_SESSION['dateOfAttendence'] ?: date('Y-m-d'); ?>" name="dateOfAttendence" aria-label="default input example">    
+                        <input class="form-control" type="date" placeholder="DD/MM/YY" value="<?php echo date('Y-m-d'); ?>" name="dateOfAttendence" aria-label="default input example">
                     </div>
                     <div class="mb-3">
                         <label class="form-label"><b>Select Course</b></label>
@@ -95,13 +100,15 @@
                             $stmt = $conn->prepare("SELECT * FROM tblcourse");
                             $stmt->execute();
                             while ($course = $stmt->fetch()) {
+                                $selected = (isset($_SESSION["courseId"]) && $_SESSION["courseId"] == $course['courseId']) ? "selected" : "";
                             ?>
-                                <option <?php if($_SESSION["courseId"]==$course['courseId']){ echo "selected"; }  ?> value="<?php echo $course['courseId']; ?>">
+                                <option value="<?php echo $course['courseId']; ?>" <?php echo $selected; ?>>
                                     <?php echo $course['courseName']; ?>
                                 </option>
                             <?php } ?>
                         </select>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label"><b>Select Academic Year</b></label>
                         <select class="form-select" name="academicYearId" id="academicYearId">
@@ -110,13 +117,15 @@
                             $stmt = $conn->prepare("SELECT * FROM tblAcademicYear");
                             $stmt->execute();
                             while ($year = $stmt->fetch()) {
+                                $selected = (isset($_SESSION["academicYearId"]) && $_SESSION["academicYearId"] == $year['academicYearId']) ? "selected" : "";
                             ?>
-                                <option <?php if($_SESSION["academicYearId"]==$year['academicYearId']){ echo "selected"; }  ?>  value="<?php echo $year['academicYearId']; ?>">
+                                <option value="<?php echo $year['academicYearId']; ?>" <?php echo $selected; ?>>
                                     <?php echo $year['academicYearName']; ?>
                                 </option>
                             <?php } ?>
                         </select>
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label"><b>Select Subject</b></label>
                         <select class="form-select" name="subjectId" id="subjectId">
@@ -126,21 +135,21 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label"><b>Select Session</b></label>
-                        <select class="form-select" name="sessionId"   aria-label="Default select example" id="sessionId">
+                        <select class="form-select" name="sessionId" aria-label="Default select example" id="sessionId">
                             <option value="-1">--Select Session--</option>
                             <?php
-                                $query1 = "SELECT * FROM tblsession WHERE status = 1";
-                                $stmt = $conn->prepare($query1);
-                                $stmt->execute();
-                    
-                                
-                                while ($row = $stmt->fetch()) {
+                            $query1 = "SELECT * FROM tblsession WHERE status = 1";
+                            $stmt = $conn->prepare($query1);
+                            $stmt->execute();
+
+                            while ($row = $stmt->fetch()) {
+                                $selected = (isset($_SESSION["sessionId"]) && $_SESSION["sessionId"] == $row['sessionId']) ? "selected" : "";
                             ?>
-                            <option <?php if($_SESSION["sessionId"]==$row['sessionId']){ echo "selected"; }  ?> value="<?php echo $row["sessionId"]; ?>">
-                                <?php echo htmlspecialchars($row["sessionName"]); ?>
-                            </option>
+                                <option value="<?php echo $row["sessionId"]; ?>" <?php echo $selected; ?>>
+                                    <?php echo htmlspecialchars($row["sessionName"]); ?>
+                                </option>
                             <?php
-                                }
+                            }
                             ?>
                         </select>
                     </div>

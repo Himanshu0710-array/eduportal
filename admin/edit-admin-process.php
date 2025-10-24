@@ -21,17 +21,20 @@ $updatedIpAddress   = $_SERVER['REMOTE_ADDR'];
 $updatedDateTime    = date('Y-m-d H:i:s');
 
 if (strlen($adminName) <= 0) {
-    header("location:edit-admin.php?err=1");
+    header("Location: edit-admin.php?adminId=" . $adminId . "&err=1");
     exit;
 }
+
 if (strlen($adminPassword) <= 0) {
-    header("location:edit-admin.php?err=2");
+    header("Location: edit-admin.php?adminId=" . $adminId . "&err=2");
     exit;
 }
-if (strlen($adminNumber) <= 0 || strlen($adminNumber) > 10 || strlen($adminNumber) < 10){
-    header("location:edit-admin.php?err=3");
+
+if (strlen($adminNumber) <= 0 || strlen($adminNumber) != 10) {
+    header("Location: edit-admin.php?adminId=" . $adminId . "&err=3");
     exit;
 }
+
 
 $stmt=$conn->prepare("UPDATE tbladmin SET adminName=:adminName,adminPassword=:adminPassword,adminGender=:adminGender,adminNumber=:adminNumber,sessionId=:sessionId,adminOccupation=:adminOccupation,addedIpAddress=:addedIpAddress,addedDateTime=:addedDateTime,updatedIpAddress=:updatedIpAddress,updatedDateTime=:updatedDateTime WHERE adminId=:adminId");
 $stmt->bindParam(":adminId",$adminId);

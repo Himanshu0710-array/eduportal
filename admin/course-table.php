@@ -1,7 +1,6 @@
 <?php
 include "../database-connect.php";
 include "admin-dashboard-top.php";
-include "admin-dashboard-navbar.php";
 include "admin-dashboard-content.php";
 $query="SELECT * FROM tblcourse";
 $stmt=$conn->prepare($query);

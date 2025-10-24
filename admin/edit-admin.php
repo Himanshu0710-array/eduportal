@@ -1,7 +1,7 @@
 <?php
   include "admin-dashboard-top.php";
-  include "admin-dashboard-navbar.php";
   include "admin-dashboard-content.php";
+  include "../database-connect.php";
 
   $adminId=$_REQUEST['adminId'];
   $stmt=$conn->prepare("SELECT * FROM tbladmin where adminId=:adminId");
@@ -53,25 +53,24 @@
             <div class="col-md-10 content-add-admin">
                 <h2 class="heading-add-admin">Edit Admin</h2>
                 <form class="row" action="edit-admin-process.php" method="post">
-                    <?php if ($_REQUEST["err"] == 1) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Admin Name is not filled
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 1) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Admin Name Cannot be left blank
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    <?php if ($_REQUEST["err"] == 2) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> password is not filled
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 2) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Password Cannot be left blank
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    <?php if ($_REQUEST["err"] == 3) { ?>
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error!</strong> Number is not filled
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                    <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 3) { ?>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong>Error!</strong> Number Cannot be left blank
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     <?php } ?>
-                    
                     <input type="hidden" name="adminId" value="<?php echo $row['adminId']; ?>">
 
                     <div class="mb-3">

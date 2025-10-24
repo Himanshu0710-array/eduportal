@@ -1,6 +1,5 @@
 <?php
   include "admin-dashboard-top.php";
-  include "admin-dashboard-navbar.php";
   include "admin-dashboard-content.php";
   include "../database-connect.php";
   $query = "SELECT * FROM tblcourse";
@@ -47,36 +46,41 @@
     <div class="col-md-10 form-section">
         <body>
             <form class="fees-content" action="notice-student-process.php" method="POST">
-                <?php if ($_REQUEST["err"] == 1) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> Course is not selected
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 2) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> Academic Year not Selected
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 3) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> Total Fees for Academic Year is not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 4) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong>Session is not selected
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
-                <?php if ($_REQUEST["err"] == 5) { ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong>Due date not filled
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                <?php } ?>
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 1): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Course is not selected
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 2): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Academic Year not selected
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 3): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Total Fees for Academic Year is not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 4): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Session is not selected
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 5): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>Error!</strong> Due date not filled
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
                 <div class="heading-fees">
                     <h3>NOTICE FOR SHORT ATTENDENCE</h3>
                 </div>
