@@ -122,6 +122,12 @@
                         <li><a href="student-table.php" class="btn left-btn-1  w-100">Student Table</a></li>
                       </ul>
                     </div>
+                    <button class="btn dropdown-toggle w-100 nav-link left-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Meeting
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a href="meeting-teacher.php" class="btn left-btn-1  w-100">Meeting</a></li>
+                    </ul>
                     <a href="logout-teacher.php" class="btn left-btn w-100 nav-link">
                         Log Out
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">

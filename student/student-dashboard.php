@@ -19,6 +19,7 @@ function percent($x,$y){
 <head>
 <title>Student Dashboard</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -85,7 +86,7 @@ while($notices=$noticestmt->fetch()){ ?>
 </thead>
 <tbody>
 <?php
-$subjectstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId=:courseId AND academicYearId=:academicYearId");
+$subjectstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId=:courseId AND academicYearId=:academicYearId AND status=1");
 $subjectstmt->bindParam(":courseId",$courseId);
 $subjectstmt->bindParam(":academicYearId",$academicYearId);
 $subjectstmt->execute();
@@ -271,3 +272,6 @@ options:{scales:{y:{beginAtZero:true,max:100}}}
 <?php include "../splitting-student/footer.php"; ?>
 </body>
 </html>
+
+
+

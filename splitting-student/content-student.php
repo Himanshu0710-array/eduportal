@@ -191,7 +191,9 @@
                     <a href="test-student.php" class="btn left-btn w-100 nav-link">
                         Test Details
                     </a>
-                    
+                    <a href="meeting-student.php" class="btn left-btn w-100 nav-link">
+                        Meeting
+                    </a>
                     <a href="logout-student.php" class="btn left-btn w-100 nav-link">
                         Log Out
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 

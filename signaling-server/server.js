@@ -1,0 +1,53 @@
+const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+
+const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+    cors: {
+        origin: "*"
+    }
+});
+
+io.on("connection", socket => {
+    console.log("User connected:", socket.id);
+
+    socket.on("join-room", ({ roomId, role, userName }) => {
+        socket.join(roomId);
+        // Broadcast to others that a new user connected (with their ID and Name)
+        socket.to(roomId).emit("user-connected", { userId: socket.id, userName });
+        console.log(`User ${socket.id} (${userName}) joined ${roomId}`);
+    });
+
+    // Relay Offer to specific user
+    socket.on("offer", (payload) => {
+        io.to(payload.target).emit("offer", payload);
+    });
+
+    // Relay Answer to specific user
+    socket.on("answer", (payload) => {
+        io.to(payload.target).emit("answer", payload);
+    });
+
+    // Relay ICE Candidate to specific user
+    socket.on("ice-candidate", (payload) => {
+        io.to(payload.target).emit("ice-candidate", payload);
+    });
+
+    // Handle Meeting End (Teacher ends for everyone)
+    socket.on("end-meeting", (roomId) => {
+        socket.to(roomId).emit("meeting-ended");
+        console.log(`Meeting ${roomId} ended by host`);
+    });
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected:", socket.id);
+        io.emit("user-disconnected", socket.id);
+    });
+});
+
+server.listen(3000, () => {
+    console.log("✅ Signaling server running at http://localhost:3000");
+});

@@ -332,5 +332,3 @@ new Chart(lowPerfCtx,{
 include "teacher-dashboard-footer.php";
 
 ?>
-    
-

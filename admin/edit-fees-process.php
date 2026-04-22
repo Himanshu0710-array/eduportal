@@ -1,5 +1,6 @@
 <?php
 ob_start();
+session_start();
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -18,40 +19,50 @@ $sessionId                  =   $_REQUEST["sessionId"];
 $addedIpAddress             = $_SERVER['REMOTE_ADDR'];
 $addedDateTime              = date('y-m-d h:i:s');
 $updatedIpAddress           = $_SERVER['REMOTE_ADDR'];
-$updatedDateTime            = date('y-m-d h:i:s'); 
+$updatedDateTime            = date('y-m-d h:i:s');
+
+$_SESSION["studentId"] 				= $studentId;
+$_SESSION["courseId"]  				= $courseId;
+$_SESSION["academicYearId"] 		= $academicYearId;
+$_SESSION["totalFees"] 				= $totalFees;
+$_SESSION["discountMoney"]  		= $discountMoney;
+$_SESSION["paidFees"] 				= $paidFees;
+$_SESSION["dateOfSubmissionOfFees"] = $dateOfSubmissionOfFees;
+$_SESSION["sessionId"] 				= $sessionId;
+
 
 if(strlen($studentId)<=0)
 {
-    header("location:add-fees.php?err=1");
+    header("location:edit-fees.php?err=1");
     exit;
 }
 if($courseId==-1)
 {
-    header("location:add-fees.php?err=2");
+    header("location:edit-fees.php?err=2");
     exit;
 }
 if($academicYearId==-1)
 {
-    header("location:add-fees.php?err=3");
+    header("location:edit-fees.php?err=3");
     exit;
 }
 if(strlen($totalFees)<=0)
 {
-    header("location:add-fees.php?err=4");
+    header("location:edit-fees.php?err=4");
     exit;
 }
 if(strlen($paidFees)<=0)
 {
-    header("location:add-fees.php?err=5");
+    header("location:edit-fees.php?err=5");
     exit;
 }
 if(strlen($dateOfSubmissionOfFees)<=0)
 {
-    header("location:add-fees.php?err=6");
+    header("location:edit-fees.php?err=6");
     exit;
 }if($sessionId==-1)
 {
-    header("location:add-fees.php?err=7");
+    header("location:edit-fees.php?err=7");
     exit;
 }
 
