@@ -54,7 +54,24 @@ CREATE TABLE IF NOT EXISTS `tblteacher` (
   `teacherName` varchar(255) DEFAULT NULL,
   `teacherEmail` varchar(255) DEFAULT NULL,
   `teacherPassword` varchar(255) DEFAULT NULL,
+  `teacherGender` int(11) DEFAULT 2,
   PRIMARY KEY (`teacherId`)
+);
+
+CREATE TABLE IF NOT EXISTS `tbltest` (
+  `testId` int(11) NOT NULL AUTO_INCREMENT,
+  `testName` varchar(255) DEFAULT NULL,
+  `courseId` int(11) DEFAULT NULL,
+  `subjectId` int(11) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  PRIMARY KEY (`testId`)
+);
+
+CREATE TABLE IF NOT EXISTS `tblsubject` (
+  `subjectId` int(11) NOT NULL AUTO_INCREMENT,
+  `subjectName` varchar(255) DEFAULT NULL,
+  `courseId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`subjectId`)
 );
 
 INSERT IGNORE INTO `tblcourse` (`courseId`, `courseName`) VALUES (1, 'B.Tech Computer Science'), (2, 'BCA');
