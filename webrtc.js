@@ -3,7 +3,7 @@ console.log("WebRTC Multi-User Loaded");
 // Socket connection
 const signalingUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? `${window.location.protocol}//${window.location.hostname}:3000`
-    : `https://YOUR-SIGNALING-SERVER-NAME.onrender.com`; // UPDATE THIS ON RENDER
+    : `https://eduportal-signal.onrender.com`;
 const socket = io(signalingUrl);
 
 // Connection Validation
