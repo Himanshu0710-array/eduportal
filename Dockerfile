@@ -11,10 +11,6 @@ RUN apt-get update && apt-get install -y mariadb-server && \
 # Copy project files to the web root
 COPY . /var/www/html/
 
-# Copy the exact local database into MariaDB and set permissions
-COPY mysql_data /var/lib/mysql
-RUN chown -R mysql:mysql /var/lib/mysql
-
 # Make the start script executable
 RUN chmod +x /var/www/html/start.sh
 

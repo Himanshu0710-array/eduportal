@@ -10,5 +10,8 @@ mysql -u root -e "CREATE USER IF NOT EXISTS 'dbuser'@'%' IDENTIFIED BY 'dbpass';
 mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'dbuser'@'%' WITH GRANT OPTION;"
 mysql -u root -e "FLUSH PRIVILEGES;"
 
+# Import the clean SQL dump
+mysql -u root < /var/www/html/database.sql
+
 # Start Apache in the foreground so the container stays running
 apache2-foreground
