@@ -1,6 +1,6 @@
 #!/bin/bash
-# Start MariaDB service
-service mariadb start
+# Start MariaDB service using init.d for better Docker compatibility
+/etc/init.d/mariadb start
 
 # Wait for MariaDB to start
 sleep 3
