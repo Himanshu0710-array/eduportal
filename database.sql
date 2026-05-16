@@ -38,6 +38,10 @@ CREATE TABLE IF NOT EXISTS `tblstudent` (
   `dateOfRegistration` date DEFAULT NULL,
   `address` text,
   `studentImage` varchar(255) DEFAULT NULL,
+  `addedIpAddress` varchar(45) DEFAULT NULL,
+  `addedDateTime` datetime DEFAULT NULL,
+  `updatedIpAddress` varchar(45) DEFAULT NULL,
+  `updatedDateTime` datetime DEFAULT NULL,
   PRIMARY KEY (`studentId`)
 );
 
