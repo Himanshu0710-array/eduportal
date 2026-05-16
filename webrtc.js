@@ -1,7 +1,10 @@
 console.log("WebRTC Multi-User Loaded");
 
 // Socket connection
-const socket = io(`${window.location.protocol}//${window.location.hostname}:3000`);
+const signalingUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? `${window.location.protocol}//${window.location.hostname}:3000`
+    : `https://YOUR-SIGNALING-SERVER-NAME.onrender.com`; // UPDATE THIS ON RENDER
+const socket = io(signalingUrl);
 
 // Connection Validation
 socket.on("connect_error", (err) => {

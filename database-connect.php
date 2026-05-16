@@ -1,9 +1,9 @@
 <?php
 
-$servername = "localhost";    
-$username   = "root";         
-$password   = "";             
-$dbname     = "himanshu_4604"; 
+$servername = getenv("DB_HOST") ?: "localhost";    
+$username   = getenv("DB_USER") ?: "root";         
+$password   = getenv("DB_PASS") !== false ? getenv("DB_PASS") : "";             
+$dbname     = getenv("DB_NAME") ?: "himanshu_4604"; 
 
 try {
    
