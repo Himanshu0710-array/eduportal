@@ -153,17 +153,17 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav me-3">
-                <li class="nav-item"><a class="nav-link" href="/himanshu/index.php">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/himanshu/student/register.php">Admission</a></li>
-                <li class="nav-item"><a class="nav-link" href="/himanshu/student/login-student.php">Fees</a></li>
+                <li class="nav-item"><a class="nav-link" href="/index.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/student/register.php">Admission</a></li>
+                <li class="nav-item"><a class="nav-link" href="/student/login-student.php">Fees</a></li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item"><a class=" nav-link" href="/himanshu/student/register.php">Register</a></li>
+                <li class="nav-item"><a class=" nav-link" href="/student/register.php">Register</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Login</a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="/himanshu/student/login-student.php">Student</a></li>
-                        <li><a class="dropdown-item" href="/himanshu/teacher/login-teacher.php">Teacher</a></li>
+                        <li><a class="dropdown-item" href="/student/login-student.php">Student</a></li>
+                        <li><a class="dropdown-item" href="/teacher/login-teacher.php">Teacher</a></li>
                     </ul>
                 </li>
             </ul>
