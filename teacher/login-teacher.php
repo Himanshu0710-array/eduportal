@@ -111,7 +111,7 @@ include "../template/navbar.php";
 
                 <div class="mb-3">
                     <label class="form-label">Teacher ID</label>
-                    <input class="form-control" type="number" name="teacherId" value="teacherId" placeholder="Enter Teacher ID">
+                    <input class="form-control" type="number" name="teacherId" placeholder="Enter Teacher ID">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Password</label>
