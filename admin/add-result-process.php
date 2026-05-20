@@ -9,11 +9,11 @@ date_default_timezone_set("Asia/Calcutta");
 
 $testId                     =   $_REQUEST["testId"];
 $testStatus                 =   $_REQUEST["testStatus"];
-$studentId                  =   $_REQUEST["studentId"];
+$studentId                  =   isset($_REQUEST["studentId"]) ? (array)$_REQUEST["studentId"] : [];
 $courseId                   =   $_REQUEST["courseId"];
 $academicYearId             =   $_REQUEST["academicYearId"];
 $subjectId                  =   $_REQUEST["subjectId"];
-$marksObtained              =   $_REQUEST["marksObtained"];
+$marksObtained              =   isset($_REQUEST["marksObtained"]) ? (array)$_REQUEST["marksObtained"] : [];
 $addedIpAddress             = $_SERVER['REMOTE_ADDR'];
 $addedDateTime              = date('y-m-d h:i:s');
 $updatedIpAddress           = $_SERVER['REMOTE_ADDR'];

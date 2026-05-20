@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 ob_start();
 include "../database-connect.php";
-$studentId          = $_REQUEST["studentId"];
+$studentId          = isset($_REQUEST["studentId"]) ? (array)$_REQUEST["studentId"] : [];
 $courseId           = $_REQUEST["courseId"];
 $academicYearId     = $_REQUEST["academicYearId"];
 $cutOffAttendence   = $_REQUEST["cutOffAttendence"];

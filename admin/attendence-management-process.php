@@ -13,8 +13,8 @@ $courseId           = $_REQUEST["courseId"];
 $academicYearId     = $_REQUEST["academicYearId"];
 $subjectId          = $_REQUEST["subjectId"];
 $sessionId          = $_REQUEST["sessionId"];
-$studentId          = $_REQUEST["studentId"];  
-$attendence         = $_REQUEST["attendence"]; 
+$studentId          = (array) $_REQUEST["studentId"];  
+$attendence         = isset($_REQUEST["attendence"]) ? (array) $_REQUEST["attendence"] : [];
 $addedIpAddress     = $_SERVER['REMOTE_ADDR'];
 $addedDateTime      = date('Y-m-d H:i:s');
 $updatedIpAddress   = $_SERVER['REMOTE_ADDR'];
@@ -75,7 +75,7 @@ while ($i < count($studentId)) {
 }
 
 
-session_destroy();
+// session_destroy removed - keeping admin logged in after attendance save
 header("location:admin-dashboard.php");
 exit();
 ?>

@@ -223,5 +223,5 @@ $(document).ready(function(){
 
 </script>
 <?php
-session_destroy();
+// session_destroy removed - admin session must stay alive
 ?>
