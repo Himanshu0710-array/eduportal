@@ -2,7 +2,7 @@
   include "admin-dashboard-top.php";
   include "admin-dashboard-navbar.php";
   include "admin-dashboard-content.php";
-  include "../database-connect.php";
+  include_once "../database-connect.php";
   
   $id   = $_REQUEST["id"];
   

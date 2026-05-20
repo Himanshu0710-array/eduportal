@@ -33,8 +33,7 @@
     }
     
     setcookie("adminId", $result["adminId"], time()+ 24*60*60 , "/");
-	echo $_COOKIE["adminId"];
-	
+
 	
     $_SESSION['adminId']       = $result['adminId'];
     $_SESSION['adminPassword'] = $result['adminPassword'];

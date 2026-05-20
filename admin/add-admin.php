@@ -1,5 +1,4 @@
 <?php
-session_start();
 include "admin-dashboard-top.php";
 include "admin-dashboard-content.php";
 ?>
@@ -115,5 +114,4 @@ include "admin-dashboard-content.php";
     </div>
 <?php
 include "admin-dashboard-footer.php";
-session_destroy();
 ?>

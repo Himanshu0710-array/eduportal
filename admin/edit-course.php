@@ -2,7 +2,7 @@
   include "admin-dashboard-top.php";
   include "admin-dashboard-content.php";
   
-  include "../database-connect.php";
+  include_once "../database-connect.php";
   $courseId=$_REQUEST["courseId"];
   $stmt=$conn->prepare("SELECT * FROM tblcourse WHERE courseId=:courseId");
   $stmt->bindParam(":courseId",$courseId);

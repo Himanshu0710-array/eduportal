@@ -1,7 +1,3 @@
-<?php
-include "../template/navbar.php";
-?>
-
 <!doctype html>
 <html lang="en">
   <head>

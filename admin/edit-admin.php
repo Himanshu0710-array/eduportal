@@ -1,7 +1,7 @@
 <?php
   include "admin-dashboard-top.php";
   include "admin-dashboard-content.php";
-  include "../database-connect.php";
+  include_once "../database-connect.php";
 
   $adminId=$_REQUEST['adminId'];
   $stmt=$conn->prepare("SELECT * FROM tbladmin where adminId=:adminId");

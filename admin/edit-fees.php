@@ -1,10 +1,9 @@
 <?php
-  session_start();
-  error_reporting(E_ERROR | E_PARSE);
+    error_reporting(E_ERROR | E_PARSE);
 
   include "admin-dashboard-top.php";
   include "admin-dashboard-content.php";
-  include "../database-connect.php";
+  include_once "../database-connect.php";
   $feeId    =   $_REQUEST["feeId"];
   $stmt=$conn->prepare("SELECT * FROM tblfees WHERE feeId=:feeId");
   $stmt->bindParam(":feeId",$feeId);

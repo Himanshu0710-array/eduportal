@@ -1,6 +1,4 @@
 <?php
-include "../database-connect.php";
-session_start();
 include "admin-dashboard-top.php";
 include "admin-dashboard-content.php";
 

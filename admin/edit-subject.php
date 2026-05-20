@@ -1,7 +1,7 @@
 <?php
   include "admin-dashboard-top.php";
   include "admin-dashboard-content.php";
-  include "../database-connect.php";
+  include_once "../database-connect.php";
   
   $subjectId    =   $_REQUEST["subjectId"];
   
