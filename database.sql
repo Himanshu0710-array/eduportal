@@ -243,6 +243,7 @@ DROP TABLE IF EXISTS `tblmeetings`;
 CREATE TABLE `tblmeetings` (
   `meetingId` int(11) NOT NULL AUTO_INCREMENT,
   `teacherId` int(11) NOT NULL,
+  `subjectId` int(11) NOT NULL,
   `courseId` int(11) NOT NULL,
   `academicYearId` int(11) NOT NULL,
   `meetingTitle` varchar(255) NOT NULL,
@@ -255,6 +256,7 @@ CREATE TABLE `tblmeetings` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`meetingId`),
   KEY `teacherId` (`teacherId`),
+  KEY `subjectId` (`subjectId`),
   KEY `courseId` (`courseId`),
   KEY `meetingRoomId` (`meetingRoomId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

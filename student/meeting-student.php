@@ -1,8 +1,58 @@
 <?php
-include "../database-connect.php";
+include_once "../database-connect.php";
 session_start();
+if (!isset($_COOKIE['studentId'])) {
+    header("Location: login-student.php");
+    exit;
+}
 include "../splitting-student/top-student.php";
 include "../splitting-student/content-student.php";
+
+$studentId = $_COOKIE['studentId'];
+
+// 1. Fetch Student Class Details
+$studentQuery = $conn->prepare("SELECT courseId, academicYearId FROM tblstudent WHERE studentId = :studentId");
+$studentQuery->bindParam(":studentId", $studentId);
+$studentQuery->execute();
+$studentData = $studentQuery->fetch(PDO::FETCH_ASSOC);
+
+$totalMeetings = 0;
+$todayMeetings = 0;
+$studentMeetings = [];
+
+if ($studentData) {
+    $courseId = $studentData['courseId'];
+    $academicYearId = $studentData['academicYearId'];
+
+    // 2. Fetch Stats
+    // Total upcoming meetings
+    $statsQuery1 = $conn->prepare("SELECT COUNT(*) FROM tblmeetings WHERE courseId = :courseId AND academicYearId = :academicYearId AND meetingDate >= CURDATE()");
+    $statsQuery1->bindParam(":courseId", $courseId);
+    $statsQuery1->bindParam(":academicYearId", $academicYearId);
+    $statsQuery1->execute();
+    $totalMeetings = $statsQuery1->fetchColumn();
+
+    // Meetings today
+    $statsQuery2 = $conn->prepare("SELECT COUNT(*) FROM tblmeetings WHERE courseId = :courseId AND academicYearId = :academicYearId AND meetingDate = CURDATE()");
+    $statsQuery2->bindParam(":courseId", $courseId);
+    $statsQuery2->bindParam(":academicYearId", $academicYearId);
+    $statsQuery2->execute();
+    $todayMeetings = $statsQuery2->fetchColumn();
+
+    // 3. Fetch Scheduled Meetings list
+    $meetingsQuery = $conn->prepare("
+        SELECT m.*, s.subjectName, t.teacherName 
+        FROM tblmeetings m 
+        JOIN tblsubject s ON m.subjectId = s.subjectId 
+        JOIN tblteacher t ON m.teacherId = t.teacherId 
+        WHERE m.courseId = :courseId AND m.academicYearId = :academicYearId AND m.meetingDate >= CURDATE()
+        ORDER BY m.meetingDate ASC, m.meetingTime ASC
+    ");
+    $meetingsQuery->bindParam(":courseId", $courseId);
+    $meetingsQuery->bindParam(":academicYearId", $academicYearId);
+    $meetingsQuery->execute();
+    $studentMeetings = $meetingsQuery->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,29 +60,16 @@ include "../splitting-student/content-student.php";
 <meta charset="UTF-8">
 <title>Student Meeting Room</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
 <style>
 body {
     background: #f5f7fb;
     font-family: 'Segoe UI', sans-serif;
 }
+.page-title { font-weight: 600; }
+a { text-decoration: none !important; }
 
-/* ===== COMMON ===== */
-.page-title {
-    font-weight: 600;
-}
-
-a {
-    text-decoration: none !important;
-}
-
-/* ===== CARDS ===== */
 .card-ui,
 .action-card,
 .meeting-card,
@@ -43,37 +80,20 @@ a {
     border-radius: 18px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
-
-/* ===== QUICK ACTIONS (ZOOM STYLE) ===== */
 .quick-tile {
     padding: 20px;
     text-align: center;
     transition: 0.3s;
 }
+.quick-tile:hover { transform: translateY(-4px); }
+.quick-icon { font-size: 28px; margin-bottom: 8px; }
+.quick-title { font-weight: 600; }
 
-.quick-tile:hover {
-    transform: translateY(-4px);
-}
-
-.quick-icon {
-    font-size: 28px;
-    margin-bottom: 8px;
-}
-
-.quick-title {
-    font-weight: 600;
-}
-
-/* ===== JOIN SECTION ===== */
-.action-card {
-    padding: 25px;
-}
-
+.action-card { padding: 25px; }
 .join-input {
     border-radius: 30px;
     padding: 12px 20px;
 }
-
 .join-btn {
     border-radius: 30px;
     padding: 12px;
@@ -82,26 +102,13 @@ a {
     border: none;
     font-weight: 600;
 }
-
 .join-btn:hover {
     background: #1e40af;
     color: #fff;
 }
-
-/* ===== MEETINGS ===== */
-.meeting-card {
-    padding: 18px;
-    transition: 0.3s;
-}
-
-.meeting-card:hover {
-    transform: translateY(-4px);
-}
-
-.meeting-title {
-    font-weight: 600;
-}
-
+.meeting-card { padding: 18px; transition: 0.3s; }
+.meeting-card:hover { transform: translateY(-4px); }
+.meeting-title { font-weight: 600; }
 .badge-time {
     background: #eef3ff;
     color: #2563eb;
@@ -109,85 +116,50 @@ a {
     padding: 6px 14px;
     font-size: 13px;
 }
-
 .status-badge {
     font-size: 12px;
     padding: 6px 14px;
     border-radius: 20px;
 }
+.status-live { background: #dcfce7; color: #166534; }
+.status-upcoming { background: #e0f2fe; color: #0369a1; }
 
-.status-live {
-    background: #dcfce7;
-    color: #166534;
-}
-
-.status-upcoming {
-    background: #e0f2fe;
-    color: #0369a1;
-}
-
-/* ===== RIGHT PANEL ===== */
-.info-panel {
-    padding: 20px;
-    text-align: center;
-}
-
+.info-panel { padding: 20px; text-align: center; }
 .clock {
     font-size: 34px;
     font-weight: 700;
     color: #1e40af;
 }
-
-.date-text {
-    color: #64748b;
-    font-size: 14px;
-}
-
-/* ===== STATS ===== */
+.date-text { color: #64748b; font-size: 14px; }
 .stat-card {
     padding: 18px;
     text-align: center;
     background: linear-gradient(135deg, #e0e7ff, #eef2ff);
 }
-
-.stat-card h3 {
-    font-weight: 700;
-    color: #1e3a8a;
-    margin: 0;
-}
-
-.stat-card span {
-    font-size: 13px;
-    color: #475569;
-}
+.stat-card h3 { font-weight: 700; color: #1e3a8a; margin: 0; }
+.stat-card span { font-size: 13px; color: #475569; }
 </style>
 </head>
-
 <body>
-
 <div class="container-fluid py-4">
     <div class="row">
 
         <!-- LEFT CONTENT -->
         <div class="col-lg-8">
-
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="page-title">🎓 Student Meeting Room</h4>
             </div>
 
-            <!-- QUICK ACTIONS (LIKE ZOOM TOP BAR) -->
+            <!-- QUICK ACTIONS -->
             <div class="row mb-4 g-3">
                 <div class="col-md-4">
-                    <a href="../webrtc-room.php?room=ROOM_TEST_1&role=student"
-                        target="_blank">
-                        <div class="quick-tile">
-                            <div class="quick-icon text-primary">
-                                <i class="bi bi-camera-video-fill"></i>
-                            </div>
-                            <div class="quick-title">Join</div>
-                            <small class="text-muted">Enter meeting ID</small>
+                    <div class="quick-tile" style="cursor: pointer;" onclick="document.getElementsByName('room')[0].focus();">
+                        <div class="quick-icon text-primary">
+                            <i class="bi bi-camera-video-fill"></i>
                         </div>
-                    </a>
+                        <div class="quick-title">Join</div>
+                        <small class="text-muted">Enter meeting ID</small>
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="quick-tile">
@@ -213,13 +185,13 @@ a {
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="stat-card">
-                        <h3>4</h3>
+                        <h3><?php echo $totalMeetings; ?></h3>
                         <span>Total Meetings</span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="stat-card">
-                        <h3>1</h3>
+                        <h3><?php echo $todayMeetings; ?></h3>
                         <span>Meetings Today</span>
                     </div>
                 </div>
@@ -231,20 +203,14 @@ a {
                     <i class="bi bi-camera-video-fill text-primary me-2"></i>
                     Join a Meeting
                 </h5>
-
-                <form>
+                <form action="../webrtc-room.php" method="GET" target="_blank">
                     <div class="row g-3">
                         <div class="col-md-9">
-                            <input type="text" class="form-control join-input" placeholder="Enter Meeting ID">
+                            <input type="text" name="room" class="form-control join-input" placeholder="Enter Meeting ID (e.g. room_xxxxxx)" required>
+                            <input type="hidden" name="role" value="student">
                         </div>
                         <div class="col-md-3 d-grid">
-                            <a href="../webrtc-room.php?room=ROOM_TEST_1&role=student"
-                                target="_blank"
-                                class="join-btn">
-                                Join Meeting
-                            </a>
-
-
+                            <button type="submit" class="join-btn">Join Meeting</button>
                         </div>
                     </div>
                 </form>
@@ -257,58 +223,57 @@ a {
             </h5>
 
             <div class="row g-3">
-
-                <!-- MEETING -->
-                <div class="col-md-6">
-                    <div class="meeting-card">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <div class="meeting-title">Data Structures Lecture</div>
-                                <small class="text-muted">
-                                    <i class="bi bi-person-fill"></i> Prof. Sharma
-                                </small>
-                            </div>
-                            <span class="status-badge status-live">Live</span>
-                        </div>
-
-                        <div class="badge-time mt-2">16 Dec • 8:30 PM</div>
-
-                        <div class="d-grid mt-3">
-                            <a href="../webrtc-room.php?room=ROOM_TEST_1"
-                                target="_blank"
-                                class="join-btn text-center">
-                                    <i class="bi bi-camera-video"></i> Join Meeting
-                            </a>
-
+                <?php if (empty($studentMeetings)): ?>
+                    <div class="col-12">
+                        <div class="alert alert-light text-center border py-4">
+                            <i class="bi bi-calendar-x fs-2 text-muted d-block mb-2"></i>
+                            No classes or meetings scheduled for your course.
                         </div>
                     </div>
-                </div>
-
-                <!-- MEETING -->
-                <div class="col-md-6">
-                    <div class="meeting-card">
-                        <div class="d-flex justify-content-between">
+                <?php else: ?>
+                    <?php foreach ($studentMeetings as $meeting): 
+                        $mDate = strtotime($meeting['meetingDate']);
+                        $formattedDate = date('d M', $mDate);
+                        $formattedTime = date('h:i A', strtotime($meeting['meetingTime']));
+                        $isToday = (date('Y-m-d', $mDate) === date('Y-m-d'));
+                        $statusClass = $isToday ? "status-live" : "status-upcoming";
+                        $statusText = $isToday ? "Live" : "Upcoming";
+                    ?>
+                    <!-- MEETING -->
+                    <div class="col-md-6">
+                        <div class="meeting-card h-100 d-flex flex-column justify-content-between">
                             <div>
-                                <div class="meeting-title">Operating Systems Class</div>
-                                <small class="text-muted">
-                                    <i class="bi bi-person-fill"></i> Dr. Mehta
-                                </small>
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="meeting-title text-wrap"><?php echo htmlspecialchars($meeting['meetingTitle']); ?></div>
+                                        <small class="text-muted d-block mt-1">
+                                            <i class="bi bi-book-half"></i> <?php echo htmlspecialchars($meeting['subjectName']); ?>
+                                        </small>
+                                        <small class="text-muted d-block">
+                                            <i class="bi bi-person-fill"></i> <?php echo htmlspecialchars($meeting['teacherName']); ?>
+                                        </small>
+                                    </div>
+                                    <span class="status-badge <?php echo $statusClass; ?>"><?php echo $statusText; ?></span>
+                                </div>
+                                <?php if(!empty($meeting['meetingDescription'])): ?>
+                                    <p class="text-muted mt-2 mb-0" style="font-size: 0.85rem;"><?php echo htmlspecialchars($meeting['meetingDescription']); ?></p>
+                                <?php endif; ?>
                             </div>
-                            <span class="status-badge status-upcoming">Upcoming</span>
-                        </div>
 
-                        <div class="badge-time mt-2">17 Dec • 10:00 AM</div>
-
-                        <div class="d-grid mt-3">
-                            <a href="../webrtc-room.php?room=ROOM_TEST_1"
-                                target="_blank"
-                                class="join-btn text-center">
-                                    <i class="bi bi-camera-video"></i> Join Meeting
-                            </a>
+                            <div class="mt-3">
+                                <div class="badge-time"><?php echo $formattedDate; ?> • <?php echo $formattedTime; ?></div>
+                                <div class="d-grid mt-2">
+                                    <a href="../webrtc-room.php?room=<?php echo htmlspecialchars($meeting['meetingRoomId']); ?>&role=student"
+                                        target="_blank"
+                                        class="join-btn text-center py-2" style="font-size:0.9rem;">
+                                            <i class="bi bi-camera-video"></i> Join Meeting
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -320,8 +285,8 @@ a {
             </div>
 
             <div class="info-panel">
-                <i class="bi bi-calendar-x fs-1 text-muted"></i>
-                <p class="text-muted mt-2 mb-0">No more meetings today</p>
+                <i class="bi bi-calendar-check fs-1 text-muted"></i>
+                <p class="text-muted mt-2 mb-0">Check back regularly for updates to your classroom schedule.</p>
             </div>
         </div>
 
@@ -338,7 +303,6 @@ a {
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
 function updateClock() {
     const now = new Date();
@@ -384,6 +348,5 @@ updateClock();
     padding: 2px 5px;
 }
 </style>
-
 </body>
 </html>
