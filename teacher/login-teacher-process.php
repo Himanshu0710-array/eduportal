@@ -27,6 +27,10 @@ $stmt = $conn->prepare($query);
 $stmt->bindParam(":teacherId", $teacherId);
 $stmt->execute();
 $result = $stmt->fetch();
+if (!$result) {
+    header("location:login-teacher.php?err=3");
+    exit;
+}
 
 if ($teacherPassword != $result["teacherPassword"]) {
     header("location:login-teacher.php?err=3");
@@ -34,7 +38,6 @@ if ($teacherPassword != $result["teacherPassword"]) {
 }
 
 setcookie("teacherId", $result["teacherId"], time() + 24 * 60 * 60, "/");
-echo $_COOKIE["teacherId"];
 
 $_SESSION['teacherId'] = $result['teacherId'];
 $_SESSION['teacherPassword'] = $result['teacherPassword'];

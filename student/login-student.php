@@ -112,7 +112,7 @@ include "../template/navbar.php";
 
                 <div class="mb-3">
                     <label class="form-label">Student ID</label>
-                    <input class="form-control" type="number" name="studentId" value="studentId" placeholder="Enter Student ID">
+                    <input class="form-control" type="number" name="studentId" placeholder="Enter Student ID">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Password</label>

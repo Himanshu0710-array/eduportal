@@ -1,6 +1,6 @@
 <?php
 include "../database-connect.php";
-$studentId = htmlspecialchars($_COOKIE['studentId']); 
+$studentId = isset($_COOKIE['studentId']) ? htmlspecialchars($_COOKIE['studentId']) : ''; 
 $stmt=$conn->prepare("SELECT * FROM tblstudent WHERE studentId=:studentId");
 $stmt->bindParam(":studentId",$studentId);
 $stmt->execute();

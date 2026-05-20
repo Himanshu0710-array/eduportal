@@ -1,6 +1,10 @@
 <?php
     include "../database-connect.php";
-   $studentId = htmlspecialchars($_COOKIE['studentId']); 
+    $studentId = isset($_COOKIE['studentId']) ? htmlspecialchars($_COOKIE['studentId']) : '';
+    if (empty($studentId)) {
+        header("Location: login-student.php");
+        exit;
+    }
 ?>
 <!doctype html>
 <html lang="en">

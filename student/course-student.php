@@ -4,7 +4,7 @@ session_start();
 include "../splitting-student/top-student.php";
 include "../splitting-student/content-student.php";
 
-$$studentId = $_REQUEST["studentId"];
+$studentId = $_REQUEST["studentId"] ?? $_COOKIE['studentId'];
 $stmt = $conn->prepare("SELECT * FROM tblstudent WHERE studentId = :studentId");
 $stmt->bindParam(":studentId", $studentId);
 $stmt->execute();

@@ -1,7 +1,10 @@
 <?php
 include "../database-connect.php";
-$teacherId = htmlspecialchars($_COOKIE['teacherId']); 
-
+$teacherId = isset($_COOKIE['teacherId']) ? htmlspecialchars($_COOKIE['teacherId']) : ''; 
+if (empty($teacherId)) {
+    header("Location: login-teacher.php");
+    exit;
+}
 $query = "SELECT * FROM tblteacher WHERE teacherId = :teacherId";
 $stmt = $conn->prepare($query);
 $stmt->bindParam(":teacherId", $teacherId);
