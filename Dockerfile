@@ -8,6 +8,14 @@ RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 RUN apt-get update && apt-get install -y mariadb-server && \
     docker-php-ext-install pdo pdo_mysql mysqli
 
+# Set lower_case_table_names=1 BEFORE MariaDB initializes its data directory.
+# This makes table name matching case-insensitive on Linux (same as Windows XAMPP),
+# fixing errors like "Table 'tblCourseFees' doesn't exist" caused by case mismatch.
+RUN mkdir -p /etc/mysql/mariadb.conf.d && \
+    printf '[mysqld]\nlower_case_table_names=1\n' \
+    > /etc/mysql/mariadb.conf.d/99-case-insensitive.cnf && \
+    mysql_install_db --user=mysql --datadir=/var/lib/mysql
+
 # Copy project files to the web root
 COPY . /var/www/html/
 
