@@ -121,8 +121,14 @@ function toggleAudio(btn) {
     if (track) {
         track.enabled = !track.enabled;
         btn.innerHTML = track.enabled ? '<i class="bi bi-mic-fill"></i>' : '<i class="bi bi-mic-mute-fill"></i>';
-        btn.classList.toggle("btn-danger");
-        btn.classList.toggle("btn-secondary");
+        btn.classList.toggle("btn-danger", !track.enabled);
+        btn.classList.toggle("btn-secondary", track.enabled);
+        
+        // Update local UI
+        const badge = document.querySelector(".local-mute-badge");
+        if (badge) badge.style.display = track.enabled ? "none" : "block";
+
+        socket.emit("media-state", { roomId: ROOM_ID, userId: socket.id, type: "audio", enabled: track.enabled });
     }
 }
 
@@ -132,8 +138,14 @@ function toggleVideo(btn) {
     if (track) {
         track.enabled = !track.enabled;
         btn.innerHTML = track.enabled ? '<i class="bi bi-camera-video-fill"></i>' : '<i class="bi bi-camera-video-off-fill"></i>';
-        btn.classList.toggle("btn-danger");
-        btn.classList.toggle("btn-secondary");
+        btn.classList.toggle("btn-danger", !track.enabled);
+        btn.classList.toggle("btn-secondary", track.enabled);
+        
+        // Update local UI
+        const badge = document.querySelector(".local-cam-badge");
+        if (badge) badge.style.display = track.enabled ? "none" : "block";
+
+        socket.emit("media-state", { roomId: ROOM_ID, userId: socket.id, type: "video", enabled: track.enabled });
     }
 }
 
@@ -241,9 +253,17 @@ function createPeer(userId, userName = "User") {
             const badge = document.createElement("div");
             badge.className = "user-badge";
             badge.innerHTML = `<i class="bi bi-person-fill"></i> ${userName}`;
+            
+            const mediaBadges = document.createElement("div");
+            mediaBadges.className = "media-status-badges";
+            mediaBadges.innerHTML = `
+                <div class="media-badge remote-mute-badge" title="Microphone Off"><i class="bi bi-mic-mute-fill"></i></div>
+                <div class="media-badge remote-cam-badge" title="Camera Off"><i class="bi bi-camera-video-off-fill"></i></div>
+            `;
 
             container.appendChild(vid);
             container.appendChild(badge);
+            container.appendChild(mediaBadges);
             videoGrid.appendChild(container);
         }
         vid.srcObject = e.streams[0];
@@ -556,3 +576,17 @@ async function switchCamera() {
         alert("Could not switch camera. Check permissions or device capabilities.");
     }
 }
+
+// 14. Handle Remote Media State changes (Mute/Cam Icons)
+socket.on("media-state", (payload) => {
+    const vid = document.getElementById(payload.userId);
+    if (vid && vid.parentElement) {
+        if (payload.type === "audio") {
+            const badge = vid.parentElement.querySelector(".remote-mute-badge");
+            if (badge) badge.style.display = payload.enabled ? "none" : "block";
+        } else if (payload.type === "video") {
+            const badge = vid.parentElement.querySelector(".remote-cam-badge");
+            if (badge) badge.style.display = payload.enabled ? "none" : "block";
+        }
+    }
+});

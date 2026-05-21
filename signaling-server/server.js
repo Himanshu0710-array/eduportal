@@ -73,6 +73,11 @@ io.on("connection", socket => {
         socket.to(payload.roomId).emit("hand-toggled", payload);
     });
 
+    // Handle Media State (Mic/Cam Icons)
+    socket.on("media-state", (payload) => {
+        socket.to(payload.roomId).emit("media-state", payload);
+    });
+
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
         io.emit("user-disconnected", socket.id);
