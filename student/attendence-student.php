@@ -1,7 +1,9 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include "../splitting-student/top-student.php";
 include "../splitting-student/content-student.php";
-include "../database-connect.php";
 
 $query1 = "SELECT * FROM tblstudent WHERE studentId=:studentId";
 $stmt = $conn->prepare($query1);

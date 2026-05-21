@@ -1,8 +1,10 @@
 <?php
-    session_start();
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
   include "teacher-dashboard-top.php";
   include "teacher-dashboard-content.php";
-  include "../database-connect.php";
+  include_once "../database-connect.php";
 ?>
 <!doctype html>
 <html lang="en">
@@ -224,5 +226,10 @@ $(document).ready(function(){
 
 </script>
 <?php
-session_destroy();
+// Clear only the form-related session variables, NOT the login session
+unset($_SESSION["dateOfAttendence"]);
+unset($_SESSION["courseId"]);
+unset($_SESSION["academicYearId"]);
+unset($_SESSION["subjectId"]);
+unset($_SESSION["sessionId"]);
 ?>

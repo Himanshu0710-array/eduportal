@@ -1,14 +1,16 @@
 <?php
 include_once "../database-connect.php";
-session_start();
-if (!isset($_COOKIE['teacherId'])) {
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['teacherId']) && !isset($_COOKIE['teacherId'])) {
     header("Location: login-teacher.php");
     exit;
 }
 include "teacher-dashboard-top.php";
 include "teacher-dashboard-content.php";
 
-$teacherId = $_COOKIE['teacherId'];
+$teacherId = isset($_SESSION['teacherId']) ? $_SESSION['teacherId'] : htmlspecialchars($_COOKIE['teacherId']);
 
 // 1. Fetch Stats
 // Total meetings scheduled by this teacher

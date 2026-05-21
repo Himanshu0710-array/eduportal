@@ -38,6 +38,7 @@ if ($studentPassword !== $result["studentPassword"]) {
 
 setcookie("studentId", $studentId, time() + 3600, "/"); // 1-hour cookie
 
+$_SESSION['studentId'] = $result['studentId'];
 
 header("location:student-dashboard.php");
 exit;

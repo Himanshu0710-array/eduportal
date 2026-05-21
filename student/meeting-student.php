@@ -1,14 +1,16 @@
 <?php
 include_once "../database-connect.php";
-session_start();
-if (!isset($_COOKIE['studentId'])) {
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['studentId']) && !isset($_COOKIE['studentId'])) {
     header("Location: login-student.php");
     exit;
 }
 include "../splitting-student/top-student.php";
 include "../splitting-student/content-student.php";
 
-$studentId = $_COOKIE['studentId'];
+$studentId = isset($_SESSION['studentId']) ? $_SESSION['studentId'] : htmlspecialchars($_COOKIE['studentId']);
 
 // 1. Fetch Student Class Details
 $studentQuery = $conn->prepare("SELECT courseId, academicYearId FROM tblstudent WHERE studentId = :studentId");

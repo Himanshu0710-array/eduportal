@@ -238,5 +238,9 @@ $(document).ready(function() {
 
 </script>
 <?php
-session_destroy();
+unset($_SESSION["dateOfAttendence"]);
+unset($_SESSION["courseId"]);
+unset($_SESSION["academicYearId"]);
+unset($_SESSION["subjectId"]);
+unset($_SESSION["sessionId"]);
 ?>

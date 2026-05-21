@@ -71,7 +71,12 @@
     $stmt->bindParam(":updatedDateTime",$updatedDateTime);
     $stmt->execute();
     
-    session_destroy();
+    unset($_SESSION["adminName"]);
+    unset($_SESSION["adminPassword"]);
+    unset($_SESSION["adminGender"]);
+    unset($_SESSION["adminNumber"]);
+    unset($_SESSION["sessionId"]);
+    unset($_SESSION["adminOccupation"]);
     header("location:admin-table.php");
     exit();
     

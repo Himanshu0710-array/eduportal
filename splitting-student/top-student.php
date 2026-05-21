@@ -1,10 +1,13 @@
 <?php
-    include "../database-connect.php";
-    $studentId = isset($_COOKIE['studentId']) ? htmlspecialchars($_COOKIE['studentId']) : '';
-    if (empty($studentId)) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    include_once "../database-connect.php";
+    if (!isset($_SESSION['studentId']) && !isset($_COOKIE['studentId'])) {
         header("Location: login-student.php");
         exit;
     }
+    $studentId = isset($_SESSION['studentId']) ? $_SESSION['studentId'] : (isset($_COOKIE['studentId']) ? htmlspecialchars($_COOKIE['studentId']) : '');
 ?>
 <!doctype html>
 <html lang="en">

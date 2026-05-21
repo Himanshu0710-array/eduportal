@@ -186,7 +186,8 @@
     </div>
 <?php
     include "admin-dashboard-footer.php";
-    session_destroy();
+    unset($_SESSION["testName"]);
+    unset($_SESSION["maximumMarks"]);
 ?>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>

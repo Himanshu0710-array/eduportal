@@ -1,6 +1,9 @@
 <?php
 include "../database-connect.php";
-$studentId = isset($_COOKIE['studentId']) ? htmlspecialchars($_COOKIE['studentId']) : ''; 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$studentId = isset($_SESSION['studentId']) ? $_SESSION['studentId'] : (isset($_COOKIE['studentId']) ? htmlspecialchars($_COOKIE['studentId']) : ''); 
 $stmt=$conn->prepare("SELECT * FROM tblstudent WHERE studentId=:studentId");
 $stmt->bindParam(":studentId",$studentId);
 $stmt->execute();

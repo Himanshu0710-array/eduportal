@@ -65,5 +65,6 @@
 
 <?php
     include "admin-dashboard-footer.php";
-    session_destroy();
+    unset($_SESSION["testName"]);
+    unset($_SESSION["maximumMarks"]);
 ?>

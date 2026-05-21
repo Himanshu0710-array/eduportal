@@ -1,5 +1,8 @@
 <?php
-include "../database-connect.php";
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include_once "../database-connect.php";
 include "teacher-dashboard-top.php";
 include "teacher-dashboard-content.php";
 include "fun-specialchar.php";

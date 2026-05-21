@@ -1,14 +1,16 @@
 <?php
 ob_start();
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include "../database-connect.php";
 
-if (!isset($_COOKIE['teacherId'])) {
+if (!isset($_SESSION['teacherId']) && !isset($_COOKIE['teacherId'])) {
     header("Location: login-teacher.php");
     exit;
 }
 
-$teacherId = $_COOKIE['teacherId'];
+$teacherId = isset($_SESSION['teacherId']) ? $_SESSION['teacherId'] : htmlspecialchars($_COOKIE['teacherId']);
 $subjectId = isset($_POST['subjectId']) ? intval($_POST['subjectId']) : 0;
 $courseId = isset($_POST['courseId']) ? intval($_POST['courseId']) : 0;
 $academicYearId = isset($_POST['academicYearId']) ? intval($_POST['academicYearId']) : 0;

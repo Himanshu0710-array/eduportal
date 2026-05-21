@@ -1,6 +1,7 @@
 <?php
-include "../database-connect.php";
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 include "../splitting-student/top-student.php";
 include "../splitting-student/content-student.php";
 

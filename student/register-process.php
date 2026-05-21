@@ -149,7 +149,21 @@
     $stmt->bindParam(":updatedDateTime",$updatedDateTime);
     $stmt->execute();
     
-    session_destroy();
+    unset($_SESSION["studentName"]);
+    unset($_SESSION["dob"]);
+    unset($_SESSION["courseId"]);
+    unset($_SESSION["academicYearId"]);
+    unset($_SESSION["sessionId"]);
+    unset($_SESSION["studentNumber"]);
+    unset($_SESSION["studentGender"]);
+    unset($_SESSION["studentEmail"]);
+    unset($_SESSION["studentPassword"]);
+    unset($_SESSION["fatherName"]);
+    unset($_SESSION["motherName"]);
+    unset($_SESSION["parentNumber"]);
+    unset($_SESSION["parentEmail"]);
+    unset($_SESSION["dateOfRegistration"]);
+    unset($_SESSION["address"]);
     
     $studentId = $conn->lastInsertId(); 
 
