@@ -89,6 +89,16 @@ unset($_SESSION["courseId"]);
 unset($_SESSION["academicYearId"]);
 unset($_SESSION["subjectId"]);
 unset($_SESSION["sessionId"]);
-header("location:teacher-dashboard.php");
+
+// Redirect back to management page with success flag + params for download
+$params = http_build_query([
+    'success'          => 1,
+    'dateOfAttendence' => $dateOfAttendence,
+    'courseId'         => $courseId,
+    'academicYearId'   => $academicYearId,
+    'subjectId'        => $subjectId,
+    'sessionId'        => $sessionId,
+]);
+header("location:attendence-management.php?" . $params);
 exit();
 ?>

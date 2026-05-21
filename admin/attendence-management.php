@@ -46,6 +46,25 @@
     </style>
   </head>
   <body>
+  <!-- Success Modal -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #16a34a, #22c55e); color: white; border: none;">
+          <h5 class="modal-title" id="successModalLabel">✅ Attendance Marked Successfully!</h5>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="mb-3" style="font-size: 1.05rem; color: #374151;">Attendance has been saved. Would you like to download a copy?</p>
+          <a id="downloadBtn" href="#" class="btn btn-success btn-lg me-2" style="border-radius: 10px;">
+            <i class="bi bi-download me-1"></i> Download CSV
+          </a>
+        </div>
+        <div class="modal-footer justify-content-center" style="border: none;">
+          <a href="admin-dashboard.php" class="btn btn-primary px-4" style="border-radius: 10px;">OK &mdash; Go to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="container">
         <div class="row main">
             <div class="col-md-1"></div>
@@ -221,6 +240,25 @@ $(document).ready(function(){
 });
 
 
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"></script>
+<script>
+$(document).ready(function() {
+    // Show success modal if redirected after marking attendance
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('success') === '1') {
+        var downloadUrl = 'download-attendance.php?' +
+            'dateOfAttendence=' + encodeURIComponent(urlParams.get('dateOfAttendence')) +
+            '&courseId='        + encodeURIComponent(urlParams.get('courseId')) +
+            '&academicYearId='  + encodeURIComponent(urlParams.get('academicYearId')) +
+            '&subjectId='       + encodeURIComponent(urlParams.get('subjectId')) +
+            '&sessionId='       + encodeURIComponent(urlParams.get('sessionId'));
+
+        $('#downloadBtn').attr('href', downloadUrl);
+        var modal = new bootstrap.Modal(document.getElementById('successModal'), { backdrop: 'static', keyboard: false });
+        modal.show();
+    }
+});
 </script>
 <?php
 // session_destroy removed - admin session must stay alive

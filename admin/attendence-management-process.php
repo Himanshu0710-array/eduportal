@@ -76,6 +76,15 @@ while ($i < count($studentId)) {
 
 
 // session_destroy removed - keeping admin logged in after attendance save
-header("location:admin-dashboard.php");
+// Redirect back to management page with success flag + params for download
+$params = http_build_query([
+    'success'          => 1,
+    'dateOfAttendence' => $dateOfAttendence,
+    'courseId'         => $courseId,
+    'academicYearId'   => $academicYearId,
+    'subjectId'        => $subjectId,
+    'sessionId'        => $sessionId,
+]);
+header("location:attendence-management.php?" . $params);
 exit();
 ?>
