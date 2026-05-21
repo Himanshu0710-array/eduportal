@@ -23,7 +23,13 @@ try {
         $options[PDO::MYSQL_ATTR_SSL_CA] = '/etc/ssl/certs/ca-certificates.crt';
     }
 
-    $conn = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8", $username, $password, $options);
+    // Handle DB_HOST containing a port (e.g. host:4000)
+    $port = 3306;
+    if (strpos($servername, ':') !== false) {
+        list($servername, $port) = explode(':', $servername);
+    }
+
+    $conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8", $username, $password, $options);
 
 } catch (PDOException $e) {
  
