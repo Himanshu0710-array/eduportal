@@ -46,28 +46,6 @@
             border-bottom:2px solid black;
             margin-bottom:20px;
         }
-        /* ===== Page Loader ===== */
-        #page-loader {
-            position: fixed; inset: 0;
-            background: rgba(15, 23, 42, 0.7);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 16px;
-            transition: opacity 0.4s ease;
-        }
-        #page-loader.hidden { opacity: 0; pointer-events: none; }
-        .loader-ring {
-            width: 56px; height: 56px;
-            border: 5px solid rgba(255,255,255,0.15);
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .loader-text { color: #fff; font-size: 0.95rem; font-weight: 500; }
-        @keyframes spin { to { transform: rotate(360deg); } }
         /* ===== AJAX Spinner ===== */
         #ajax-spinner {
             display: none;
@@ -78,11 +56,6 @@
     </style>
   </head>
   <body>
-  <!-- Page Loader -->
-  <div id="page-loader" class="hidden">
-      <div class="loader-ring"></div>
-      <span class="loader-text">Loading...</span>
-  </div>
     <div class="container">
         <div class="row main">
             <div class="col-md-1"></div>
@@ -233,22 +206,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Page transition loader: show on all link clicks
-    $("a").on('click', function() {
-        var rawHref = $(this).attr('href');
-        if (!rawHref) return;
-        if (rawHref === '#' || rawHref.startsWith('#')) return;
-        if (rawHref.startsWith('javascript')) return;
-        if ($(this).attr('data-bs-toggle')) return;
-        if ($(this).attr('download') !== undefined) return;
-        if (rawHref.includes('download')) return;
-        if ($(this).attr('target') === '_blank') return;
-        $('#page-loader').removeClass('hidden');
-    });
-    // Hide loader when page is fully loaded
-    $(window).on('load', function() {
-        setTimeout(function() { $('#page-loader').addClass('hidden'); }, 200);
-    });
 
     $("#courseId, #academicYearId").change(function() {
         var courseId = $("#courseId").val();
