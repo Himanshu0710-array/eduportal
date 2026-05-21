@@ -4,6 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 include "../splitting-student/top-student.php";
 include "../splitting-student/content-student.php";
+include_once "../database-connect.php";
 
 // Fetch student data
 $query1 = "SELECT * FROM tblstudent WHERE studentId=:studentId";
@@ -12,42 +13,62 @@ $stmt->bindParam(":studentId", $studentId);
 $stmt->execute();
 $row = $stmt->fetch();
 
-$academicYearId = $row["academicYearId"];
+if (!$row) {
+    // Student not found – show error
+    $academicYearId = null;
+    $courseId = null;
+} else {
+    $academicYearId = $row["academicYearId"];
+    $courseId = $row["courseId"];
+}
 
 // Fetch total paid fees and discount
-$stmt = $conn->prepare("SELECT SUM(paidFees) AS totalPaid, discountMoney FROM tblfees WHERE studentId=:studentId AND academicYearId=:academicYearId");
-$stmt->bindParam(":studentId", $studentId);
-$stmt->bindParam(":academicYearId", $academicYearId);
-$stmt->execute();
-$totalPaid = $stmt->fetch();
+$totalPaid = ['totalPaid' => 0, 'discountMoney' => 0];
+if ($academicYearId) {
+    $stmt = $conn->prepare("SELECT SUM(paidFees) AS totalPaid, MAX(discountMoney) AS discountMoney FROM tblfees WHERE studentId=:studentId AND academicYearId=:academicYearId");
+    $stmt->bindParam(":studentId", $studentId);
+    $stmt->bindParam(":academicYearId", $academicYearId);
+    $stmt->execute();
+    $fetched = $stmt->fetch();
+    if ($fetched) $totalPaid = $fetched;
+}
 
 // Fetch course info
-$courseId = $row["courseId"];
-$stmt = $conn->prepare("SELECT * FROM tblcourse WHERE courseId=:courseId");
-$stmt->bindParam(":courseId", $courseId);
+$courseDuration = 0;
+if ($courseId) {
+    $stmt = $conn->prepare("SELECT * FROM tblcourse WHERE courseId=:courseId");
+    $stmt->bindParam(":courseId", $courseId);
+    $stmt->execute();
+    $course = $stmt->fetch();
+    $courseDuration = $course ? $course["courseDuration"] : 0;
+}
+
+// Fetch active session
+$activeSession = null;
+$stmt = $conn->prepare("SELECT * FROM tblsession WHERE status=1 LIMIT 1");
 $stmt->execute();
-$course = $stmt->fetch();
-$courseDuration = $course["courseDuration"];
+$activeSession = $stmt->fetch();
+$sessionId = $activeSession ? $activeSession["sessionId"] : null;
 
-// Fetch session and course fee
-$stmt = $conn->prepare("SELECT * FROM tblsession WHERE status=1");
-$stmt->execute();
-$sessionId = $stmt->fetch();
+// Fetch course fee structure
+$courseFees = null;
+if ($courseId && $academicYearId && $sessionId) {
+    $stmt = $conn->prepare("SELECT * FROM tblCourseFees WHERE courseId=:courseId AND academicYearId=:academicYearId AND sessionId=:sessionId");
+    $stmt->bindParam(":courseId", $courseId);
+    $stmt->bindParam(":academicYearId", $academicYearId);
+    $stmt->bindParam(":sessionId", $sessionId);
+    $stmt->execute();
+    $courseFees = $stmt->fetch();
+}
 
-$sessionId = $sessionId["sessionId"];
-$stmt = $conn->prepare("SELECT * FROM tblCourseFees WHERE courseId=:courseId AND academicYearId=:academicYearId AND sessionId=:sessionId");
-$stmt->bindParam(":courseId", $courseId);
-$stmt->bindParam(":academicYearId", $academicYearId);
-$stmt->bindParam(":sessionId", $sessionId);
-$stmt->execute();
-$courseFees = $stmt->fetch();
+// Calculate fees — guard against all missing records
+$courseFeeTotal = isset($courseFees['totalFees'])    ? (float)$courseFees['totalFees']    : 0;
+$discountMoney  = isset($totalPaid['discountMoney']) ? (float)$totalPaid['discountMoney'] : 0;
+$paidAmount     = isset($totalPaid['totalPaid'])     ? (float)$totalPaid['totalPaid']     : 0;
 
-// Calculate fees — guard against missing records
-$courseFeeTotal  = isset($courseFees['totalFees'])    ? (float)$courseFees['totalFees']         : 0;
-$discountMoney   = isset($totalPaid['discountMoney'])  ? (float)$totalPaid['discountMoney']       : 0;
-$paidAmount      = isset($totalPaid['totalPaid'])      ? (float)$totalPaid['totalPaid']           : 0;
-
-function diff($x, $y) { return $x - $y; }
+if (!function_exists('diff')) {
+    function diff($x, $y) { return $x - $y; }
+}
 
 $totalFees = diff($courseFeeTotal, $discountMoney);
 $dueFees   = diff($totalFees, $paidAmount);
@@ -248,19 +269,23 @@ $dueFees   = diff($totalFees, $paidAmount);
                 </thead>
                 <tbody>
                     <?php
-                    $stmt = $conn->prepare("SELECT * FROM tblfees WHERE studentId=:studentId AND academicYearId=:academicYearId ORDER BY feeId DESC");
-                    $stmt->bindParam(":studentId", $studentId);
-                    $stmt->bindParam(":academicYearId", $academicYearId);
-                    $stmt->execute();
+                    if ($academicYearId) {
+                        $stmt = $conn->prepare("SELECT * FROM tblfees WHERE studentId=:studentId AND academicYearId=:academicYearId ORDER BY feeId DESC");
+                        $stmt->bindParam(":studentId", $studentId);
+                        $stmt->bindParam(":academicYearId", $academicYearId);
+                        $stmt->execute();
+                    } else {
+                        $stmt = null;
+                    }
 
-                    if ($stmt->rowCount() == 0) {
+                    if (!$stmt || $stmt->rowCount() == 0) {
                         echo "<tr><td colspan='4' class='no-data'>No transactions found.</td></tr>";
                     }
 
-                    while ($result = $stmt->fetch()) {
-                        $academicYearId = $result['academicYearId'];
+                    while ($stmt && $result = $stmt->fetch()) {
+                        $rowAcademicYearId = $result['academicYearId'];
                         $academicYearstmt = $conn->prepare("SELECT * FROM tblAcademicYear WHERE academicYearId=:academicYearId");
-                        $academicYearstmt->bindParam(":academicYearId", $academicYearId);
+                        $academicYearstmt->bindParam(":academicYearId", $rowAcademicYearId);
                         $academicYearstmt->execute();
                         $academicYears = $academicYearstmt->fetch();
                     ?>
