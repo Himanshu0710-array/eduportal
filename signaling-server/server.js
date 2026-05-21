@@ -48,6 +48,19 @@ io.on("connection", socket => {
         console.log(`Teacher muted all students in ${roomId}`);
     });
 
+    // Handle Hard Mute All (Lock)
+    socket.on("hard-mute-all", (roomId) => {
+        socket.to(roomId).emit("hard-mute");
+        console.log(`Teacher HARD muted all students in ${roomId}`);
+    });
+
+    // Handle Allow Unmute
+    socket.on("allow-unmute", (payload) => {
+        // payload = { roomId, userId }
+        io.to(payload.userId).emit("unmute-allowed");
+        console.log(`Teacher allowed user ${payload.userId} to unmute in ${payload.roomId}`);
+    });
+
     // Handle Chat Messages
     socket.on("send-chat", (payload) => {
         // payload = { roomId, userName, text, time }

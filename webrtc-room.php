@@ -68,6 +68,7 @@ $role = $_GET['role'] ?? 'student'; // default
                 position: fixed;
                 top: 0;
                 right: 0;
+                width: 100%;
                 height: 100%;
                 z-index: 1500;
                 transform: translateX(100%);
@@ -84,6 +85,25 @@ $role = $_GET['role'] ?? 'student'; // default
                 width: 100% !important;
                 height: auto !important;
                 aspect-ratio: 4/3;
+            }
+            
+            /* Make controls scrollable horizontally on mobile */
+            .controls-bar {
+                width: 90%;
+                border-radius: 30px;
+                padding: 10px 15px;
+                justify-content: flex-start;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .controls-bar::-webkit-scrollbar {
+                display: none;
+            }
+            .btn-control {
+                min-width: 45px;
+                height: 45px;
+                font-size: 16px;
             }
         }
 
@@ -102,6 +122,8 @@ $role = $_GET['role'] ?? 'student'; // default
             display: flex;
             flex-direction: column;
             gap: 10px;
+            /* Allow scrolling even if keyboard pushes up */
+            padding-bottom: 80px; 
         }
         .chat-msg {
             background: rgba(255,255,255,0.05);
@@ -130,10 +152,16 @@ $role = $_GET['role'] ?? 'student'; // default
             color: rgba(255,255,255,0.7);
         }
         .chat-input-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
             padding: 15px;
             border-top: 1px solid rgba(255,255,255,0.1);
             display: flex;
             gap: 10px;
+            z-index: 10;
         }
         .chat-input {
             flex: 1;
@@ -232,6 +260,22 @@ $role = $_GET['role'] ?? 'student'; // default
             display: none; /* Hidden by default */
             animation: bounce 1s infinite alternate;
         }
+        
+        .allow-btn {
+            position: absolute;
+            top: 15px;
+            right: 50px;
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: none; /* Hidden by default */
+            cursor: pointer;
+            z-index: 5;
+        }
+
         @keyframes bounce {
             from { transform: translateY(0); }
             to { transform: translateY(-5px); }
@@ -268,6 +312,7 @@ $role = $_GET['role'] ?? 'student'; // default
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
         .btn-control:hover { transform: scale(1.1); }
         .btn-secondary { background: #333; color: white; }
@@ -374,6 +419,9 @@ $role = $_GET['role'] ?? 'student'; // default
     <?php if ($role === 'teacher'): ?>
     <button id="btn-mute-all" class="btn-control btn-danger" title="Mute All Students" onclick="if(confirm('Mute all students?')) { socket.emit('mute-all', ROOM_ID); }">
         <i class="bi bi-mic-mute"></i>
+    </button>
+    <button id="btn-hard-mute" class="btn-control btn-danger" style="background:#b91c1c;" title="Hard Mute All (Lock)" onclick="if(confirm('Lock all student microphones?')) { socket.emit('hard-mute-all', ROOM_ID); }">
+        <i class="bi bi-lock-fill"></i>
     </button>
     <?php endif; ?>
     

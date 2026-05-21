@@ -107,8 +107,16 @@ function setupLobbyControls() {
     }
 }
 
+let isHardMuted = false;
 function toggleAudio(btn) {
     if (!localStream) return;
+    
+    // Check if hard muted by teacher
+    if (isHardMuted) {
+        alert("You are hard muted by the teacher. Please raise your hand to speak.");
+        return;
+    }
+
     const track = localStream.getAudioTracks()[0];
     if (track) {
         track.enabled = !track.enabled;
@@ -306,6 +314,31 @@ socket.on("force-mute", () => {
     }
 });
 
+// 12. Handle Hard Mute (Lock)
+socket.on("hard-mute", () => {
+    if (ROLE === 'teacher') return; // Teacher shouldn't hard mute themselves
+    isHardMuted = true;
+    if (localStream) {
+        const track = localStream.getAudioTracks()[0];
+        if (track && track.enabled) {
+            track.enabled = false;
+            const btnAudio = document.getElementById("btn-audio");
+            if (btnAudio) {
+                btnAudio.innerHTML = '<i class="bi bi-mic-mute-fill"></i>';
+                btnAudio.classList.add("btn-danger");
+                btnAudio.classList.remove("btn-secondary");
+            }
+        }
+    }
+    alert("The teacher has locked all microphones. Raise your hand to speak.");
+});
+
+// 13. Handle Allow Unmute
+socket.on("unmute-allowed", () => {
+    isHardMuted = false;
+    alert("The teacher has allowed you to unmute. You can now turn on your microphone.");
+});
+
 // Attach Room Control Listeners
 const btnAudio = document.getElementById("btn-audio");
 const btnVideo = document.getElementById("btn-video");
@@ -460,6 +493,23 @@ socket.on("hand-toggled", (payload) => {
             vid.parentElement.appendChild(badge);
         }
         badge.style.display = payload.isRaised ? "block" : "none";
+
+        // Teacher Only: Show "Allow" button to unmute
+        if (ROLE === 'teacher') {
+            let allowBtn = vid.parentElement.querySelector(".allow-btn");
+            if (!allowBtn) {
+                allowBtn = document.createElement("button");
+                allowBtn.className = "allow-btn";
+                allowBtn.innerHTML = "Allow Mic";
+                allowBtn.onclick = () => {
+                    socket.emit("allow-unmute", { roomId: ROOM_ID, userId: payload.userId });
+                    allowBtn.style.display = "none";
+                    badge.style.display = "none";
+                };
+                vid.parentElement.appendChild(allowBtn);
+            }
+            allowBtn.style.display = payload.isRaised ? "block" : "none";
+        }
     }
 });
 
