@@ -47,6 +47,7 @@
             margin-bottom:20px;
         }
         /* ===== Page Loader ===== */
+    </style>
   </head>
   <body>
 
