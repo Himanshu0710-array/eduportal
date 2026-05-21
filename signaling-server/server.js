@@ -48,6 +48,18 @@ io.on("connection", socket => {
         console.log(`Teacher muted all students in ${roomId}`);
     });
 
+    // Handle Chat Messages
+    socket.on("send-chat", (payload) => {
+        // payload = { roomId, userName, text, time }
+        socket.to(payload.roomId).emit("receive-chat", payload);
+    });
+
+    // Handle Raise Hand
+    socket.on("toggle-hand", (payload) => {
+        // payload = { roomId, userId, isRaised }
+        socket.to(payload.roomId).emit("hand-toggled", payload);
+    });
+
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
         io.emit("user-disconnected", socket.id);

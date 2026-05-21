@@ -391,3 +391,118 @@ if (location.protocol !== 'https:' && location.hostname !== 'localhost' && locat
     `;
     document.body.prepend(warningDiv);
 }
+
+// ----------------------------------------------------
+// NEW FEATURES: CHAT, RAISE HAND, CAMERA SWITCH
+// ----------------------------------------------------
+
+// Chat Logic
+function sendChat() {
+    const input = document.getElementById("chat-input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const payload = { roomId: ROOM_ID, userName: MY_NAME, text, time };
+    
+    // Emit to server
+    socket.emit("send-chat", payload);
+    
+    // Append locally
+    appendMessage(MY_NAME, text, time, true);
+    input.value = "";
+}
+
+socket.on("receive-chat", (payload) => {
+    appendMessage(payload.userName, payload.text, payload.time, false);
+});
+
+function appendMessage(sender, text, time, isSelf) {
+    const chatContainer = document.getElementById("chat-messages");
+    if (!chatContainer) return;
+
+    const msgDiv = document.createElement("div");
+    msgDiv.className = `chat-msg ${isSelf ? 'self' : 'other'}`;
+    
+    msgDiv.innerHTML = `
+        <span class="msg-sender">${sender} • ${time}</span>
+        <div>${text}</div>
+    `;
+    chatContainer.appendChild(msgDiv);
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
+}
+
+// Raise Hand Logic
+let isHandRaised = false;
+function toggleHand() {
+    isHandRaised = !isHandRaised;
+    const localHand = document.getElementById("local-hand");
+    if (localHand) localHand.style.display = isHandRaised ? "block" : "none";
+
+    const btn = document.getElementById("btn-hand");
+    if (btn) {
+        btn.classList.toggle("btn-warning", isHandRaised);
+        btn.classList.toggle("btn-secondary", !isHandRaised);
+    }
+
+    socket.emit("toggle-hand", { roomId: ROOM_ID, userId: socket.id, isRaised: isHandRaised });
+}
+
+socket.on("hand-toggled", (payload) => {
+    const vid = document.getElementById(payload.userId);
+    if (vid && vid.parentElement) {
+        // Find existing hand badge or create one
+        let badge = vid.parentElement.querySelector(".hand-badge");
+        if (!badge) {
+            badge = document.createElement("div");
+            badge.className = "hand-badge";
+            badge.innerHTML = "✋";
+            vid.parentElement.appendChild(badge);
+        }
+        badge.style.display = payload.isRaised ? "block" : "none";
+    }
+});
+
+// Mobile Camera Switch
+let currentFacingMode = "user"; // "user" (front) or "environment" (back)
+async function switchCamera() {
+    if (!localStream) return;
+
+    currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
+    console.log("Switching camera to:", currentFacingMode);
+
+    const videoTrack = localStream.getVideoTracks()[0];
+    if (videoTrack) videoTrack.stop(); // Stop current track
+
+    try {
+        const newStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: currentFacingMode, width: 480, height: 360, frameRate: 15 },
+            audio: false // keep existing audio track
+        });
+
+        const newVideoTrack = newStream.getVideoTracks()[0];
+        
+        // Update local video element
+        localStream.removeTrack(videoTrack);
+        localStream.addTrack(newVideoTrack);
+        document.getElementById("localVideo").srcObject = localStream;
+
+        // Replace track on ALL active peer connections (seamless switch!)
+        for (let peerId in peers) {
+            const sender = peers[peerId].getSenders().find(s => s.track && s.track.kind === 'video');
+            if (sender) {
+                sender.replaceTrack(newVideoTrack);
+            }
+        }
+        
+        // Check if user had video disabled, ensure it matches state
+        const btnVideo = document.getElementById("btn-video");
+        if (btnVideo && btnVideo.classList.contains("btn-danger")) {
+            newVideoTrack.enabled = false;
+        }
+
+    } catch (err) {
+        console.error("Error switching camera:", err);
+        alert("Could not switch camera. Check permissions or device capabilities.");
+    }
+}
