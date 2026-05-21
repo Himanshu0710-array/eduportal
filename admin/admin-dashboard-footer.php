@@ -63,5 +63,44 @@
 })();
 </script>
 
+<!-- Global Table Scroll Fix -->
+<style>
+    .table-responsive {
+        max-height: 65vh;
+        overflow-y: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+    }
+    /* Sticky header for all tables inside table-responsive */
+    .table-responsive .table thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 2px -1px rgba(0,0,0,0.4);
+    }
+    .table-responsive .table-dark th {
+        background-color: #212529 !important;
+    }
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var tables = document.querySelectorAll('table.table');
+    tables.forEach(function(table) {
+        // If the table isn't already inside a table-responsive div, wrap it
+        if (!table.parentElement.classList.contains('table-responsive')) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'table-responsive';
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        } else {
+            // If it is, just ensure it has the max-height styling
+            table.parentElement.style.maxHeight = '65vh';
+            table.parentElement.style.overflowY = 'auto';
+        }
+    });
+});
+</script>
+
 </body>
 </html>
