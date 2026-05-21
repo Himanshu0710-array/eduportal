@@ -167,15 +167,21 @@ $roomId = $_GET['room'];
 </div>
 
 <div class="controls-bar">
-    <button id="btn-audio" class="btn-control btn-secondary">
+    <button id="btn-audio" class="btn-control btn-secondary" title="Toggle Mic">
         <i class="bi bi-mic-fill"></i>
     </button>
+
+    <?php if (isset($_GET['role']) && $_GET['role'] === 'teacher'): ?>
+    <button id="btn-mute-all" class="btn-control btn-danger" title="Mute All Students" onclick="if(confirm('Mute all students?')) { socket.emit('mute-all', ROOM_ID); }">
+        <i class="bi bi-mic-mute"></i>
+    </button>
+    <?php endif; ?>
     
-    <button class="btn-control btn-danger" onclick="leaveMeeting()">
+    <button class="btn-control btn-danger" onclick="leaveMeeting()" title="Leave Meeting">
         <i class="bi bi-telephone-x-fill"></i>
     </button>
 
-    <button id="btn-video" class="btn-control btn-secondary">
+    <button id="btn-video" class="btn-control btn-secondary" title="Toggle Camera">
         <i class="bi bi-camera-video-fill"></i>
     </button>
 </div>

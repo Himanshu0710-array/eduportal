@@ -172,7 +172,7 @@ socket.on("user-disconnected", userId => {
     // Remove video element
     const vid = document.getElementById(userId);
     if (vid) {
-        vid.parentElement.parentNode.remove(); // Remove container (fix parentElement reference)
+        vid.parentElement.remove(); // Safely remove just this user's video card
     }
 });
 
@@ -286,6 +286,24 @@ socket.on("ice-candidate", payload => {
 socket.on("meeting-ended", () => {
     alert("The meeting has been ended by the host.");
     redirectUser();
+});
+
+// 11. Handle Force Mute (Mute All Students)
+socket.on("force-mute", () => {
+    if (localStream) {
+        const track = localStream.getAudioTracks()[0];
+        if (track && track.enabled) {
+            track.enabled = false;
+            // Update the UI button
+            const btnAudio = document.getElementById("btn-audio");
+            if (btnAudio) {
+                btnAudio.innerHTML = '<i class="bi bi-mic-mute-fill"></i>';
+                btnAudio.classList.add("btn-danger");
+                btnAudio.classList.remove("btn-secondary");
+            }
+            alert("The teacher has muted all microphones.");
+        }
+    }
 });
 
 // Attach Room Control Listeners

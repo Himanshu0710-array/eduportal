@@ -42,6 +42,12 @@ io.on("connection", socket => {
         console.log(`Meeting ${roomId} ended by host`);
     });
 
+    // Handle Mute All Students (Teacher only)
+    socket.on("mute-all", (roomId) => {
+        socket.to(roomId).emit("force-mute");
+        console.log(`Teacher muted all students in ${roomId}`);
+    });
+
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
         io.emit("user-disconnected", socket.id);
