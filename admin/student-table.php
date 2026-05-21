@@ -61,13 +61,12 @@ $stmt->execute();
                      <td><?php echo textSafe($result['studentName']); ?></td>
                      <td>
                          <?php  
-                            $result['courseId']; 
                             $courseId=$result['courseId'];
                             $stmt2=$conn->prepare("SELECT * FROM tblcourse where courseId=:courseId");
                             $stmt2->bindParam(":courseId",$courseId);
                             $stmt2->execute();
                             $row=$stmt2->fetch();
-                            echo $row["courseName"];
+                            echo $row ? $row["courseName"] : "<span class='text-danger'>Unknown Course</span>";
                          ?>
                         </td>
                      <td><?php echo textSafe($result['studentEmail']); ?></td>
@@ -78,7 +77,7 @@ $stmt->execute();
                             $sessionstmt->bindParam(":sessionId",$sessionId);
                             $sessionstmt->execute();
                             $session = $sessionstmt->fetch();
-                            echo $session['sessionName'];
+                            echo $session ? $session['sessionName'] : "<span class='text-danger'>Unknown Session</span>";
                         ?>
                     </td>
                     <td>

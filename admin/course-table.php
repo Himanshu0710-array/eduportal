@@ -92,7 +92,7 @@ $stmt->execute();
                             $sessionstmt->bindParam(":sessionId",$sessionId);
                             $sessionstmt->execute();
                             $sessions=$sessionstmt->fetch();
-                            echo $sessions["sessionName"];
+                            echo $sessions ? $sessions["sessionName"] : "<span class='text-danger'>Unknown Session</span>";
                         ?>
                     </td>
                     <td>
