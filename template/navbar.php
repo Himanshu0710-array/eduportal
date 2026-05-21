@@ -20,9 +20,8 @@
     .navbar {
         background-color: #ffffff !important;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-        padding: 0 0 !important; /* Remove vertical padding to let flexbox center items in exactly 60px */
-        height: 60px !important;
-        max-height: 60px !important;
+        padding: 0 0 !important; 
+        min-height: 60px !important;
         border-bottom: 1px solid #eee !important;
     }
     

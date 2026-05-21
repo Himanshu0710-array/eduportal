@@ -104,6 +104,34 @@
         background-color: #f8fafc;
         height: 100%;
     }
+    
+    /* Mobile Responsive Overrides */
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 80px 15px 40px;
+            margin-bottom: 40px;
+        }
+        .hero-title {
+            font-size: 2.2rem;
+        }
+        .hero-subtitle {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.75rem;
+        }
+        .about-section {
+            padding: 2rem 1.5rem;
+            margin-bottom: 40px;
+        }
+        .feature-box {
+            padding: 1.2rem;
+        }
+        .course-card img {
+            height: 200px;
+        }
+    }
 </style>
 
 <div class="content-wrapper">
@@ -111,8 +139,8 @@
         <div class="container" data-aos="fade-up">
             <h1 class="hero-title">Welcome to EduPulse</h1>
             <p class="hero-subtitle">Quality education and innovative programs to shape your future.</p>
-            <div class="mt-4">
-                <a href="/student/register.php" class="btn btn-primary px-4 py-2 me-2">Apply Now</a>
+            <div class="mt-4 d-flex flex-column flex-md-row justify-content-center gap-3">
+                <a href="/student/register.php" class="btn btn-primary px-4 py-2">Apply Now</a>
                 <a href="#courses" class="btn btn-outline-secondary px-4 py-2">View Courses</a>
             </div>
         </div>

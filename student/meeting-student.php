@@ -295,13 +295,7 @@ a { text-decoration: none !important; }
     </div>
 </div>
 
-<!-- CHATBOT -->
-<a href="../hayatWorking/index.php" class="chatbot-btn" title="Chat with AI Assistant">
-    <div class="chatbot-icon-wrapper">
-        <i class="bi bi-chat-dots-fill"></i>
-        <span class="chatbot-badge">AI</span>
-    </div>
-</a>
+
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -323,32 +317,7 @@ updateClock();
 </script>
 
 <style>
-/* CHATBOT */
-.chatbot-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    color: white;
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    box-shadow: 0 8px 15px rgba(99, 102, 241, 0.4);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.chatbot-badge {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: #22c55e;
-    color: white;
-    font-size: 10px;
-    border-radius: 50%;
-    padding: 2px 5px;
-}
+
 </style>
 </body>
 </html>
