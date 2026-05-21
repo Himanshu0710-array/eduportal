@@ -17,11 +17,13 @@ $stmt = $conn->prepare("
         a.studentId,
         s.studentName,
         c.courseName,
+        sub.subjectName,
         a.dateOfAttendence,
         a.attendence
     FROM tblattendence a
     LEFT JOIN tblstudent s ON a.studentId = s.studentId
     LEFT JOIN tblcourse c ON a.courseId = c.courseId
+    LEFT JOIN tblsubject sub ON a.subjectId = sub.subjectId
     WHERE 
         a.dateOfAttendence = :dateOfAttendence AND
         a.courseId = :courseId AND
@@ -46,7 +48,7 @@ header('Content-Disposition: attachment; filename="' . $filename . '"');
 $output = fopen('php://output', 'w');
 
 // CSV Header Row
-fputcsv($output, ['Student ID', 'Student Name', 'Course', 'Date', 'Attendance']);
+fputcsv($output, ['Student ID', 'Student Name', 'Course', 'Subject', 'Date', 'Attendance']);
 
 // CSV Data Rows
 foreach ($rows as $row) {
@@ -54,7 +56,8 @@ foreach ($rows as $row) {
         $row['studentId'],
         $row['studentName'],
         $row['courseName'],
-        date('d/m/Y', strtotime($row['dateOfAttendence'])),
+        $row['subjectName'],
+        $row['dateOfAttendence'], // Use raw date (e.g., 2026-05-21) to prevent Excel formatting issues
         ($row['attendence'] == 1) ? 'Present' : 'Absent'
     ]);
 }

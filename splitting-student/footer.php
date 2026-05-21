@@ -44,12 +44,18 @@
 
 <script>
 (function() {
-    // Hide the loader once page is fully loaded
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            document.getElementById('page-loader').classList.add('hidden');
-        }, 300);
-    });
+    var hideLoader = function() {
+        var loader = document.getElementById('page-loader');
+        if (loader) {
+            setTimeout(function() { loader.classList.add('hidden'); }, 300);
+        }
+    };
+    if (document.readyState === 'complete') {
+        hideLoader();
+    } else {
+        window.addEventListener('load', hideLoader);
+    }
+    
     // Show loader only for real page navigations
     document.addEventListener('click', function(e) {
         var target = e.target.closest('a');
@@ -67,7 +73,8 @@
         if (rawHref.includes('download')) return;
         if (target.target === '_blank') return;
 
-        document.getElementById('page-loader').classList.remove('hidden');
+        var loader = document.getElementById('page-loader');
+        if (loader) loader.classList.remove('hidden');
     });
 })();
 </script>
