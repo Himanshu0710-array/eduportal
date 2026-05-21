@@ -57,7 +57,7 @@ foreach ($rows as $row) {
         $row['studentName'],
         $row['courseName'],
         $row['subjectName'],
-        $row['dateOfAttendence'], // Use raw date (e.g., 2026-05-21) to prevent Excel formatting issues
+        ' ' . $row['dateOfAttendence'], // Prepend space to force Excel to treat it as string
         ($row['attendence'] == 1) ? 'Present' : 'Absent'
     ]);
 }
