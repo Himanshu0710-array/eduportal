@@ -217,18 +217,28 @@
 
 <script>
 (function() {
-    // Hide the loader once DOM is ready
+    // Hide the loader once page is fully loaded
     window.addEventListener('load', function() {
         setTimeout(function() {
             document.getElementById('page-loader').classList.add('hidden');
         }, 300);
     });
-    // Show loader on navigation
+    // Show loader only for real page navigations
     document.addEventListener('click', function(e) {
         var target = e.target.closest('a');
-        if (target && target.href && !target.href.startsWith('#') && !target.href.startsWith('javascript') && target.target !== '_blank') {
-            document.getElementById('page-loader').classList.remove('hidden');
-        }
+        if (!target) return;
+
+        var rawHref = target.getAttribute('href');
+
+        // Skip if: no href, just "#", starts with "#", javascript:, has data-bs-toggle (dropdown/modal), or opens in new tab
+        if (!rawHref) return;
+        if (rawHref === '#' || rawHref.startsWith('#')) return;
+        if (rawHref.startsWith('javascript')) return;
+        if (target.hasAttribute('data-bs-toggle')) return;
+        if (target.hasAttribute('data-bs-dismiss')) return;
+        if (target.target === '_blank') return;
+
+        document.getElementById('page-loader').classList.remove('hidden');
     });
 })();
 </script>

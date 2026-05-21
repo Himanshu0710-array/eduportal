@@ -254,12 +254,15 @@ $(document).ready(function(){
 </script>
 <script>
 $(document).ready(function() {
-    // Page transition loader
-    $("a:not([href^='#'])").on('click', function() {
-        var href = $(this).attr('href');
-        if (href && href !== '' && !href.startsWith('javascript')) {
-            $('#page-loader').removeClass('hidden');
-        }
+    // Page transition loader - skip dropdowns, modals, and hash-only links
+    $("a").on('click', function() {
+        var rawHref = $(this).attr('href');
+        if (!rawHref) return;
+        if (rawHref === '#' || rawHref.startsWith('#')) return;
+        if (rawHref.startsWith('javascript')) return;
+        if ($(this).attr('data-bs-toggle')) return;
+        if ($(this).attr('target') === '_blank') return;
+        $('#page-loader').removeClass('hidden');
     });
     $(window).on('load', function() {
         setTimeout(function() { $('#page-loader').addClass('hidden'); }, 200);
