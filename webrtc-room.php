@@ -29,6 +29,7 @@ $role = $_GET['role'] ?? 'student'; // default
             margin: 0;
             padding: 0;
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden; /* Prevent body scroll */
@@ -378,7 +379,7 @@ $role = $_GET['role'] ?? 'student'; // default
     <div class="chat-panel" id="chat-panel">
         <div class="chat-header">
             <span>Live Chat</span>
-            <button class="btn-close btn-close-white d-md-none" onclick="toggleChat()"></button>
+            <button class="btn-close btn-close-white" onclick="toggleChat()"></button>
         </div>
         <div class="chat-messages" id="chat-messages">
             <div class="text-center text-muted small mt-2">Welcome to the chat!</div>
@@ -392,8 +393,8 @@ $role = $_GET['role'] ?? 'student'; // default
 
 <!-- FLOATING CONTROLS -->
 <div class="controls-bar" id="controls-bar" style="display: none;">
-    <!-- Chat Toggle (First on Mobile) -->
-    <button id="btn-chat-toggle" class="btn-control btn-primary d-md-none" title="Toggle Chat" onclick="toggleChat()">
+    <!-- Chat Toggle -->
+    <button id="btn-chat-toggle" class="btn-control btn-primary" title="Toggle Chat" onclick="toggleChat()">
         <i class="bi bi-chat-dots-fill"></i>
     </button>
 
@@ -405,8 +406,8 @@ $role = $_GET['role'] ?? 'student'; // default
         <i class="bi bi-camera-video-fill"></i>
     </button>
     
-    <!-- Camera Switch (Mobile) -->
-    <button id="btn-switch-cam" class="btn-control btn-secondary d-md-none" title="Flip Camera" onclick="switchCamera()">
+    <!-- Camera Switch -->
+    <button id="btn-switch-cam" class="btn-control btn-secondary" title="Flip Camera" onclick="switchCamera()">
         <i class="bi bi-arrow-repeat"></i>
     </button>
 
