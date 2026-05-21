@@ -1,7 +1,7 @@
 <?php
 session_start();
-include "../template/top.php";
-include "../template/navbar.php";
+// Removed duplicate top.php include
+// Removed navbar include from here
 include "../database-connect.php";
 
 // Fetch courses
@@ -37,8 +37,9 @@ function getSessionValue($key) {
       background: linear-gradient(135deg, #e0eafc, #cfdef3);
       font-family: 'Poppins', sans-serif;
     }
-    .container {
-      padding-top: 80px;
+    .form-container {
+      padding-top: 100px;
+      padding-bottom: 60px;
     }
     .register-card {
       background: #fff;
@@ -85,7 +86,8 @@ function getSessionValue($key) {
 </head>
 
 <body>
-<div class="container">
+<?php include "../template/navbar.php"; ?>
+<div class="container form-container">
   <div class="register-card">
     <div class="register-header text-center">
       <h2>STUDENT REGISTER</h2>

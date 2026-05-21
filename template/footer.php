@@ -1,6 +1,6 @@
 <style>
     .custom-footer {
-        background-color: #1e1b4b;
+        background-color: #0b2447; /* Deep blue background */
         color: #e2e8f0;
         padding: 60px 0 30px;
         margin-top: 50px;
@@ -26,7 +26,7 @@
     }
     
     .footer-desc {
-        color: #94a3b8;
+        color: #93c5fd;
         font-size: 0.95rem;
         line-height: 1.6;
         margin-bottom: 30px;
@@ -53,10 +53,10 @@
     }
     
     .social-icon:hover {
-        background-color: #4f46e5;
+        background-color: #2563eb;
         color: #ffffff;
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
     }
     
     .footer-heading {
@@ -75,7 +75,7 @@
         bottom: 0;
         width: 40px;
         height: 3px;
-        background-color: #4f46e5;
+        background-color: #2563eb;
         border-radius: 2px;
     }
     
@@ -120,7 +120,7 @@
         <div class="row g-5">
             <div class="col-lg-4 col-md-6">
                 <div class="footer-brand">
-                    <img src="images/logo1.png" alt="EduPulse">
+                    <img src="/himanshu/images/logo1.png" alt="EduPulse">
                     <h3 class="footer-brand-text">EduPulse</h3>
                 </div>
                 <p class="footer-desc">Empowering minds and shaping futures through innovative education, cutting-edge programs, and a commitment to holistic development.</p>
@@ -140,10 +140,10 @@
             <div class="col-lg-2 col-md-6 ms-lg-auto">
                 <h4 class="footer-heading">Quick Links</h4>
                 <ul class="footer-links">
-                    <li><a href="/index.php">Home</a></li>
+                    <li><a href="/himanshu/index.php">Home</a></li>
                     <li><a href="#courses">Programs</a></li>
-                    <li><a href="/student/register.php">Admission</a></li>
-                    <li><a href="/student/login-student.php">Student Portal</a></li>
+                    <li><a href="/himanshu/student/register.php">Admission</a></li>
+                    <li><a href="/himanshu/student/login-student.php">Student Portal</a></li>
                 </ul>
             </div>
             

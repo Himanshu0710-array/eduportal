@@ -1,4 +1,4 @@
-<link rel="icon" type="image/png" href="/images/1logo.png">
+<link rel="icon" type="image/png" href="/himanshu/images/1logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -8,8 +8,8 @@
 
 <style>
     :root {
-        --primary-color: #4f46e5;
-        --bg-color: #f8fafc;
+        --primary-color: #2563eb; /* Bright blue */
+        --bg-color: #f4f7fc; /* Very light blueish gray */
     }
     
     body {
@@ -18,10 +18,12 @@
     }
 
     .navbar {
-        background: rgba(255, 255, 255, 0.98);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        padding: 8px 0;
-        border-bottom: 1px solid #eee;
+        background-color: #ffffff !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+        padding: 0 0 !important; /* Remove vertical padding to let flexbox center items in exactly 60px */
+        height: 60px !important;
+        max-height: 60px !important;
+        border-bottom: 1px solid #eee !important;
     }
     
     .navbar .nav-link {
@@ -36,34 +38,34 @@
     }
     
     .logo img {
-        height: 45px;
+        height: 45px !important;
         width: auto;
     }
 </style>
 
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
-        <a class="navbar-brand logo" href="/index.php"><img src="images/logo1.png" alt="EduPulse Logo"></a>
+        <a class="navbar-brand logo" href="/himanshu/index.php"><img src="/himanshu/images/logo1.png" alt="EduPulse Logo"></a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <ul class="navbar-nav me-auto ms-4">
-                <li class="nav-item"><a class="nav-link" href="/index.php">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/student/register.php">Admission</a></li>
-                <li class="nav-item"><a class="nav-link" href="/student/login-student.php">Fees</a></li>
+                <li class="nav-item"><a class="nav-link" href="/himanshu/index.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/himanshu/student/register.php">Admission</a></li>
+                <li class="nav-item"><a class="nav-link" href="/himanshu/student/login-student.php">Fees</a></li>
             </ul>
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item me-2">
-                    <a class="nav-link" href="/student/register.php">Register</a>
+                    <a class="nav-link" href="/himanshu/student/register.php">Register</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="btn btn-primary px-3 py-1 rounded dropdown-toggle" style="background-color: var(--primary-color); border: none;" href="#" role="button" data-bs-toggle="dropdown">
                         Login
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-                        <li><a class="dropdown-item py-2" href="/student/login-student.php">Student</a></li>
-                        <li><a class="dropdown-item py-2" href="/teacher/login-teacher.php">Teacher</a></li>
+                        <li><a class="dropdown-item py-2" href="/himanshu/student/login-student.php">Student</a></li>
+                        <li><a class="dropdown-item py-2" href="/himanshu/teacher/login-teacher.php">Teacher</a></li>
                     </ul>
                 </li>
             </ul>

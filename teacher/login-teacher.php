@@ -1,5 +1,5 @@
 <?php
-include "../template/navbar.php";
+// Removed navbar include from here
 ?>
 
 <!doctype html>
@@ -85,7 +85,8 @@ include "../template/navbar.php";
     </style>
   </head>
   <body>
-    <main>
+    <?php include "../template/navbar.php"; ?>
+    <main style="padding-top: 180px; padding-bottom: 80px;">
         <div class="login-card">
             <h2>Teacher Login</h2>
             <form action="login-teacher-process.php" method="post">
@@ -122,10 +123,7 @@ include "../template/navbar.php";
             </form>
         </div>
     </main>
-    <footer>
-        © 2025 EduPulse. All rights reserved.
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <?php include "../template/footer.php"; ?>
   </body>
 </html>
 

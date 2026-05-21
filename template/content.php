@@ -1,6 +1,6 @@
 <style>
     .hero-section {
-        background-color: #f1f5f9;
+        background-color: #f0f4f8;
         padding: 120px 0 60px;
         margin-bottom: 60px;
     }
@@ -8,25 +8,25 @@
     .hero-title {
         font-size: 3rem;
         font-weight: 700;
-        color: #1e293b;
+        color: #0f172a;
         margin-bottom: 1rem;
     }
     
     .hero-subtitle {
         font-size: 1.2rem;
-        color: #475569;
+        color: #3b82f6;
         margin-bottom: 2rem;
     }
     
     .section-title {
         font-size: 2rem;
         font-weight: 600;
-        color: #1e293b;
+        color: #0f172a;
         margin-bottom: 2rem;
     }
     
     .course-card {
-        border: 1px solid #e2e8f0;
+        border: 1px solid #dbeafe;
         border-radius: 8px;
         background: #ffffff;
         transition: transform 0.2s ease;
@@ -37,7 +37,7 @@
     
     .course-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.1);
     }
     
     .course-card img {
@@ -56,19 +56,19 @@
     .course-card .card-title {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #1e293b;
+        color: #1e3a8a;
         margin-bottom: 0.75rem;
     }
     
     .course-card .card-text {
-        color: #64748b;
+        color: #475569;
         font-size: 0.95rem;
         flex-grow: 1;
     }
     
     .enroll-btn {
-        background-color: #e2e8f0;
-        color: #334155;
+        background-color: #eff6ff;
+        color: #1d4ed8;
         font-weight: 500;
         padding: 8px 16px;
         border-radius: 6px;
@@ -79,7 +79,7 @@
     }
     
     .enroll-btn:hover {
-        background-color: #4f46e5;
+        background-color: #2563eb;
         color: #ffffff;
     }
     
@@ -112,7 +112,7 @@
             <h1 class="hero-title">Welcome to EduPulse</h1>
             <p class="hero-subtitle">Quality education and innovative programs to shape your future.</p>
             <div class="mt-4">
-                <a href="student/register.php" class="btn btn-primary px-4 py-2 me-2">Apply Now</a>
+                <a href="/himanshu/student/register.php" class="btn btn-primary px-4 py-2 me-2">Apply Now</a>
                 <a href="#courses" class="btn btn-outline-secondary px-4 py-2">View Courses</a>
             </div>
         </div>
@@ -126,41 +126,41 @@
         <div class="row g-4 mb-5">
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
+                    <img src="/himanshu/images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
                     <div class="card-body">
                         <h5 class="card-title">B.Tech</h5>
                         <p class="card-text">Cutting-edge engineering programs to shape future innovators.</p>
-                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>    
             </div>
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="images/course-2.png" class="card-img-top w-100" alt="BCA">
+                    <img src="/himanshu/images/course-2.png" class="card-img-top w-100" alt="BCA">
                     <div class="card-body">
                         <h5 class="card-title">BCA</h5>
                         <p class="card-text">Industry-focused computer application programs building future IT professionals.</p>
-                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="images/course-3.png" class="card-img-top w-100" alt="BBA">
+                    <img src="/himanshu/images/course-3.png" class="card-img-top w-100" alt="BBA">
                     <div class="card-body">
                         <h5 class="card-title">BBA</h5>
                         <p class="card-text">Comprehensive business administration programs nurturing global business leaders.</p>
-                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>    
             </div>
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="images/course-4.jpg" class="card-img-top w-100" alt="LLB">
+                    <img src="/himanshu/images/course-4.jpg" class="card-img-top w-100" alt="LLB">
                     <div class="card-body">
                         <h5 class="card-title">LLB</h5>
                         <p class="card-text">Rigorous legal studies programs shaping skilled and proficient legal professionals.</p>
-                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>
             </div>

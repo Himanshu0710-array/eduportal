@@ -1,6 +1,5 @@
 <?php
-include "../template/navbar.php";
-
+// Removed navbar include from here
 ?>
 
 <!doctype html>
@@ -33,7 +32,7 @@ include "../template/navbar.php";
             box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 420px;
-            margin: 60px 0px 0px 0px;
+            margin: 0;
         }
         .login-card h2 {
             text-align: center;
@@ -86,7 +85,8 @@ include "../template/navbar.php";
     </style>
   </head>
   <body>
-    <main>
+    <?php include "../template/navbar.php"; ?>
+    <main style="padding-top: 180px; padding-bottom: 80px;">
         <div class="login-card">
             <h2>Student Login</h2>
             <form action="login-student-process.php" method="post">
