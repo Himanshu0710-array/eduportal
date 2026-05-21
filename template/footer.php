@@ -236,6 +236,8 @@
         if (rawHref.startsWith('javascript')) return;
         if (target.hasAttribute('data-bs-toggle')) return;
         if (target.hasAttribute('data-bs-dismiss')) return;
+        if (target.hasAttribute('download')) return;
+        if (rawHref.includes('download')) return;
         if (target.target === '_blank') return;
 
         document.getElementById('page-loader').classList.remove('hidden');

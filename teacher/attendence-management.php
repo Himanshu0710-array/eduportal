@@ -86,7 +86,7 @@
         </div>
         <div class="modal-body text-center py-4">
           <p class="mb-3" style="font-size: 1.05rem; color: #374151;">Attendance has been saved. Would you like to download a copy?</p>
-          <a id="downloadBtn" href="#" class="btn btn-success btn-lg me-2" style="border-radius: 10px;">
+          <a id="downloadBtn" href="#" download class="btn btn-success btn-lg me-2" style="border-radius: 10px;">
             <i class="bi bi-download me-1"></i> Download CSV
           </a>
         </div>
@@ -281,6 +281,8 @@ $(document).ready(function() {
         if (rawHref === '#' || rawHref.startsWith('#')) return;
         if (rawHref.startsWith('javascript')) return;
         if ($(this).attr('data-bs-toggle')) return;
+        if ($(this).attr('download') !== undefined) return;
+        if (rawHref.includes('download')) return;
         if ($(this).attr('target') === '_blank') return;
         $('#page-loader').removeClass('hidden');
     });

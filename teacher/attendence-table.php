@@ -240,6 +240,8 @@ $(document).ready(function() {
         if (rawHref === '#' || rawHref.startsWith('#')) return;
         if (rawHref.startsWith('javascript')) return;
         if ($(this).attr('data-bs-toggle')) return;
+        if ($(this).attr('download') !== undefined) return;
+        if (rawHref.includes('download')) return;
         if ($(this).attr('target') === '_blank') return;
         $('#page-loader').removeClass('hidden');
     });
@@ -302,7 +304,7 @@ $(document).ready(function() {
                     + '&academicYearId=' + encodeURIComponent(academicYearId)
                     + '&subjectId=' + encodeURIComponent(subjectId)
                     + '&sessionId=' + encodeURIComponent(sessionId);
-                $('#download-area').html('<a href="' + downloadUrl + '" class="btn btn-success btn-sm"><i class="bi bi-download me-1"></i> Download CSV</a>');
+                $('#download-area').html('<a href="' + downloadUrl + '" download class="btn btn-success btn-sm"><i class="bi bi-download me-1"></i> Download CSV</a>');
             },
             error: function() {
                 $('#ajax-spinner').hide();
