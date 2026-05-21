@@ -40,15 +40,49 @@
             width: 96%;
             margin:10px auto;
         }
-         .tbl-heading
+        .tbl-heading
         {
             text-align:center;
             border-bottom:2px solid black;
             margin-bottom:20px;
         }
+        /* ===== Page Loader ===== */
+        #page-loader {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.7);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            transition: opacity 0.4s ease;
+        }
+        #page-loader.hidden { opacity: 0; pointer-events: none; }
+        .loader-ring {
+            width: 56px; height: 56px;
+            border: 5px solid rgba(255,255,255,0.15);
+            border-top-color: #3b82f6;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .loader-text { color: #fff; font-size: 0.95rem; font-weight: 500; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        /* ===== AJAX Spinner ===== */
+        #ajax-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .spinner-border-blue { color: #3b82f6; }
     </style>
   </head>
   <body>
+  <!-- Page Loader -->
+  <div id="page-loader" class="hidden">
+      <div class="loader-ring"></div>
+      <span class="loader-text">Loading...</span>
+  </div>
     <div class="container">
         <div class="row main">
             <div class="col-md-1"></div>
@@ -159,8 +193,17 @@
                     <div class="mb-3">
                         <button type="button" class="btn btn-primary w-100" id="loadStudents">Load Students</button>
                     </div>
+                    <div class="mb-3" id="ajax-spinner">
+                        <div class="spinner-border spinner-border-blue" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Fetching students...</p>
+                    </div>
                     <div class="mb-3">
                         <h4 class="text-center mt-4">Student List</h4>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span id="download-area"></span>
+                        </div>
                         <table class="table  table-bordered text-center">
                             <thead class="table-dark">
                                 <tr>
@@ -190,6 +233,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
+    // Page transition loader: show on all link clicks
+    $("a:not([href^='#'])").on('click', function() {
+        var href = $(this).attr('href');
+        if (href && href !== '' && !href.startsWith('javascript')) {
+            $('#page-loader').removeClass('hidden');
+        }
+    });
+    // Hide loader when page is fully loaded
+    $(window).on('load', function() {
+        setTimeout(function() { $('#page-loader').addClass('hidden'); }, 200);
+    });
+
     $("#courseId, #academicYearId").change(function() {
         var courseId = $("#courseId").val();
         var academicYearId = $("#academicYearId").val();
@@ -207,8 +262,7 @@ $(document).ready(function() {
             });
         }
     });
-});
-    $(document).ready(function() {
+
     $("#loadStudents").click(function() {
         var dateOfAttendence = $("#dateOfAttendence").val();
         var courseId = $("#courseId").val();
@@ -216,11 +270,16 @@ $(document).ready(function() {
         var subjectId = $("#subjectId").val();
         var sessionId = $("#sessionId").val();
 
-        if (courseId == "-1" || academicYearId == "-1" || subjectId == "-1" || sessionId == "-1") 
-        {
+        if (courseId == "-1" || academicYearId == "-1" || subjectId == "-1" || sessionId == "-1") {
             alert("Please Fill All The Details");
             return;
         }
+
+        // Show spinner, hide old table
+        $('#ajax-spinner').show();
+        $('#studentTableBody').html('');
+        $('#download-area').html('');
+
         $.ajax({
             url: "fetch-student-table-attendence-table.php",
             type: "POST",
@@ -232,13 +291,23 @@ $(document).ready(function() {
                 sessionId: sessionId 
             },
             success: function(response) {
+                $('#ajax-spinner').hide();
                 $("#studentTableBody").html(response);
+                // Show download button after results load
+                var downloadUrl = 'download-attendance.php?dateOfAttendence=' + encodeURIComponent(dateOfAttendence)
+                    + '&courseId=' + encodeURIComponent(courseId)
+                    + '&academicYearId=' + encodeURIComponent(academicYearId)
+                    + '&subjectId=' + encodeURIComponent(subjectId)
+                    + '&sessionId=' + encodeURIComponent(sessionId);
+                $('#download-area').html('<a href="' + downloadUrl + '" class="btn btn-success btn-sm"><i class="bi bi-download me-1"></i> Download CSV</a>');
+            },
+            error: function() {
+                $('#ajax-spinner').hide();
+                $('#studentTableBody').html('<tr><td colspan="6" class="text-danger">Error loading data. Please try again.</td></tr>');
             }
         });
     });
 });
-
-
 </script>
 <?php
 // Clear only the form-related session variables, NOT the login session

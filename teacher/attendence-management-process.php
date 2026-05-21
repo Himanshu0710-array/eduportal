@@ -26,6 +26,15 @@ $_SESSION["academicYearId"]   = $academicYearId;
 $_SESSION["subjectId"]        = $subjectId;
 $_SESSION["sessionId"]        = $sessionId;
 
+// BUGFIX: ensure $studentId is always an array (single student sends a plain string)
+if (!is_array($studentId)) {
+    $studentId = ($studentId !== null && $studentId !== '') ? [$studentId] : [];
+}
+// Same for attendence, defensive
+if (!is_array($attendence)) {
+    $attendence = [];
+}
+
 
 if (strlen($dateOfAttendence)<=0) {
     header("location:attendence-management.php?err=1");
