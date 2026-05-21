@@ -24,7 +24,7 @@ $role = $_GET['role'] ?? 'student'; // default
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #0f172a, #1e293b, #0f172a);
             color: var(--text-main);
             margin: 0;
             padding: 0;
@@ -54,7 +54,8 @@ $role = $_GET['role'] ?? 'student'; // default
         }
         .chat-panel {
             width: 350px;
-            background: var(--card-bg);
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
             border-left: 1px solid rgba(255,255,255,0.1);
             display: flex;
             flex-direction: column;
@@ -122,8 +123,6 @@ $role = $_GET['role'] ?? 'student'; // default
             display: flex;
             flex-direction: column;
             gap: 10px;
-            /* Allow scrolling even if keyboard pushes up */
-            padding-bottom: 80px; 
         }
         .chat-msg {
             background: rgba(255,255,255,0.05);
@@ -152,11 +151,7 @@ $role = $_GET['role'] ?? 'student'; // default
             color: rgba(255,255,255,0.7);
         }
         .chat-input-area {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--card-bg);
+            background: rgba(30, 41, 59, 1);
             padding: 15px;
             border-top: 1px solid rgba(255,255,255,0.1);
             display: flex;
@@ -397,6 +392,11 @@ $role = $_GET['role'] ?? 'student'; // default
 
 <!-- FLOATING CONTROLS -->
 <div class="controls-bar" id="controls-bar" style="display: none;">
+    <!-- Chat Toggle (First on Mobile) -->
+    <button id="btn-chat-toggle" class="btn-control btn-primary d-md-none" title="Toggle Chat" onclick="toggleChat()">
+        <i class="bi bi-chat-dots-fill"></i>
+    </button>
+
     <!-- Audio / Video -->
     <button id="btn-audio" class="btn-control btn-secondary" title="Toggle Mic">
         <i class="bi bi-mic-fill"></i>
@@ -406,7 +406,7 @@ $role = $_GET['role'] ?? 'student'; // default
     </button>
     
     <!-- Camera Switch (Mobile) -->
-    <button id="btn-switch-cam" class="btn-control btn-secondary" title="Flip Camera" onclick="switchCamera()">
+    <button id="btn-switch-cam" class="btn-control btn-secondary d-md-none" title="Flip Camera" onclick="switchCamera()">
         <i class="bi bi-arrow-repeat"></i>
     </button>
 
@@ -425,11 +425,6 @@ $role = $_GET['role'] ?? 'student'; // default
     </button>
     <?php endif; ?>
     
-    <!-- Chat Toggle -->
-    <button id="btn-chat-toggle" class="btn-control btn-primary d-md-none" title="Toggle Chat" onclick="toggleChat()">
-        <i class="bi bi-chat-dots-fill"></i>
-    </button>
-
     <!-- Leave -->
     <button class="btn-control btn-danger" onclick="leaveMeeting()" title="Leave Meeting">
         <i class="bi bi-telephone-x-fill"></i>
