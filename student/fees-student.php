@@ -42,11 +42,15 @@ $stmt->bindParam(":sessionId", $sessionId);
 $stmt->execute();
 $courseFees = $stmt->fetch();
 
-// Calculate fees
+// Calculate fees — guard against missing records
+$courseFeeTotal  = isset($courseFees['totalFees'])    ? (float)$courseFees['totalFees']         : 0;
+$discountMoney   = isset($totalPaid['discountMoney'])  ? (float)$totalPaid['discountMoney']       : 0;
+$paidAmount      = isset($totalPaid['totalPaid'])      ? (float)$totalPaid['totalPaid']           : 0;
+
 function diff($x, $y) { return $x - $y; }
 
-$totalFees = diff($courseFees['totalFees'], $totalPaid["discountMoney"]);
-$dueFees = diff($totalFees, $totalPaid["totalPaid"]);
+$totalFees = diff($courseFeeTotal, $discountMoney);
+$dueFees   = diff($totalFees, $paidAmount);
 ?>
 
 <!doctype html>
@@ -189,13 +193,15 @@ $dueFees = diff($totalFees, $totalPaid["totalPaid"]);
         <div class="col-md-4">
             <div class="stat-card bg-blue">
                 <h5>Total Fees</h5>
-                <?php if($totalPaid['discountMoney'] <= 0) { ?>
-                    <p>₹<?php echo $courseFees['totalFees']; ?></p>
+                <?php if ($courseFeeTotal <= 0) { ?>
+                    <p>N/A</p>
+                <?php } elseif ($discountMoney <= 0) { ?>
+                    <p>₹<?php echo number_format($courseFeeTotal, 2); ?></p>
                 <?php } else { ?>
                     <p style="line-height: 1.6; font-size: 22px;">
-                        Total: ₹<?php echo $courseFees['totalFees']; ?><br>
-                        Discount: ₹<?php echo $totalPaid['discountMoney']; ?><br>
-                        Payable: ₹<?php echo $totalFees; ?>
+                        Total: ₹<?php echo number_format($courseFeeTotal, 2); ?><br>
+                        Discount: ₹<?php echo number_format($discountMoney, 2); ?><br>
+                        Payable: ₹<?php echo number_format($totalFees, 2); ?>
                     </p>
                 <?php } ?>
             </div>
@@ -205,21 +211,25 @@ $dueFees = diff($totalFees, $totalPaid["totalPaid"]);
         <div class="col-md-4">
             <div class="stat-card bg-green">
                 <h5>Paid Fees</h5>
-                <p>₹<?php echo $totalPaid["totalPaid"] ?? 0; ?></p>
+                <p>₹<?php echo number_format($paidAmount, 2); ?></p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="stat-card bg-pink">
                 <h5>Due Fees</h5>
-                <p>₹<?php echo $dueFees; ?></p>
+                <p>₹<?php echo number_format($dueFees, 2); ?></p>
             </div>
         </div>
     </div>
 
-    <?php if($dueFees > 0) { ?>
+    <?php if($dueFees > 0 && !empty($courseFees['dueDate'])) { ?>
     <div class="alert alert-warning text-center mt-4">
         <strong>Note:</strong> Your fee due date is <strong><?php echo date("d/m/Y", strtotime($courseFees['dueDate'])); ?></strong>
+    </div>
+    <?php } elseif ($courseFeeTotal <= 0) { ?>
+    <div class="alert alert-info text-center mt-4">
+        <strong>Info:</strong> No fee structure has been assigned to your course yet. Please contact administration.
     </div>
     <?php } ?>
 

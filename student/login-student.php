@@ -127,8 +127,12 @@
             </form>
         </div>
     </main>
-    <?php
-        include "../template/footer.php";
-    ?>
+    <?php include "../template/footer.php"; ?>
+    <script>
+    // Show loader when login form is submitted
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('page-loader').classList.remove('hidden');
+    });
+    </script>
     
 
