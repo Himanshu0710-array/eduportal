@@ -112,7 +112,7 @@
             <h1 class="hero-title">Welcome to EduPulse</h1>
             <p class="hero-subtitle">Quality education and innovative programs to shape your future.</p>
             <div class="mt-4">
-                <a href="/himanshu/student/register.php" class="btn btn-primary px-4 py-2 me-2">Apply Now</a>
+                <a href="/student/register.php" class="btn btn-primary px-4 py-2 me-2">Apply Now</a>
                 <a href="#courses" class="btn btn-outline-secondary px-4 py-2">View Courses</a>
             </div>
         </div>
@@ -126,7 +126,7 @@
         <div class="row g-4 mb-5">
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="/himanshu/images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
+                    <img src="/images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
                     <div class="card-body">
                         <h5 class="card-title">B.Tech</h5>
                         <p class="card-text">Cutting-edge engineering programs to shape future innovators.</p>

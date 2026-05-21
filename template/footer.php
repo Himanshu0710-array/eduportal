@@ -120,7 +120,7 @@
         <div class="row g-5">
             <div class="col-lg-4 col-md-6">
                 <div class="footer-brand">
-                    <img src="/himanshu/images/logo1.png" alt="EduPulse">
+                    <img src="/images/logo1.png" alt="EduPulse">
                     <h3 class="footer-brand-text">EduPulse</h3>
                 </div>
                 <p class="footer-desc">Empowering minds and shaping futures through innovative education, cutting-edge programs, and a commitment to holistic development.</p>
@@ -140,10 +140,10 @@
             <div class="col-lg-2 col-md-6 ms-lg-auto">
                 <h4 class="footer-heading">Quick Links</h4>
                 <ul class="footer-links">
-                    <li><a href="/himanshu/index.php">Home</a></li>
+                    <li><a href="/index.php">Home</a></li>
                     <li><a href="#courses">Programs</a></li>
-                    <li><a href="/himanshu/student/register.php">Admission</a></li>
-                    <li><a href="/himanshu/student/login-student.php">Student Portal</a></li>
+                    <li><a href="/student/register.php">Admission</a></li>
+                    <li><a href="/student/login-student.php">Student Portal</a></li>
                 </ul>
             </div>
             
