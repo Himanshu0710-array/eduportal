@@ -4,8 +4,8 @@ FROM php:8.2-apache
 RUN a2enmod rewrite
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
 
-# Install PDO MySQL extension and MariaDB server
-RUN apt-get update && apt-get install -y mariadb-server && \
+# Install PDO MySQL extension, MariaDB server, and ca-certificates for TiDB SSL
+RUN apt-get update && apt-get install -y mariadb-server ca-certificates && \
     docker-php-ext-install pdo pdo_mysql mysqli
 
 # Set lower_case_table_names=1 BEFORE MariaDB initializes its data directory.
