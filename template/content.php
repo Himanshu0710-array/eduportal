@@ -1,83 +1,214 @@
-<div class="content-wrapper mt-5 pt-4">
-    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active" data-bs-interval="10000">
-                <img src="images/banner-img.jpg" class="d-block w-100">
-            </div>
-            <div class="carousel-item" data-bs-interval="10000">
-                <img src="images/banner-img2.jpg" class="d-block w-100">
+<style>
+    .hero-section {
+        background-color: #f1f5f9;
+        padding: 120px 0 60px;
+        margin-bottom: 60px;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #475569;
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 2rem;
+    }
+    
+    .course-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background: #ffffff;
+        transition: transform 0.2s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    }
+    
+    .course-card img {
+        height: 180px;
+        object-fit: cover;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+    
+    .course-card .card-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .course-card .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 0.75rem;
+    }
+    
+    .course-card .card-text {
+        color: #64748b;
+        font-size: 0.95rem;
+        flex-grow: 1;
+    }
+    
+    .enroll-btn {
+        background-color: #e2e8f0;
+        color: #334155;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        margin-top: 1rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .enroll-btn:hover {
+        background-color: #4f46e5;
+        color: #ffffff;
+    }
+    
+    .about-section {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 3rem 2rem;
+        margin-bottom: 60px;
+    }
+    
+    .about-text {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #475569;
+    }
+    
+    .feature-box {
+        padding: 1.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        background-color: #f8fafc;
+        height: 100%;
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="hero-section text-center">
+        <div class="container" data-aos="fade-up">
+            <h1 class="hero-title">Welcome to EduPulse</h1>
+            <p class="hero-subtitle">Quality education and innovative programs to shape your future.</p>
+            <div class="mt-4">
+                <a href="student/register.php" class="btn btn-primary px-4 py-2 me-2">Apply Now</a>
+                <a href="#courses" class="btn btn-outline-secondary px-4 py-2">View Courses</a>
             </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
     </div>
 
-    <div class="container-fluid">
-        <div class="heading text-center my-5" data-aos="fade-up">
-            <h2>COURSES WE OFFER</h2>
+    <div class="container" id="courses">
+        <div class="text-center" data-aos="fade-up">
+            <h2 class="section-title">Programs We Offer</h2>
         </div>
-        <div class="row g-4">
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="card courses">
-                    <img src="images/course-1.webp" class="card-img-top">
+        
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="course-card">
+                    <img src="images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
                     <div class="card-body">
-                        <h5 class="card-title">B TECH.</h5>
-                        <p class="card-text">Offering cutting-edge B.Tech programs to shape future engineers and innovators</p>
-                        <a href="student/register.php" class="btn btn-primary">Enroll Now</a>
+                        <h5 class="card-title">B.Tech</h5>
+                        <p class="card-text">Cutting-edge engineering programs to shape future innovators.</p>
+                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>    
             </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="card courses">
-                    <img src="images/course-2.png" class="card-img-top">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="course-card">
+                    <img src="images/course-2.png" class="card-img-top w-100" alt="BCA">
                     <div class="card-body">
                         <h5 class="card-title">BCA</h5>
-                        <p class="card-text">Offering industry-focused BCA programs to build future IT professionals</p>
-                        <a href="student/register.php" class="btn btn-primary">Enroll Now</a>
+                        <p class="card-text">Industry-focused computer application programs building future IT professionals.</p>
+                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="card courses">
-                    <img src="images/course-3.png" class="card-img-top">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="course-card">
+                    <img src="images/course-3.png" class="card-img-top w-100" alt="BBA">
                     <div class="card-body">
                         <h5 class="card-title">BBA</h5>
-                        <p class="card-text">Offering comprehensive BBA programs to nurture future business leaders</p>
-                        <a href="student/register.php" class="btn btn-primary">Enroll Now</a>
+                        <p class="card-text">Comprehensive business administration programs nurturing global business leaders.</p>
+                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>    
             </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-                <div class="card courses">
-                    <img src="images/course-4.jpg" class="card-img-top">
+            <div class="col-lg-3 col-md-6" data-aos="fade-up">
+                <div class="course-card">
+                    <img src="images/course-4.jpg" class="card-img-top w-100" alt="LLB">
                     <div class="card-body">
                         <h5 class="card-title">LLB</h5>
-                        <p class="card-text">Offering rigorous LLB programs to shape skilled and proficient legal professionals</p>
-                        <a href="student/register.php" class="btn btn-primary">Enroll Now</a>
+                        <p class="card-text">Rigorous legal studies programs shaping skilled and proficient legal professionals.</p>
+                        <a href="student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="heading text-center my-5" data-aos="fade-up">
-            <h2>ABOUT OUR INSTITUTE</h2>
+        <div class="text-center mt-5" data-aos="fade-up">
+            <h2 class="section-title">About Our Institute</h2>
         </div>
-        <div class="about container-fluid" data-aos="fade-up">
-            <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8 about-p">
-                    <p>
-                        At this esteemed institution, the focus is on equipping the next generation with the skills and knowledge they need to thrive in an ever-changing world. With a forward-thinking approach, the university emphasizes upskilling young minds, providing them with a strong foundation in both academic learning and practical expertise. By offering a diverse range of programs designed to foster innovation, critical thinking, and leadership, the university ensures that students are well-prepared for the challenges of tomorrow. The emphasis on cutting-edge technologies, hands-on learning experiences, and industry collaborations ensures that graduates emerge not only as knowledgeable professionals but as adaptable individuals ready to contribute meaningfully to society. The institution’s commitment to continuous development ensures that students are not just recipients of information but active participants in shaping their own future. By nurturing curiosity, creativity, and problem-solving abilities, this institution plays a pivotal role in shaping the future of children, ensuring they are equipped to meet the demands of a rapidly evolving world. Furthermore, the strong focus on holistic development helps to build resilience, ethical values, and a sense of responsibility, creating well-rounded individuals who are prepared to tackle complex global challenges. Through these initiatives, the university continues to empower young minds, unlocking their full potential and inspiring them to lead with confidence and purpose.
+        
+        <div class="about-section" data-aos="fade-up">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <h3 class="fw-bold mb-3 fs-4 text-dark">Empowering the Next Generation</h3>
+                    <p class="about-text">
+                        At this esteemed institution, the focus is on equipping the next generation with the skills and knowledge they need to thrive in an ever-changing world. With a forward-thinking approach, we emphasize upskilling young minds, providing a strong foundation in both academic learning and practical expertise.
                     </p>
-                    <p>
-                        This university is dedicated to shaping the future of children by providing them with a transformative educational experience that emphasizes both academic excellence and practical skills. With a vision to prepare students for the rapidly evolving job market, the institution offers a dynamic curriculum that blends theoretical knowledge with hands-on learning opportunities. By focusing on innovation, critical thinking, and problem-solving, students are empowered to become the leaders of tomorrow. The university's commitment to upskilling ensures that each student is not only equipped with specialized expertise but also the adaptability and resilience needed to thrive in a globalized, technology-driven world. Through strong industry partnerships, real-world projects, and personalized mentorship, students gain valuable insights into their chosen fields, preparing them to make a tangible impact in their careers. With an emphasis on continuous growth, this university nurtures the leaders of the future, instilling a sense of responsibility, ethical leadership, and a passion for lifelong learning. The goal is not just to educate, but to inspire and empower the next generation to build a better, more sustainable future.
+                    <p class="about-text">
+                        By offering a diverse range of programs designed to foster innovation, critical thinking, and leadership, we ensure that students are well-prepared for tomorrow's challenges.
                     </p>
                 </div>
-                <div class="col-md-2"></div>
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="feature-box">
+                                <h6 class="fw-bold">Innovation First</h6>
+                                <p class="text-muted small mb-0">Dynamic curriculum blending theory with hands-on learning.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="feature-box">
+                                <h6 class="fw-bold">Global Perspective</h6>
+                                <p class="text-muted small mb-0">Building resilience for a technology-driven world.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="feature-box">
+                                <h6 class="fw-bold">Industry Aligned</h6>
+                                <p class="text-muted small mb-0">Strong industry partnerships and mentorship.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="feature-box">
+                                <h6 class="fw-bold">Holistic Growth</h6>
+                                <p class="text-muted small mb-0">Nurturing ethical leadership and responsibility.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
