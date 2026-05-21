@@ -15,7 +15,9 @@
     .footer-brand img {
         height: 40px;
         margin-right: 15px;
-        filter: brightness(0) invert(1);
+        background-color: #ffffff;
+        padding: 4px;
+        border-radius: 6px;
     }
     
     .footer-brand-text {

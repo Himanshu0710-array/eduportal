@@ -126,41 +126,41 @@
         <div class="row g-4 mb-5">
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="/images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
+                    <img src="images/course-1.webp" class="card-img-top w-100" alt="B.Tech">
                     <div class="card-body">
                         <h5 class="card-title">B.Tech</h5>
                         <p class="card-text">Cutting-edge engineering programs to shape future innovators.</p>
-                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>    
             </div>
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="/himanshu/images/course-2.png" class="card-img-top w-100" alt="BCA">
+                    <img src="/images/course-2.png" class="card-img-top w-100" alt="BCA">
                     <div class="card-body">
                         <h5 class="card-title">BCA</h5>
                         <p class="card-text">Industry-focused computer application programs building future IT professionals.</p>
-                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="/himanshu/images/course-3.png" class="card-img-top w-100" alt="BBA">
+                    <img src="/images/course-3.png" class="card-img-top w-100" alt="BBA">
                     <div class="card-body">
                         <h5 class="card-title">BBA</h5>
                         <p class="card-text">Comprehensive business administration programs nurturing global business leaders.</p>
-                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>    
             </div>
             <div class="col-lg-3 col-md-6" data-aos="fade-up">
                 <div class="course-card">
-                    <img src="/himanshu/images/course-4.jpg" class="card-img-top w-100" alt="LLB">
+                    <img src="/images/course-4.jpg" class="card-img-top w-100" alt="LLB">
                     <div class="card-body">
                         <h5 class="card-title">LLB</h5>
                         <p class="card-text">Rigorous legal studies programs shaping skilled and proficient legal professionals.</p>
-                        <a href="/himanshu/student/register.php" class="enroll-btn">Discover Program</a>
+                        <a href="/student/register.php" class="enroll-btn">Discover Program</a>
                     </div>
                 </div>
             </div>
