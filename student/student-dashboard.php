@@ -55,19 +55,66 @@ $imagePath = !empty($studentDetail['studentImage']) ? 'uploads/' . $studentDetai
 <div class="card-header bg-primary text-white">
 Notice Board
 </div>
-<div class="card-body" style="max-height:180px; overflow-y:auto;">
 <?php
 $noticestmt = $conn->prepare("SELECT * FROM tblnotice WHERE studentId=:studentId AND academicYearId=:academicYearId ORDER BY id DESC");
 $noticestmt->bindParam(":studentId", $studentId);
 $noticestmt->bindParam(":academicYearId", $academicYearId);
 $noticestmt->execute();
-while($notices=$noticestmt->fetch()){ ?>
+$notices = $noticestmt->fetchAll(PDO::FETCH_ASSOC);
+
+$meetingstmt = $conn->prepare("SELECT * FROM tblmeetings WHERE courseId=:courseId AND academicYearId=:academicYearId AND meetingDate >= CURDATE()");
+$meetingstmt->bindParam(":courseId", $courseId);
+$meetingstmt->bindParam(":academicYearId", $academicYearId);
+$meetingstmt->execute();
+$meetings = $meetingstmt->fetchAll(PDO::FETCH_ASSOC);
+
+$allNotices = [];
+foreach ($notices as $n) {
+    $allNotices[] = [
+        'type' => 'notice',
+        'date' => $n['noticeDate'],
+        'content' => $n['notice'],
+        'cutOff' => $n['cutOffAttendence']
+    ];
+}
+foreach ($meetings as $m) {
+    $allNotices[] = [
+        'type' => 'meeting',
+        'date' => $m['meetingDate'],
+        'time' => $m['meetingTime'],
+        'title' => $m['meetingTitle'],
+        'content' => $m['meetingDescription'],
+        'roomId' => $m['meetingRoomId']
+    ];
+}
+
+usort($allNotices, function($a, $b) {
+    return strtotime($b['date']) - strtotime($a['date']);
+});
+
+foreach($allNotices as $index => $item){ ?>
 <div class="notice-box">
 <div>
-<small><?php echo date('d-m-Y', strtotime($notices['noticeDate'])); ?></small>
-<p class="mb-0"><?php echo substr($notices['notice'],0,50); ?>...</p>
+<small>
+    <?php 
+    if ($item['type'] == 'meeting') {
+        echo "<span class='badge bg-warning text-dark me-1'>Meeting</span> ";
+        echo date('d-m-Y', strtotime($item['date'])) . " at " . date('h:i A', strtotime($item['time']));
+    } else {
+        echo "<span class='badge bg-info text-dark me-1'>Notice</span> ";
+        echo date('d-m-Y', strtotime($item['date']));
+    }
+    ?>
+</small>
+<p class="mb-0">
+    <?php 
+    $textToShow = ($item['type'] == 'meeting') ? $item['title'] : $item['content'];
+    echo substr($textToShow,0,50); 
+    if(strlen($textToShow)>50) echo "..."; 
+    ?>
+</p>
 </div>
-<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#noticeModal<?php echo $notices['id']; ?>">Read More</button>
+<button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#noticeModal<?php echo $index; ?>">Read More</button>
 </div>
 <?php } ?>
 </div>
@@ -217,20 +264,34 @@ if($fees['totalFees'] == 0){
 </div>
 
 <?php
-$noticestmt->execute();
-while($notices=$noticestmt->fetch()){
+foreach($allNotices as $index => $item){
 ?>
-<div class="modal fade" id="noticeModal<?php echo $notices['id']; ?>" tabindex="-1" aria-labelledby="noticeModalLabel<?php echo $notices['id']; ?>" aria-hidden="true">
+<div class="modal fade" id="noticeModal<?php echo $index; ?>" tabindex="-1" aria-labelledby="noticeModalLabel<?php echo $index; ?>" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered">
 <div class="modal-content">
-<div class="modal-header bg-primary text-white">
-<h5 class="modal-title" id="noticeModalLabel<?php echo $notices['id']; ?>">Notice Details</h5>
-<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<div class="modal-header <?php echo $item['type'] == 'meeting' ? 'bg-warning text-dark' : 'bg-primary text-white'; ?>">
+<h5 class="modal-title" id="noticeModalLabel<?php echo $index; ?>">
+    <?php echo $item['type'] == 'meeting' ? 'Meeting Details' : 'Notice Details'; ?>
+</h5>
+<button type="button" class="btn-close <?php echo $item['type'] == 'meeting' ? '' : 'btn-close-white'; ?>" data-bs-dismiss="modal"></button>
 </div>
 <div class="modal-body">
-<p><b>Date:</b> <?php echo date('d-m-Y', strtotime($notices['noticeDate'])); ?></p>
-<p><?php echo $notices['notice']; ?></p>
-<p><b>Minimum Attendance Required:</b> <?php echo $notices['cutOffAttendence']; ?>%</p>
+<p><b>Date:</b> <?php echo date('d-m-Y', strtotime($item['date'])); ?> 
+<?php if($item['type'] == 'meeting') echo "at " . date('h:i A', strtotime($item['time'])); ?></p>
+
+<?php if($item['type'] == 'meeting'): ?>
+    <p><b>Title:</b> <?php echo htmlspecialchars($item['title']); ?></p>
+    <p><b>Description:</b> <?php echo htmlspecialchars($item['content']); ?></p>
+    <div class="d-grid mt-3">
+        <a href="../webrtc-room.php?room=<?php echo htmlspecialchars($item['roomId']); ?>&role=student" target="_blank" class="btn btn-success">
+            <i class="bi bi-camera-video"></i> Join Meeting
+        </a>
+    </div>
+<?php else: ?>
+    <p><?php echo $item['content']; ?></p>
+    <p><b>Minimum Attendance Required:</b> <?php echo $item['cutOff']; ?>%</p>
+<?php endif; ?>
+
 </div>
 <div class="modal-footer">
 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>

@@ -27,12 +27,43 @@ error_reporting(E_ALL);
 
 
 
-$students = $conn->query("SELECT * FROM tblstudent")->fetchAll(PDO::FETCH_ASSOC);
-$tests = $conn->query("
+$teacherCourseId = -1;
+$teacherAcademicYearId = -1;
+if (!empty($result['subjectId'])) {
+    $subStmt = $conn->prepare("SELECT courseId, academicYearId FROM tblsubject WHERE subjectId = :subjectId");
+    $subStmt->bindParam(":subjectId", $result['subjectId']);
+    $subStmt->execute();
+    $subRow = $subStmt->fetch();
+    if ($subRow) {
+        $teacherCourseId = $subRow['courseId'];
+        $teacherAcademicYearId = $subRow['academicYearId'];
+    }
+}
+
+$teacherSections = !empty($result['section']) ? explode(',', $result['section']) : [];
+$teacherSections = array_map('trim', $teacherSections);
+if (empty($teacherSections)) $teacherSections[] = ''; // default empty to prevent sql error
+$placeholders = implode(',', array_fill(0, count($teacherSections), '?'));
+
+// Fetch students
+$stmtStudents = $conn->prepare("SELECT * FROM tblstudent WHERE courseId = ? AND academicYearId = ? AND section IN ($placeholders)");
+$params = [$teacherCourseId, $teacherAcademicYearId];
+foreach ($teacherSections as $sec) {
+    $params[] = $sec;
+}
+$stmtStudents->execute($params);
+$students = $stmtStudents->fetchAll(PDO::FETCH_ASSOC);
+
+// Fetch tests
+$stmtTests = $conn->prepare("
     SELECT t.*, COALESCE(s.subjectName, CONCAT('Subject ', t.subjectId)) as subjectName 
     FROM tbltest t 
     LEFT JOIN tblsubject s ON t.subjectId = s.subjectId
-")->fetchAll(PDO::FETCH_ASSOC);
+    WHERE t.courseId = ? AND t.academicYearId = ?
+");
+$stmtTests->execute([$teacherCourseId, $teacherAcademicYearId]);
+$tests = $stmtTests->fetchAll(PDO::FETCH_ASSOC);
+
 $marks = $conn->query("SELECT * FROM tblresult")->fetchAll(PDO::FETCH_ASSOC);
 $attendance = $conn->query("SELECT * FROM tblattendence")->fetchAll(PDO::FETCH_ASSOC);
 

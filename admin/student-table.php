@@ -2,8 +2,30 @@
 include "admin-dashboard-top.php";
 include "admin-dashboard-content.php";
 include "fun-specialchar.php";
-$query="SELECT * FROM tblstudent";
-$stmt=$conn->prepare($query);
+$conditions = [];
+$params = [];
+
+if (isset($_GET['courseId']) && $_GET['courseId'] != '-1') {
+    $conditions[] = "courseId = :courseId";
+    $params[':courseId'] = $_GET['courseId'];
+}
+if (isset($_GET['academicYearId']) && $_GET['academicYearId'] != '-1') {
+    $conditions[] = "academicYearId = :academicYearId";
+    $params[':academicYearId'] = $_GET['academicYearId'];
+}
+if (isset($_GET['section']) && $_GET['section'] != '-1') {
+    $conditions[] = "section = :section";
+    $params[':section'] = $_GET['section'];
+}
+
+$query = "SELECT * FROM tblstudent";
+if (count($conditions) > 0) {
+    $query .= " WHERE " . implode(" AND ", $conditions);
+}
+$stmt = $conn->prepare($query);
+foreach ($params as $key => &$val) {
+    $stmt->bindParam($key, $val);
+}
 $stmt->execute();
 ?>
 <!doctype html>
@@ -40,6 +62,51 @@ $stmt->execute();
             <div class="tbl-heading">
             <h2>STUDENT TABLE</h2>    
             </div>
+            
+            <form method="GET" action="student-table.php" class="row mb-4 align-items-end g-3 px-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Course</label>
+                    <select class="form-select" name="courseId">
+                        <option value="-1">All Courses</option>
+                        <?php
+                        $c_stmt = $conn->prepare("SELECT * FROM tblcourse");
+                        $c_stmt->execute();
+                        while($c = $c_stmt->fetch()){
+                            $sel = (isset($_GET['courseId']) && $_GET['courseId']==$c['courseId']) ? 'selected' : '';
+                            echo "<option value='".$c['courseId']."' $sel>".$c['courseName']."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Academic Year</label>
+                    <select class="form-select" name="academicYearId">
+                        <option value="-1">All Years</option>
+                        <?php
+                        $a_stmt = $conn->prepare("SELECT * FROM tblAcademicYear");
+                        $a_stmt->execute();
+                        while($a = $a_stmt->fetch()){
+                            $sel = (isset($_GET['academicYearId']) && $_GET['academicYearId']==$a['academicYearId']) ? 'selected' : '';
+                            echo "<option value='".$a['academicYearId']."' $sel>".$a['academicYearName']."</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Section</label>
+                    <select class="form-select" name="section">
+                        <option value="-1">All Sections</option>
+                        <option value="A" <?php echo (isset($_GET['section']) && $_GET['section']=='A') ? 'selected' : ''; ?>>Section A</option>
+                        <option value="B" <?php echo (isset($_GET['section']) && $_GET['section']=='B') ? 'selected' : ''; ?>>Section B</option>
+                        <option value="C" <?php echo (isset($_GET['section']) && $_GET['section']=='C') ? 'selected' : ''; ?>>Section C</option>
+                        <option value="D" <?php echo (isset($_GET['section']) && $_GET['section']=='D') ? 'selected' : ''; ?>>Section D</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+
             <table class="table table-hover table-bordered">
               <thead>
                 <tr>
