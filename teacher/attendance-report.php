@@ -208,7 +208,7 @@ if (!empty($result['subjectId'])) {
                 </div>
 
                 <div class="row g-3">
-                    <div class="col-12">
+                    <div class="col-md-6">
                         <label class="form-label">Session</label>
                         <select class="form-select" id="sessionId">
                             <option value="-1">--Select Session--</option>
@@ -221,6 +221,16 @@ if (!empty($result['subjectId'])) {
                             ?>
                         </select>
                     </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Cut-off Attendance (%)</label>
+                        <input type="number" class="form-control" id="cutoff" placeholder="e.g. 75" min="0" max="100">
+                    </div>
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button class="btn btn-primary w-100" id="btnLoadStudents" style="font-weight: 600;">
+                        <i class="bi bi-search"></i> Load Students
+                    </button>
                 </div>
 
             </div>
@@ -329,33 +339,47 @@ $(document).ready(function() {
         var academicYearId = $("#academicYearId").val();
         var sessionId = $("#sessionId").val();
         var section = $("#section").val();
+        var subjectId = $("#subjectId").val();
+        var startDate = $("#startDate").val();
+        var endDate = $("#endDate").val();
+        var cutoff = $("#cutoff").val();
         
+        if(!startDate || !endDate) {
+            alert("Please select start and end dates.");
+            return;
+        }
+
         if(courseId != "-1" && academicYearId != "-1" && sessionId != "-1" && section != "-1") {
+            $("#studentListBody").html('<tr><td colspan="2" class="text-center text-muted">Loading students...</td></tr>');
             $.ajax({
-                url: "fetch-student-table.php",
+                url: "fetch-students-for-report.php",
                 type: "POST",
-                data: { courseId: courseId, academicYearId: academicYearId, sessionId: sessionId, section: section },
+                dataType: "json",
+                data: { 
+                    courseId: courseId, 
+                    academicYearId: academicYearId, 
+                    sessionId: sessionId, 
+                    section: section,
+                    subjectId: subjectId,
+                    startDate: startDate,
+                    endDate: endDate,
+                    cutoff: cutoff
+                },
                 success: function(response) {
-                    // Extract just the student rows, remove action dropdowns, add view report button
                     var html = '';
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(response, 'text/html');
-                    var rows = doc.querySelectorAll('tr');
-                    
-                    if(rows.length === 0) {
-                        html = '<tr><td colspan="2" class="text-center text-muted">No students found.</td></tr>';
+                    if(!response.success || response.students.length === 0) {
+                        html = '<tr><td colspan="2" class="text-center text-muted">No students found matching criteria.</td></tr>';
                     } else {
-                        rows.forEach(function(row) {
-                            var id = row.cells[0].innerText.trim();
-                            var name = row.cells[1].innerText.trim();
+                        response.students.forEach(function(student) {
+                            var pctColor = student.percentage >= 75 ? 'text-success' : (student.percentage >= 50 ? 'text-warning' : 'text-danger');
                             html += `
                                 <tr>
                                     <td>
-                                        <div class="fw-bold">${name}</div>
-                                        <div class="text-muted small">ID: ${id}</div>
+                                        <div class="fw-bold">${student.studentName}</div>
+                                        <div class="text-muted small">ID: ${student.studentId} | <span class="fw-bold ${pctColor}">Att: ${student.percentage}%</span></div>
                                     </td>
                                     <td class="text-end">
-                                        <button class="btn-view-report" onclick="viewReport('${id}', '${name}')">
+                                        <button class="btn-view-report" onclick="viewReport('${student.studentId}', '${student.studentName}')">
                                             View Report
                                         </button>
                                     </td>
@@ -364,14 +388,22 @@ $(document).ready(function() {
                         });
                     }
                     $("#studentListBody").html(html);
+                },
+                error: function() {
+                    $("#studentListBody").html('<tr><td colspan="2" class="text-center text-danger">Error loading students.</td></tr>');
                 }
             });
         }
     }
 
-    $("#courseId, #academicYearId, #sessionId, #section").change(function(){
+    $("#btnLoadStudents").click(function(){
         loadStudentsForReport();
     });
+
+    // Remove the autoloading on filter change since we now have a load button
+    // $("#courseId, #academicYearId, #sessionId, #section").change(function(){
+    //     loadStudentsForReport();
+    // });
 
     // Initial load
     loadStudentsForReport();
