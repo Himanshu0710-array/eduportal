@@ -8,6 +8,9 @@
         exit;
     }
     $teacherId = isset($_SESSION['teacherId']) ? $_SESSION['teacherId'] : (isset($_COOKIE['teacherId']) ? htmlspecialchars($_COOKIE['teacherId']) : '');
+    if (!isset($_SESSION['teacherId']) && !empty($teacherId)) {
+        $_SESSION['teacherId'] = $teacherId;
+    }
 ?>
 <!doctype html>
 <html lang="en">

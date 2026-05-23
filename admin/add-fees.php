@@ -180,8 +180,10 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
+var targetAcademicYearId = -1;
+
 $(document).ready(function(){
-    $("#studentId").keyup(function(){
+    $("#studentId").on("keyup change", function(){
         var studentId = $(this).val();
         if(studentId.length > 0)
         {
@@ -189,21 +191,37 @@ $(document).ready(function(){
                url : "get-student.php",
                type:"POST",
                data: {studentId: studentId},
+               dataType: "json",
                success: function(response){
-                   $("#studentName").text(response);
+                   if(response.status === "success") {
+                       $("#studentName").html('<strong class="text-success">Student Name: ' + response.studentName + '</strong>');
+                       targetAcademicYearId = response.academicYearId;
+                       $("#course1").val(response.courseId).change();
+                   } else {
+                       $("#studentName").html('<strong class="text-danger">No Student Found</strong>');
+                       $("#course1").val("-1").change();
+                       $("#totalFees").val("");
+                   }
+               },
+               error: function() {
+                   $("#studentName").html('<strong class="text-danger">Error fetching student data</strong>');
                }
             });
         } else{
-            $("#studentName").text("");
+            $("#studentName").html("");
+            $("#course1").val("-1").change();
+            $("#totalFees").val("");
         }
     });
 });
+
 $(document).ready(function () {
     $("#course1").change(function () {
         var courseId = $("#course1").val();
 
         if (courseId == "-1") {
-            $("#academicYear").html('');
+            $("#academicYear").html('<option value="-1">--Select Academic Year--</option>');
+            $("#totalFees").val("");
             return;
         }
 
@@ -213,8 +231,11 @@ $(document).ready(function () {
             data: { courseId: courseId },
             success: function (response) {
                 $("#academicYear").html(response);
+                if (targetAcademicYearId != -1) {
+                    $("#academicYear").val(targetAcademicYearId).change();
+                    targetAcademicYearId = -1; // Reset
+                }
             },
-            
         });
     });
 });
@@ -223,27 +244,30 @@ $(document).ready(function(){
     $("#course1,#academicYear").change(function(){
         var courseId = $("#course1").val();
         var academicYearId = $("#academicYear").val();
-        if(courseId == "-1" || academicYearId == "-1")
+        if(courseId == "-1" || academicYearId == "-1" || !academicYearId)
         {
           $("#totalFees").val("");
           return;
         }
         else{
-        $.ajax({
-            url:"fees-fetch.php",
-            type:"POST",
-            data: 
-            {
-                courseId: courseId,
-                academicYearId: academicYearId  
-            },
-            success: function(response){
-                $("#totalFees").val(response);
-            } 
-        });
+            $.ajax({
+                url:"fees-fetch.php",
+                type:"POST",
+                data: 
+                {
+                    courseId: courseId,
+                    academicYearId: academicYearId  
+                },
+                success: function(response){
+                    if (response.trim() === "No Record Found") {
+                        $("#totalFees").val("");
+                    } else {
+                        $("#totalFees").val(response);
+                    }
+                } 
+            });
         }
     });
-    
 });
 
 

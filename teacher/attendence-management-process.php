@@ -8,13 +8,13 @@ error_reporting(E_ALL);
 
 date_default_timezone_set("Asia/Calcutta");
 
-$dateOfAttendence   = $_REQUEST["dateOfAttendence"];
-$courseId           = $_REQUEST["courseId"];
-$academicYearId     = $_REQUEST["academicYearId"];
-$subjectId          = $_REQUEST["subjectId"];
-$sessionId          = $_REQUEST["sessionId"];
-$studentId          = $_REQUEST["studentId"];  
-$attendence         = $_REQUEST["attendence"]; 
+$dateOfAttendence   = $_POST["dateOfAttendence"] ?? "";
+$courseId           = $_POST["courseId"] ?? "";
+$academicYearId     = $_POST["academicYearId"] ?? "";
+$subjectId          = $_POST["subjectId"] ?? "";
+$sessionId          = $_POST["sessionId"] ?? "";
+$studentId          = $_POST["studentId"] ?? [];  
+$attendence         = $_POST["attendence"] ?? []; 
 $addedIpAddress     = $_SERVER['REMOTE_ADDR'];
 $addedDateTime      = date('Y-m-d H:i:s');
 $updatedIpAddress   = $_SERVER['REMOTE_ADDR'];

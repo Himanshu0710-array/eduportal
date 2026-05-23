@@ -7,7 +7,7 @@ include "teacher-dashboard-top.php";
 include "teacher-dashboard-content.php";
 include "fun-specialchar.php";
 $tstmt = $conn->prepare("SELECT * FROM tblteacher WHERE teacherId = :teacherId");
-$tstmt->bindParam(":teacherId", $_SESSION['teacherId']);
+$tstmt->bindParam(":teacherId", $teacherId);
 $tstmt->execute();
 $teacher = $tstmt->fetch();
 

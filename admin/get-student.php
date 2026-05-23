@@ -14,17 +14,19 @@ $coursestmt->bindParam(":courseId",$courseId);
 $coursestmt->execute();
 $course = $coursestmt->fetch();
 
-if($result)
-{
-    echo "Student Name = " . $result["studentName"] . " || ";
-echo "Course = " . $course["courseName"];
-
-
-
-}
-else
-{
-    echo "No Student Found";
+header('Content-Type: application/json');
+if ($result) {
+    echo json_encode([
+        'status' => 'success',
+        'studentName' => $result['studentName'],
+        'courseId' => (int) $result['courseId'],
+        'academicYearId' => (int) $result['academicYearId']
+    ]);
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'No Student Found'
+    ]);
 }
 
 ?>

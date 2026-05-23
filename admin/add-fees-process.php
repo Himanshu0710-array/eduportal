@@ -7,14 +7,14 @@ date_default_timezone_set("Asia/Calcutta");
 include "../database-connect.php";
 
 
-$studentId                  =   $_REQUEST["studentId"];
-$courseId                   =   $_REQUEST["courseId"];
-$academicYearId             =   $_REQUEST["academicYearId"];
-$totalFees                  =   $_REQUEST["totalFees"];
-$discountMoney              =   $_REQUEST["discountMoney"];
-$paidFees                   =   $_REQUEST["paidFees"];
-$dateOfSubmissionOfFees     =   $_REQUEST["dateOfSubmissionOfFees"];
-$sessionId                  =   $_REQUEST["sessionId"];
+$studentId                  =   $_POST["studentId"] ?? "";
+$courseId                   =   $_POST["courseId"] ?? "";
+$academicYearId             =   $_POST["academicYearId"] ?? "";
+$totalFees                  =   $_POST["totalFees"] ?? "";
+$discountMoney              =   $_POST["discountMoney"] ?? "";
+$paidFees                   =   $_POST["paidFees"] ?? "";
+$dateOfSubmissionOfFees     =   $_POST["dateOfSubmissionOfFees"] ?? "";
+$sessionId                  =   $_POST["sessionId"] ?? "";
 $addedIpAddress             = $_SERVER['REMOTE_ADDR'];
 $addedDateTime              = date('y-m-d h:i:s');
 $updatedIpAddress           = $_SERVER['REMOTE_ADDR'];
