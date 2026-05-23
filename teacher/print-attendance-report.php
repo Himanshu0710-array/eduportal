@@ -17,7 +17,7 @@ if (empty($studentId) || empty($startDate) || empty($endDate)) {
 }
 
 // Fetch student details
-$studentQuery = "SELECT studentName, enrollmentNumber FROM tblstudent WHERE studentId = :studentId";
+$studentQuery = "SELECT studentName, studentEmail FROM tblstudent WHERE studentId = :studentId";
 $studentStmt = $conn->prepare($studentQuery);
 $studentStmt->bindParam(':studentId', $studentId);
 $studentStmt->execute();
@@ -43,15 +43,16 @@ if (!empty($subjectId)) {
 // Fetch attendance records
 $subjectCondition = "";
 if (!empty($subjectId)) {
-    $subjectCondition = " AND subjectId = :subjectId";
+    $subjectCondition = " AND a.subjectId = :subjectId";
 }
 
-$query = "SELECT dateOfAttendence, attendence 
-          FROM tblattendence 
-          WHERE studentId = :studentId 
-          AND dateOfAttendence BETWEEN :startDate AND :endDate
+$query = "SELECT a.dateOfAttendence, a.attendence, s.subjectName 
+          FROM tblattendence a
+          LEFT JOIN tblsubject s ON a.subjectId = s.subjectId
+          WHERE a.studentId = :studentId 
+          AND a.dateOfAttendence BETWEEN :startDate AND :endDate
           $subjectCondition
-          ORDER BY dateOfAttendence ASC";
+          ORDER BY a.dateOfAttendence ASC";
           
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':studentId', $studentId);
@@ -218,7 +219,7 @@ $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100
     <table class="student-details">
         <tr>
             <td><strong>Student Name:</strong> <?php echo htmlspecialchars($student['studentName']); ?></td>
-            <td><strong>Enrollment No:</strong> <?php echo htmlspecialchars($student['enrollmentNumber']); ?></td>
+            <td><strong>Email:</strong> <?php echo htmlspecialchars($student['studentEmail']); ?></td>
         </tr>
         <tr>
             <td><strong>Subject:</strong> <?php echo htmlspecialchars($subjectName); ?></td>
@@ -249,6 +250,7 @@ $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100
         <thead>
             <tr>
                 <th>Date</th>
+                <th>Subject</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -257,6 +259,7 @@ $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100
                 <?php foreach ($records as $record): ?>
                     <tr>
                         <td><?php echo date('F d, Y', strtotime($record['dateOfAttendence'])); ?></td>
+                        <td><?php echo htmlspecialchars($record['subjectName'] ?? 'Unknown'); ?></td>
                         <td>
                             <?php if ($record['attendence'] == 1): ?>
                                 <span class="status-present">Present</span>
@@ -268,7 +271,7 @@ $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="2" style="text-align: center;">No attendance records found for this period.</td>
+                    <td colspan="3" style="text-align: center;">No attendance records found for this period.</td>
                 </tr>
             <?php endif; ?>
         </tbody>

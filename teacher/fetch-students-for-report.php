@@ -61,9 +61,9 @@ try {
 
         $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100, 2) : 0;
 
-        // Apply cutoff filter
-        if ($cutoff !== null && $percentage < $cutoff) {
-            continue; // Skip student if below cutoff
+        // Apply cutoff filter (keep students with attendance LOWER than cutoff)
+        if ($cutoff !== null && $percentage >= $cutoff) {
+            continue; // Skip student if above or equal to cutoff
         }
 
         $student['percentage'] = $percentage;

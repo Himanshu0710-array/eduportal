@@ -25,12 +25,13 @@ try {
     }
 
     // Query to fetch attendance records
-    $query = "SELECT dateOfAttendence, attendence 
-              FROM tblattendence 
-              WHERE studentId = :studentId 
-              AND dateOfAttendence BETWEEN :startDate AND :endDate
+    $query = "SELECT a.dateOfAttendence, a.attendence, s.subjectName 
+              FROM tblattendence a
+              LEFT JOIN tblsubject s ON a.subjectId = s.subjectId
+              WHERE a.studentId = :studentId 
+              AND a.dateOfAttendence BETWEEN :startDate AND :endDate
               $subjectCondition
-              ORDER BY dateOfAttendence ASC";
+              ORDER BY a.dateOfAttendence ASC";
               
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':studentId', $studentId);
@@ -58,7 +59,8 @@ try {
         
         $dateBreakdown[] = [
             'date' => date('M d, Y', strtotime($record['dateOfAttendence'])),
-            'status' => $status
+            'status' => $status,
+            'subjectName' => $record['subjectName'] ?? 'Unknown'
         ];
     }
     

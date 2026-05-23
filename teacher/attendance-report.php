@@ -144,7 +144,7 @@ if (!empty($result['subjectId'])) {
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Course</label>
-                        <select class="form-select" id="courseId">
+                        <select class="form-select" id="courseId" disabled>
                             <option value="-1">--Select Course--</option>
                             <?php
                             $stmt = $conn->prepare("SELECT * FROM tblcourse");
@@ -175,7 +175,7 @@ if (!empty($result['subjectId'])) {
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Academic Year</label>
-                        <select class="form-select" id="academicYearId">
+                        <select class="form-select" id="academicYearId" disabled>
                             <option value="-1">--Select Academic Year--</option>
                             <?php
                             $stmt = $conn->prepare("SELECT * FROM tblAcademicYear");
@@ -192,14 +192,12 @@ if (!empty($result['subjectId'])) {
                         <select class="form-select" id="subjectId">
                             <option value="-1">--Select Subject--</option>
                             <?php
-                            if ($teacherCourseId != -1 && $teacherAcademicYearId != -1) {
-                                $sstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId = :courseId AND academicYearId = :academicYearId AND status = 1");
-                                $sstmt->bindParam(":courseId", $teacherCourseId);
-                                $sstmt->bindParam(":academicYearId", $teacherAcademicYearId);
+                            if (!empty($result['subjectId'])) {
+                                $sstmt = $conn->prepare("SELECT * FROM tblsubject WHERE subjectId = :subjectId AND status = 1");
+                                $sstmt->bindParam(":subjectId", $result['subjectId']);
                                 $sstmt->execute();
                                 while ($subj = $sstmt->fetch()) {
-                                    $selected = ($subj['subjectId'] == $result['subjectId']) ? "selected" : "";
-                                    echo "<option value='{$subj['subjectId']}' $selected>" . htmlspecialchars($subj['subjectName']) . "</option>";
+                                    echo "<option value='{$subj['subjectId']}' selected>" . htmlspecialchars($subj['subjectName']) . "</option>";
                                 }
                             }
                             ?>
@@ -477,7 +475,10 @@ $(document).ready(function() {
                             var statusColor = item.status === 'Present' ? 'color: #16a34a;' : 'color: #dc2626;';
                             html += `
                                 <div class="timeline-item">
-                                    <div class="fw-bold" style="color: #334155;">${item.date}</div>
+                                    <div>
+                                        <div class="fw-bold" style="color: #334155;">${item.date}</div>
+                                        <div class="small text-muted">${item.subjectName}</div>
+                                    </div>
                                     <div style="${statusColor} font-weight: 600;">${item.status}</div>
                                 </div>
                             `;
