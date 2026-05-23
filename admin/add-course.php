@@ -85,7 +85,11 @@
                             <option value="4" >4 years</option>
                             <option value="5" >5 years</option>
                         </select>
-                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label"><b>Section</b></label>
+                    <input class="form-control" type="text" placeholder="Section Name" name="section">    
                 </div>
                 
                 <div class="mb-3">

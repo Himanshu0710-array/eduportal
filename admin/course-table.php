@@ -47,6 +47,7 @@ $stmt->execute();
                 <tr>
                   <th scope="col">Course Id</th>
                   <th scope="col">Course Name</th>
+                  <th scope="col">Section</th>
                   <th scope="col">Course Duration</th>
                   <th scope="col">Session</th>
                   <th scope="col">Action</th>
@@ -60,6 +61,7 @@ $stmt->execute();
                     <tr>
                     <td><?php echo $result['courseId']; ?></td>
                      <td><?php echo $result['courseName']; ?></td>
+                     <td><?php echo $result['section']; ?></td>
                      <td>
                         <?php 
                             $result['courseDuration']; 

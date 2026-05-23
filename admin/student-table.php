@@ -66,7 +66,7 @@ $stmt->execute();
                             $stmt2->bindParam(":courseId",$courseId);
                             $stmt2->execute();
                             $row=$stmt2->fetch();
-                            echo $row ? $row["courseName"] : "<span class='text-danger'>Unknown Course</span>";
+                            echo $row ? $row["courseName"] . " (Sec " . $row["section"] . ")" : "<span class='text-danger'>Unknown Course</span>";
                          ?>
                         </td>
                      <td><?php echo textSafe($result['studentEmail']); ?></td>

@@ -174,7 +174,7 @@ if (isset($_GET['err'])) {
                             while ($course = $stmt->fetch()) {
                             ?>
                                 <option value="<?php echo $course['courseId']; ?>" <?php echo ($row["courseId"] == $course['courseId']) ? 'selected' : ''; ?>>
-                                    <?php echo $course['courseName']; ?>
+                                    <?php echo $course['courseName'] . " - Sec " . $course['section']; ?>
                                 </option>
                             <?php } ?>
                         </select>

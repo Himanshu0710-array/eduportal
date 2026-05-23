@@ -214,7 +214,7 @@ function getSessionValue($key) {
             <?php while($result = $stmt->fetch()) { ?>
               <option value="<?php echo $result['courseId']; ?>"
                 <?php if (getSessionValue('courseId') == $result['courseId']) echo "selected"; ?>>
-                <?php echo $result['courseName']; ?>
+                <?php echo $result['courseName'] . " - Sec " . $result['section']; ?>
               </option>
             <?php } ?>
           </select>
