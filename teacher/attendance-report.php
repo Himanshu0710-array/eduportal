@@ -331,7 +331,6 @@ $(document).ready(function() {
         }
     });
 
-    // Load Students based on filters
     function loadStudentsForReport() {
         var courseId = $("#courseId").val();
         var academicYearId = $("#academicYearId").val();
@@ -398,15 +397,8 @@ $(document).ready(function() {
         loadStudentsForReport();
     });
 
-    // Remove the autoloading on filter change since we now have a load button
-    // $("#courseId, #academicYearId, #sessionId, #section").change(function(){
-    //     loadStudentsForReport();
-    // });
-
-    // Initial load
-    loadStudentsForReport();
+    $("#studentListBody").html('<tr><td colspan="2" class="text-center text-muted">Click "Load Students" to view the list.</td></tr>');
     
-    // Define global viewReport function
     window.viewReport = function(studentId, studentName) {
         var startDate = $("#startDate").val();
         var endDate = $("#endDate").val();
@@ -422,21 +414,17 @@ $(document).ready(function() {
         
         $("#reportStudentName").text(studentName);
         
-        // Format dates for display
         var startObj = new Date(startDate);
         var endObj = new Date(endDate);
         var options = { month: 'short', day: 'numeric', year: 'numeric' };
         $("#reportDateRange").text(startObj.toLocaleDateString('en-US', options) + " - " + endObj.toLocaleDateString('en-US', options));
         
-        // Setup PDF download link
         var downloadUrl = `print-attendance-report.php?studentId=${studentId}&subjectId=${subjectId == -1 ? '' : subjectId}&startDate=${startDate}&endDate=${endDate}`;
         
-        // Bind download button
         $("#btnDownloadPdf").off('click').on('click', function() {
             window.open(downloadUrl, '_blank');
         });
         
-        // Fetch data
         $("#reportTotalClasses, #reportAttended, #reportMissed").text("...");
         $("#reportPercentage").text("%");
         $("#attendanceTimeline").html('<div class="text-center p-3 text-muted">Loading attendance data...</div>');

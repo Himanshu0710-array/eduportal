@@ -2,7 +2,6 @@
 session_start();
 require_once("../database-connect.php");
 
-// Set JSON header
 header('Content-Type: application/json');
 
 $courseId = $_POST['courseId'] ?? '';
@@ -19,7 +18,6 @@ if (empty($courseId) || empty($academicYearId) || empty($section) || empty($star
 }
 
 try {
-    // Get all students for the given class
     $studentQuery = "SELECT studentId, studentName FROM tblstudent WHERE courseId = :courseId AND academicYearId = :academicYearId AND section = :section";
     $studentStmt = $conn->prepare($studentQuery);
     $studentStmt->bindParam(':courseId', $courseId);
@@ -35,7 +33,6 @@ try {
 
     $resultStudents = [];
 
-    // For each student, calculate attendance percentage
     foreach ($students as $student) {
         $attQuery = "SELECT attendence FROM tblattendence 
                      WHERE studentId = :studentId 
@@ -61,9 +58,8 @@ try {
 
         $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100, 2) : 0;
 
-        // Apply cutoff filter (keep students with attendance LOWER than cutoff)
         if ($cutoff !== null && $percentage >= $cutoff) {
-            continue; // Skip student if above or equal to cutoff
+            continue;
         }
 
         $student['percentage'] = $percentage;

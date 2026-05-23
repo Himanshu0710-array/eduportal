@@ -2,36 +2,41 @@
 session_start();
 require_once("../database-connect.php");
 
-// Set JSON header
 header('Content-Type: application/json');
 
-// Get POST data
 $studentId = $_POST['studentId'] ?? '';
 $subjectId = $_POST['subjectId'] ?? '';
 $startDate = $_POST['startDate'] ?? '';
 $endDate = $_POST['endDate'] ?? '';
 
-// Basic validation
 if (empty($studentId) || empty($startDate) || empty($endDate)) {
     echo json_encode(['error' => 'Missing required parameters.']);
     exit;
 }
 
 try {
-    // Determine condition for subject (if specific subject requested or all)
     $subjectCondition = "";
     if (!empty($subjectId)) {
         $subjectCondition = " AND subjectId = :subjectId";
     }
 
-    // Query to fetch attendance records
-    $query = "SELECT a.dateOfAttendence, a.attendence, s.subjectName 
-              FROM tblattendence a
-              LEFT JOIN tblsubject s ON a.subjectId = s.subjectId
-              WHERE a.studentId = :studentId 
-              AND a.dateOfAttendence BETWEEN :startDate AND :endDate
+    $subjectName = 'Unknown';
+    if (!empty($subjectId)) {
+        $subStmt = $conn->prepare("SELECT subjectName FROM tblsubject WHERE subjectId = :subjectId");
+        $subStmt->bindParam(':subjectId', $subjectId);
+        $subStmt->execute();
+        $subRow = $subStmt->fetch(PDO::FETCH_ASSOC);
+        if ($subRow) {
+            $subjectName = $subRow['subjectName'];
+        }
+    }
+
+    $query = "SELECT dateOfAttendence, attendence 
+              FROM tblattendence 
+              WHERE studentId = :studentId 
+              AND dateOfAttendence BETWEEN :startDate AND :endDate
               $subjectCondition
-              ORDER BY a.dateOfAttendence ASC";
+              ORDER BY dateOfAttendence ASC";
               
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':studentId', $studentId);
@@ -60,7 +65,7 @@ try {
         $dateBreakdown[] = [
             'date' => date('M d, Y', strtotime($record['dateOfAttendence'])),
             'status' => $status,
-            'subjectName' => $record['subjectName'] ?? 'Unknown'
+            'subjectName' => $subjectName
         ];
     }
     

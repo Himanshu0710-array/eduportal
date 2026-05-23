@@ -2,7 +2,6 @@
 session_start();
 require_once("../database-connect.php");
 
-// Validate session
 if (!isset($_SESSION['teacherId']) && !isset($_COOKIE['teacherLoginInfo'])) {
     die("Unauthorized access.");
 }
@@ -16,7 +15,6 @@ if (empty($studentId) || empty($startDate) || empty($endDate)) {
     die("Missing required parameters.");
 }
 
-// Fetch student details
 $studentQuery = "SELECT studentName, studentEmail FROM tblstudent WHERE studentId = :studentId";
 $studentStmt = $conn->prepare($studentQuery);
 $studentStmt->bindParam(':studentId', $studentId);
@@ -27,7 +25,6 @@ if (!$student) {
     die("Student not found.");
 }
 
-// Fetch subject details if subjectId is provided
 $subjectName = "All Subjects";
 if (!empty($subjectId)) {
     $subjectQuery = "SELECT subjectName FROM tblsubject WHERE subjectId = :subjectId";
@@ -40,19 +37,17 @@ if (!empty($subjectId)) {
     }
 }
 
-// Fetch attendance records
 $subjectCondition = "";
 if (!empty($subjectId)) {
-    $subjectCondition = " AND a.subjectId = :subjectId";
+    $subjectCondition = " AND subjectId = :subjectId";
 }
 
-$query = "SELECT a.dateOfAttendence, a.attendence, s.subjectName 
-          FROM tblattendence a
-          LEFT JOIN tblsubject s ON a.subjectId = s.subjectId
-          WHERE a.studentId = :studentId 
-          AND a.dateOfAttendence BETWEEN :startDate AND :endDate
+$query = "SELECT dateOfAttendence, attendence 
+          FROM tblattendence 
+          WHERE studentId = :studentId 
+          AND dateOfAttendence BETWEEN :startDate AND :endDate
           $subjectCondition
-          ORDER BY a.dateOfAttendence ASC";
+          ORDER BY dateOfAttendence ASC";
           
 $stmt = $conn->prepare($query);
 $stmt->bindParam(':studentId', $studentId);
@@ -259,7 +254,7 @@ $percentage = $totalClasses > 0 ? round(($attendedClasses / $totalClasses) * 100
                 <?php foreach ($records as $record): ?>
                     <tr>
                         <td><?php echo date('F d, Y', strtotime($record['dateOfAttendence'])); ?></td>
-                        <td><?php echo htmlspecialchars($record['subjectName'] ?? 'Unknown'); ?></td>
+                        <td><?php echo htmlspecialchars($subjectName); ?></td>
                         <td>
                             <?php if ($record['attendence'] == 1): ?>
                                 <span class="status-present">Present</span>
