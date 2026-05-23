@@ -120,6 +120,7 @@
                         <li><a href="attendence-management.php" class="btn left-btn-1  w-100">Student Attendence</a></li>
                         <li><a href="attendence-table.php" class="btn left-btn-1  w-100">Attendence Table</a></li>
                         <li><a href="notice-student.php" class="btn left-btn-1  w-100">Attendence Notice</a></li>
+                        <li><a href="attendance-report.php" class="btn left-btn-1  w-100">Attendance Report</a></li>
                       </ul>
                     </div>
                     <div class="dropdown ">
