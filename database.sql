@@ -116,7 +116,6 @@ CREATE TABLE `tblcourse` (
   `courseName` varchar(100) NOT NULL,
   `courseDuration` varchar(10) NOT NULL,
   `sessionId` int(10) NOT NULL,
-  `section` varchar(50) NOT NULL DEFAULT 'A',
   PRIMARY KEY (`courseId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -126,7 +125,7 @@ CREATE TABLE `tblcourse` (
 --
 
 /*!40000 ALTER TABLE `tblcourse` DISABLE KEYS */;
-INSERT INTO `tblcourse` VALUES (1,'bba','3',8,'A'),(2,'bca','3',8,'A'),(3,'b tech','4',8,'A'),(4,'LLB','5',8,'A'),(5,'Mba','2',8,'A'),(9,'B com','3',8,'A');
+INSERT INTO `tblcourse` VALUES (1,'bba','3',8),(2,'bca','3',8),(3,'b tech','4',8),(4,'LLB','5',8),(5,'Mba','2',8),(9,'B com','3',8);
 /*!40000 ALTER TABLE `tblcourse` ENABLE KEYS */;
 
 --
@@ -423,6 +422,7 @@ CREATE TABLE `tblstudent` (
   `addedDateTime` datetime(6) NOT NULL,
   `updatedIpAddress` text NOT NULL,
   `updatedDateTime` datetime NOT NULL,
+  `section` varchar(10) NOT NULL DEFAULT 'A',
   PRIMARY KEY (`studentId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -432,7 +432,7 @@ CREATE TABLE `tblstudent` (
 --
 
 /*!40000 ALTER TABLE `tblstudent` DISABLE KEYS */;
-INSERT INTO `tblstudent` VALUES (1,'Himanshbhj','2025-10-01',3,2,9,'6375324605',2,'jhvjhv@gmail.com','12312','hjgjhgjh','vjhfhjkgkjyg','8768757876','gjgkg@gmail.com','2025-09-29 00:00:00.000000','hj,jkv,mjh',NULL,'::1','2025-12-30 20:35:37.000000','::1','2025-12-30 20:35:37'),(2,'Himanshbhjvg','2011-10-29',1,2,9,'6375324604',2,'jhvjhv@gmail.com','101010','hjgjhgjh','vjhfhjkgkjyg','8768757876','gjgkg@gmail.com','2025-09-29 00:00:00.000000','hj,jkv,mjh',NULL,'::1','2025-09-29 10:44:30.000000','::1','2025-09-29 10:44:30'),(3,'Himanshbhjvg','2011-10-29',1,2,9,'6375324604',2,'jhvjhv@gmail.com','101010','hjgjhgjh','vjhfhjkgkjyg','8768757876','gjgkg@gmail.com','2025-09-29 00:00:00.000000','hj,jkv,mjh',NULL,'::1','2025-09-29 10:45:19.000000','::1','2025-09-29 10:45:19'),(4,'hbjbjm','2025-09-11',1,2,9,'9696787676',2,'himanshu@gmail.com','9887','kjnkbk','bkjbkhbj','9887679876','gjgkg@gmail.com','2025-09-30 00:00:00.000000','ujgbbgj',NULL,'::1','2025-09-30 09:37:16.000000','::1','2025-09-30 09:37:16'),(5,'rudra','2004-02-12',1,2,9,'9327950361',2,'rudra@gmail.com','103020','rajesh thakkar','meena ','6576887678','rajesh@gmail.com','2025-09-30 00:00:00.000000','gujrat',NULL,'::1','2025-09-30 10:07:59.000000','::1','2025-09-30 10:07:59'),(6,'pulkit','2007-10-10',3,2,9,'9256470710',2,'test@example.in','101112','indra kumar','sushila ','9829380661','test@example.com','2025-09-30 00:00:00.000000','jaipur',NULL,'::1','2025-09-30 10:19:03.000000','::1','2025-09-30 10:19:03'),(7,'hi,manshiuah','2025-12-10',1,2,9,'7879979878',2,'jhgbjh@gmail.com','87686','kjhbkjbk','bkgjkb','7897979979','jnmbj@gmail.com','2025-12-30 00:00:00.000000','njvngv mnknbk,',NULL,'::1','2025-12-30 07:53:26.000000','::1','2025-12-30 07:53:26');
+INSERT INTO `tblstudent` VALUES (1,'Himanshbhj','2025-10-01',3,2,9,'6375324605',2,'jhvjhv@gmail.com','12312','hjgjhgjh','vjhfhjkgkjyg','8768757876','gjgkg@gmail.com','2025-09-29 00:00:00.000000','hj,jkv,mjh',NULL,'::1','2025-12-30 20:35:37.000000','::1','2025-12-30 20:35:37','A'),(2,'Himanshbhjvg','2011-10-29',1,2,9,'6375324604',2,'jhvjhv@gmail.com','101010','hjgjhgjh','vjhfhjkgkjyg','8768757876','gjgkg@gmail.com','2025-09-29 00:00:00.000000','hj,jkv,mjh',NULL,'::1','2025-09-29 10:44:30.000000','::1','2025-09-29 10:44:30','A'),(3,'Himanshbhjvg','2011-10-29',1,2,9,'6375324604',2,'jhvjhv@gmail.com','101010','hjgjhgjh','vjhfhjkgkjyg','8768757876','gjgkg@gmail.com','2025-09-29 00:00:00.000000','hj,jkv,mjh',NULL,'::1','2025-09-29 10:45:19.000000','::1','2025-09-29 10:45:19','A'),(4,'hbjbjm','2025-09-11',1,2,9,'9696787676',2,'himanshu@gmail.com','9887','kjnkbk','bkjbkhbj','9887679876','gjgkg@gmail.com','2025-09-30 00:00:00.000000','ujgbbgj',NULL,'::1','2025-09-30 09:37:16.000000','::1','2025-09-30 09:37:16','A'),(5,'rudra','2004-02-12',1,2,9,'9327950361',2,'rudra@gmail.com','103020','rajesh thakkar','meena ','6576887678','rajesh@gmail.com','2025-09-30 00:00:00.000000','gujrat',NULL,'::1','2025-09-30 10:07:59.000000','::1','2025-09-30 10:07:59','A'),(6,'pulkit','2007-10-10',3,2,9,'9256470710',2,'test@example.in','101112','indra kumar','sushila ','9829380661','test@example.com','2025-09-30 00:00:00.000000','jaipur',NULL,'::1','2025-09-30 10:19:03.000000','::1','2025-09-30 10:19:03','A'),(7,'hi,manshiuah','2025-12-10',1,2,9,'7879979878',2,'jhgbjh@gmail.com','87686','kjhbkjbk','bkgjkb','7897979979','jnmbj@gmail.com','2025-12-30 00:00:00.000000','njvngv mnknbk,',NULL,'::1','2025-12-30 07:53:26.000000','::1','2025-12-30 07:53:26','A');
 /*!40000 ALTER TABLE `tblstudent` ENABLE KEYS */;
 
 --

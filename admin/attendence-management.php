@@ -128,6 +128,17 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label"><b>Select Section</b></label>
+                        <select class="form-select" name="section" id="section">
+                            <option value="-1">--Select Section--</option>
+                            <option value="A" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'A') ? "selected" : ""; ?>>Section A</option>
+                            <option value="B" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'B') ? "selected" : ""; ?>>Section B</option>
+                            <option value="C" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'C') ? "selected" : ""; ?>>Section C</option>
+                            <option value="D" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'D') ? "selected" : ""; ?>>Section D</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label"><b>Select Academic Year</b></label>
                         <select class="form-select" name="academicYearId" id="academicYearId">
                             <option value="-1">--Select Academic Year--</option>
@@ -219,18 +230,19 @@ $(document).ready(function(){
    }); 
 });
 $(document).ready(function(){
-  $("#courseId,#academicYearId,#sessionId").change(function(){
+  $("#courseId,#academicYearId,#sessionId,#section").change(function(){
       var courseId = $("#courseId").val();
       var academicYearId = $("#academicYearId").val();
       var sessionId = $("#sessionId").val();
-      if(courseId == "-1" || academicYearId == "-1" || sessionId == "-1")
+      var section = $("#section").val();
+      if(courseId == "-1" || academicYearId == "-1" || sessionId == "-1" || section == "-1")
       {
          return; 
       } else{
           $.ajax({
             url:"fetch-student-table.php",
             type:"POST",
-            data: { courseId: courseId, academicYearId: academicYearId, sessionId: sessionId },
+            data: { courseId: courseId, academicYearId: academicYearId, sessionId: sessionId, section: section },
             success: function (response) {
                 $("#studentTableBody").html(response);
             }

@@ -83,6 +83,16 @@
                     </select>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label"><b>Select Section</b></label>
+                    <select class="form-select" name="section" id="section">
+                        <option value="-1">--Select Section--</option>
+                        <option value="A">Section A</option>
+                        <option value="B">Section B</option>
+                        <option value="C">Section C</option>
+                        <option value="D">Section D</option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label class="form-label"><b>Select Academic Year</b></label>
                     <select class="form-select" name="academicYearId" aria-label="Default select example" id="academicYearId">
                         <option value="-1">--Select Academic Year--</option>
@@ -173,19 +183,20 @@
     });
 
     
-    $("#subjectId").change(function(){
+    $("#subjectId, #section").change(function(){
         var courseId = $("#courseId").val();
         var academicYearId = $("#academicYearId").val();
         var subjectId = $("#subjectId").val();
         var testId = $("#testId").val();
+        var section = $("#section").val();
 
-        if(courseId == -1 || academicYearId == -1 || subjectId == -1 || testId == -1){
+        if(courseId == -1 || academicYearId == -1 || subjectId == -1 || testId == -1 || section == -1){
             $("#studentTable").html('No Record Found');
         } else {
             $.ajax({
                 url:"fetch-student-table-result.php",
                 type:"POST",
-                data: { courseId: courseId, academicYearId: academicYearId, subjectId: subjectId , testId: testId },
+                data: { courseId: courseId, academicYearId: academicYearId, subjectId: subjectId , testId: testId, section: section },
                 success: function(response){
                     $("#studentTable").html(response);
                 }

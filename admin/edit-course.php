@@ -74,10 +74,6 @@
                     <input class="form-control" type="text" placeholder="Course Name" name="courseName" value="<?php echo $courses['courseName'] ?>" aria-label="default input example">    
                 </div>
                 <div class="mb-3">
-                    <label class="form-label"><b>Section</b></label>
-                    <input class="form-control" type="text" placeholder="Section Name" name="section" value="<?php echo $courses['section'] ?>">    
-                </div>
-                <div class="mb-3">
                     <label for="basic-url" class="form-label"><b>Select Course Duration</b></label>
                     <div class="input-group">
                         <select class="form-select" aria-label="Default select example" name="courseDuration" value="<?php echo $courses['courseDuration'] ?>">

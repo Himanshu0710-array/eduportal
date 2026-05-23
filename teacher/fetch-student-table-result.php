@@ -5,6 +5,7 @@ $testId         = $_REQUEST["testId"];
 $courseId       = $_REQUEST["courseId"];
 $academicYearId = $_REQUEST["academicYearId"];
 $subjectId      = $_REQUEST["subjectId"];
+$section        = $_REQUEST["section"];
 
 // Fetch test details
 $teststmt = $conn->prepare("SELECT * FROM tblTestDetail WHERE testId=:testId");
@@ -33,9 +34,10 @@ $testCheck = $checkstmt->rowCount();
 
 if($testCheck > 0){
 
-    $stmt = $conn->prepare("SELECT * FROM tblstudent WHERE courseId=:courseId AND academicYearId=:academicYearId");
+    $stmt = $conn->prepare("SELECT * FROM tblstudent WHERE courseId=:courseId AND academicYearId=:academicYearId AND section=:section");
     $stmt->bindParam(":courseId", $courseId);
     $stmt->bindParam(":academicYearId", $academicYearId);
+    $stmt->bindParam(":section", $section);
     $stmt->execute();
 
     while($student = $stmt->fetch()) {

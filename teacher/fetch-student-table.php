@@ -2,10 +2,12 @@
 include "../database-connect.php";
 $courseId   =   $_REQUEST["courseId"];
 $academicYearId =   $_REQUEST["academicYearId"];
+$section =   $_REQUEST["section"];
 
-$stmt=$conn->prepare("SELECT * FROM tblstudent WHERE courseId=:courseId AND academicYearId=:academicYearId");
+$stmt=$conn->prepare("SELECT * FROM tblstudent WHERE courseId=:courseId AND academicYearId=:academicYearId AND section=:section");
 $stmt->bindParam(":courseId",$courseId);
 $stmt->bindParam(":academicYearId",$academicYearId);
+$stmt->bindParam(":section",$section);
 $stmt->execute();
 
 

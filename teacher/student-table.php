@@ -50,6 +50,7 @@ $stmt->execute();
                   <th scope="col">Student Id</th>
                   <th scope="col">Student Name</th>
                   <th scope="col">Course</th>
+                  <th scope="col">Section</th>
                   <th scope="col">E-Mail</th>
                   <th scope="col">Session</th>
                   <th scope="col">Action</th>
@@ -62,19 +63,20 @@ $stmt->execute();
                 ?>
                     <tr>
                     <td><?php echo $result['studentId']; ?></td>
-                     <td><?php echo textSafe($result['studentName']); ?></td>
-                     <td>
-                         <?php  
-                            $result['courseId']; 
-                            $courseId=$result['courseId'];
-                            $stmt2=$conn->prepare("SELECT * FROM tblcourse where courseId=:courseId");
-                            $stmt2->bindParam(":courseId",$courseId);
-                            $stmt2->execute();
-                            $row=$stmt2->fetch();
-                            echo $row["courseName"];
-                         ?>
-                        </td>
-                     <td><?php echo textSafe($result['studentEmail']); ?></td>
+                      <td><?php echo textSafe($result['studentName']); ?></td>
+                      <td>
+                          <?php  
+                             $result['courseId']; 
+                             $courseId=$result['courseId'];
+                             $stmt2=$conn->prepare("SELECT * FROM tblcourse where courseId=:courseId");
+                             $stmt2->bindParam(":courseId",$courseId);
+                             $stmt2->execute();
+                             $row=$stmt2->fetch();
+                             echo $row["courseName"];
+                          ?>
+                      </td>
+                      <td><?php echo $result['section']; ?></td>
+                      <td><?php echo textSafe($result['studentEmail']); ?></td>
                     <td>
                         <?php  
                             $sessionId = $result['sessionId']; 

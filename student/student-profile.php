@@ -116,6 +116,10 @@ $err_request = isset($_REQUEST['err']) ? $_REQUEST['err'] : 0;
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Student Section</label>
+                        <input class="form-control" type="text" value="<?php echo htmlspecialchars($row["section"]); ?>" readonly>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Student Academic Year</label>
                         <div class="input-group">
                             

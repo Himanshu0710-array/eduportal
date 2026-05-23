@@ -88,11 +88,6 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label class="form-label"><b>Section</b></label>
-                    <input class="form-control" type="text" placeholder="Section Name" name="section">    
-                </div>
-                
-                <div class="mb-3">
                     <label class="form-label"><b>Select Session</b></label>
                     <select class="form-select" name="sessionId"   aria-label="Default select example">
                         <option value="-1">--Select Session--</option>

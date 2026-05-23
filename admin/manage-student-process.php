@@ -25,6 +25,7 @@ $parentNumber       = isset($_REQUEST["parentNumber"]) ? trim($_REQUEST["parentN
 $parentEmail        = isset($_REQUEST["parentEmail"]) ? trim($_REQUEST["parentEmail"]) : '';
 $dateOfRegistration = isset($_REQUEST["dateOfRegistration"]) ? trim($_REQUEST["dateOfRegistration"]) : '';
 $address            = isset($_REQUEST["address"]) ? trim($_REQUEST["address"]) : '';
+$section            = isset($_REQUEST["section"]) ? trim($_REQUEST["section"]) : 'A';
 
 $updatedIpAddress   = $_SERVER['REMOTE_ADDR'];
 $updatedDateTime    = date('Y-m-d H:i:s');
@@ -45,6 +46,7 @@ $_SESSION["parentEmail"]        = $parentEmail;
 $_SESSION["dateOfRegistration"] = $dateOfRegistration;
 $_SESSION["address"]            = $address;
 $_SESSION["academicYearId"]     = $academicYearId;
+$_SESSION["section"]            = $section;
 
 // Validation
 if (strlen($studentName) <= 0) {
@@ -122,6 +124,7 @@ try {
                 parentEmail = :parentEmail, 
                 dateOfRegistration = :dateOfRegistration, 
                 address = :address, 
+                section = :section,
                 updatedIpAddress = :updatedIpAddress, 
                 updatedDateTime = :updatedDateTime 
               WHERE studentId = :studentId";
@@ -143,6 +146,7 @@ try {
     $stmt->bindParam(":parentEmail", $parentEmail);
     $stmt->bindParam(":dateOfRegistration", $dateOfRegistration);
     $stmt->bindParam(":address", $address);
+    $stmt->bindParam(":section", $section);
     $stmt->bindParam(":updatedIpAddress", $updatedIpAddress);
     $stmt->bindParam(":updatedDateTime", $updatedDateTime);
     
@@ -164,6 +168,7 @@ try {
     unset($_SESSION["dateOfRegistration"]);
     unset($_SESSION["address"]);
     unset($_SESSION["academicYearId"]);
+    unset($_SESSION["section"]);
 
     // Redirect to student table with success message
     header("location: student-table.php?success=1");

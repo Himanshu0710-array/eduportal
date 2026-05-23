@@ -174,9 +174,18 @@ if (isset($_GET['err'])) {
                             while ($course = $stmt->fetch()) {
                             ?>
                                 <option value="<?php echo $course['courseId']; ?>" <?php echo ($row["courseId"] == $course['courseId']) ? 'selected' : ''; ?>>
-                                    <?php echo $course['courseName'] . " - Sec " . $course['section']; ?>
+                                    <?php echo $course['courseName']; ?>
                                 </option>
                             <?php } ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Student Section</label>
+                        <select class="form-select" name="section">
+                            <option value="A" <?php echo ($row["section"] == 'A') ? 'selected' : ''; ?>>Section A</option>
+                            <option value="B" <?php echo ($row["section"] == 'B') ? 'selected' : ''; ?>>Section B</option>
+                            <option value="C" <?php echo ($row["section"] == 'C') ? 'selected' : ''; ?>>Section C</option>
+                            <option value="D" <?php echo ($row["section"] == 'D') ? 'selected' : ''; ?>>Section D</option>
                         </select>
                     </div>
                     <div class="mb-3">
