@@ -175,10 +175,6 @@ try {
     exit;
 
 } catch (PDOException $e) {
-    // Log the database error
-    error_log("Database Error in manage-student-process.php: " . $e->getMessage());
-    // Redirect back with error code
-    header("Location: manage-student.php?studentId=" . $studentId . "&err=15");
-    exit;
+    die("Database Error: " . $e->getMessage());
 }
 ?>
