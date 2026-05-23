@@ -1,6 +1,6 @@
 <?php
     include "../database-connect.php";
-    $studentId = $_REQUEST["studentId"];
+    $studentId = $_POST["studentId"] ?? $_GET["studentId"] ?? "";
 
     $query = "SELECT * FROM tblfees WHERE studentId = :studentId ORDER BY feeId DESC";
     $stmt = $conn->prepare($query);

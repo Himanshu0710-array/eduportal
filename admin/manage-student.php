@@ -3,7 +3,7 @@ include "admin-dashboard-top.php";
 include "admin-dashboard-content.php";
 
 
-$studentId  = $_REQUEST["studentId"];
+$studentId  = $_GET["studentId"] ?? '';
 
 
 $query1 = "SELECT * FROM tblstudent WHERE studentId = :studentId";

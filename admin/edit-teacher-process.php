@@ -8,15 +8,15 @@ include "../database-connect.php";
 
 date_default_timezone_set("Asia/Calcutta");
 
-$teacherId = $_REQUEST["teacherId"];
-$teacherName = $_REQUEST["teacherName"];
-$teacherEmail = $_REQUEST["teacherEmail"];
-$teacherPassword = $_REQUEST["teacherPassword"];
-$teacherPhone = $_REQUEST["teacherPhone"];
-$teacherGender = $_REQUEST["teacherGender"];
-$subjectId = $_REQUEST["subjectId"];
+$teacherId = $_POST["teacherId"] ?? '';
+$teacherName = $_POST["teacherName"] ?? '';
+$teacherEmail = $_POST["teacherEmail"] ?? '';
+$teacherPassword = $_POST["teacherPassword"] ?? '';
+$teacherPhone = $_POST["teacherPhone"] ?? '';
+$teacherGender = $_POST["teacherGender"] ?? '';
+$subjectId = $_POST["subjectId"] ?? '';
 
-$sections_arr = $_REQUEST["sections"] ?? [];
+$sections_arr = $_POST["sections"] ?? [];
 $section = implode(",", $sections_arr);
 
 $updatedIpAddress = $_SERVER['REMOTE_ADDR'];

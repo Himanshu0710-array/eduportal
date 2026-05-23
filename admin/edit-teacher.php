@@ -3,7 +3,7 @@ include_once "../database-connect.php";
 include "admin-dashboard-top.php";
 include "admin-dashboard-content.php";
 
-$teacherId = $_REQUEST['teacherId'];
+$teacherId = $_GET['teacherId'] ?? '';
 $stmt = $conn->prepare("SELECT * FROM tblteacher WHERE teacherId = :teacherId");
 $stmt->bindParam(":teacherId", $teacherId);
 $stmt->execute();

@@ -1,6 +1,6 @@
 <?php
 include "../database-connect.php";
-$studentId = $_REQUEST["studentId"];
+$studentId = $_GET["studentId"] ?? $_POST["studentId"] ?? "";
 $query = "SELECT * FROM tblstudent where studentId=:studentId";
 $stmt=$conn->prepare($query);
 $stmt->bindParam(":studentId",$studentId);
