@@ -80,18 +80,39 @@ include "admin-dashboard-content.php";
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"><b>Select Assigned Subject</b></label>
-                        <select class="form-select" name="subjectId" required>
-                            <option value="-1">--Select Subject--</option>
+                        <label class="form-label"><b>Select Course</b></label>
+                        <select class="form-select" name="courseId" id="courseId" required>
+                            <option value="-1">--Select Course--</option>
                             <?php
-                            $stmt = $conn->prepare("SELECT s.*, c.courseName FROM tblsubject s JOIN tblcourse c ON s.courseId = c.courseId");
+                            $stmt = $conn->prepare("SELECT * FROM tblcourse");
                             $stmt->execute();
                             while ($row = $stmt->fetch()) {
                             ?>
-                            <option value="<?php echo $row["subjectId"]; ?>">
-                                <?php echo htmlspecialchars($row["subjectName"] . ' (' . $row["courseName"] . ')'); ?>
+                            <option value="<?php echo $row["courseId"]; ?>">
+                                <?php echo htmlspecialchars($row["courseName"]); ?>
                             </option>
                             <?php } ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Select Academic Year</b></label>
+                        <select class="form-select" name="academicYearId" id="academicYearId" required>
+                            <option value="-1">--Select Academic Year--</option>
+                            <?php
+                            $stmt = $conn->prepare("SELECT * FROM tblAcademicYear");
+                            $stmt->execute();
+                            while ($row = $stmt->fetch()) {
+                            ?>
+                            <option value="<?php echo $row["academicYearId"]; ?>">
+                                <?php echo htmlspecialchars($row["academicYearName"]); ?>
+                            </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Select Assigned Subject</b></label>
+                        <select class="form-select" name="subjectId" id="subjectId" required>
+                            <option value="-1">--Select Subject--</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -121,6 +142,27 @@ include "admin-dashboard-content.php";
             <div class="col-md-1"></div>    
         </div>
     </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#courseId, #academicYearId").change(function(){
+        var courseId = $("#courseId").val();
+        var academicYearId = $("#academicYearId").val();
+        if(courseId != "-1" && academicYearId != "-1"){
+            $.ajax({
+                url: "fetch-subject.php",
+                type: "POST",
+                data: { courseId: courseId, academicYearId: academicYearId },
+                success: function(data){
+                    $("#subjectId").html(data);
+                }
+            });
+        } else {
+            $("#subjectId").html('<option value="-1">--Select Subject--</option>');
+        }
+    });
+});
+</script>
 <?php
 include "admin-dashboard-footer.php";
 ?>

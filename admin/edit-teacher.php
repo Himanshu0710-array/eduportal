@@ -10,6 +10,15 @@ $stmt->execute();
 $row = $stmt->fetch();
 
 $assignedSections = !empty($row['section']) ? explode(',', $row['section']) : [];
+
+$currentSubjectId = $row['subjectId'];
+$subQuery = $conn->prepare("SELECT * FROM tblsubject WHERE subjectId = :subjectId");
+$subQuery->bindParam(":subjectId", $currentSubjectId);
+$subQuery->execute();
+$currentSubject = $subQuery->fetch();
+
+$currentCourseId = $currentSubject ? $currentSubject['courseId'] : -1;
+$currentAcademicYearId = $currentSubject ? $currentSubject['academicYearId'] : -1;
 ?>
 <!doctype html>
 <html lang="en">
@@ -77,17 +86,54 @@ $assignedSections = !empty($row['section']) ? explode(',', $row['section']) : []
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"><b>Select Assigned Subject</b></label>
-                        <select class="form-select" name="subjectId" required>
+                        <label class="form-label"><b>Select Course</b></label>
+                        <select class="form-select" name="courseId" id="courseId" required>
+                            <option value="-1">--Select Course--</option>
                             <?php
-                            $subStmt = $conn->prepare("SELECT s.*, c.courseName FROM tblsubject s JOIN tblcourse c ON s.courseId = c.courseId");
-                            $subStmt->execute();
-                            while ($subj = $subStmt->fetch()) {
+                            $cStmt = $conn->prepare("SELECT * FROM tblcourse");
+                            $cStmt->execute();
+                            while ($cRow = $cStmt->fetch()) {
                             ?>
-                            <option value="<?php echo $subj["subjectId"]; ?>" <?php echo ($row["subjectId"] == $subj['subjectId']) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($subj["subjectName"] . ' (' . $subj["courseName"] . ')'); ?>
+                            <option value="<?php echo $cRow["courseId"]; ?>" <?php echo ($cRow["courseId"] == $currentCourseId) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($cRow["courseName"]); ?>
                             </option>
                             <?php } ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Select Academic Year</b></label>
+                        <select class="form-select" name="academicYearId" id="academicYearId" required>
+                            <option value="-1">--Select Academic Year--</option>
+                            <?php
+                            $ayStmt = $conn->prepare("SELECT * FROM tblAcademicYear");
+                            $ayStmt->execute();
+                            while ($ayRow = $ayStmt->fetch()) {
+                            ?>
+                            <option value="<?php echo $ayRow["academicYearId"]; ?>" <?php echo ($ayRow["academicYearId"] == $currentAcademicYearId) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($ayRow["academicYearName"]); ?>
+                            </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Select Assigned Subject</b></label>
+                        <select class="form-select" name="subjectId" id="subjectId" required>
+                            <option value="-1">--Select Subject--</option>
+                            <?php
+                            if ($currentCourseId != -1 && $currentAcademicYearId != -1) {
+                                $sStmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId = :courseId AND academicYearId = :academicYearId AND status = 1");
+                                $sStmt->bindParam(":courseId", $currentCourseId);
+                                $sStmt->bindParam(":academicYearId", $currentAcademicYearId);
+                                $sStmt->execute();
+                                while ($sRow = $sStmt->fetch()) {
+                                ?>
+                                <option value="<?php echo $sRow["subjectId"]; ?>" <?php echo ($sRow["subjectId"] == $currentSubjectId) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($sRow["subjectName"]); ?>
+                                </option>
+                                <?php 
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -117,6 +163,27 @@ $assignedSections = !empty($row['section']) ? explode(',', $row['section']) : []
             <div class="col-md-1"></div>    
         </div>
     </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("#courseId, #academicYearId").change(function(){
+        var courseId = $("#courseId").val();
+        var academicYearId = $("#academicYearId").val();
+        if(courseId != "-1" && academicYearId != "-1"){
+            $.ajax({
+                url: "fetch-subject.php",
+                type: "POST",
+                data: { courseId: courseId, academicYearId: academicYearId },
+                success: function(data){
+                    $("#subjectId").html(data);
+                }
+            });
+        } else {
+            $("#subjectId").html('<option value="-1">--Select Subject--</option>');
+        }
+    });
+});
+</script>
 <?php
 include "admin-dashboard-footer.php";
 ?>

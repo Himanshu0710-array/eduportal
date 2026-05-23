@@ -44,7 +44,9 @@ if ($subjectId == "-1") {
     exit;
 }
 
-$stmt = $conn->prepare("INSERT INTO tblteacher (teacherName, teacherEmail, teacherPassword, teacherPhone, teacherGender, subjectId, section, addedIpAddress, addedDateTime, updatedIpAddress, updatedDateTime) VALUES (:teacherName, :teacherEmail, :teacherPassword, :teacherPhone, :teacherGender, :subjectId, :section, :addedIpAddress, :addedDateTime, :updatedIpAddress, :updatedDateTime)");
+$joiningDate = date('Y-m-d');
+
+$stmt = $conn->prepare("INSERT INTO tblteacher (teacherName, teacherEmail, teacherPassword, teacherPhone, teacherGender, subjectId, section, joiningDate, addedIpAddress, addedDateTime, updatedIpAddress, updatedDateTime) VALUES (:teacherName, :teacherEmail, :teacherPassword, :teacherPhone, :teacherGender, :subjectId, :section, :joiningDate, :addedIpAddress, :addedDateTime, :updatedIpAddress, :updatedDateTime)");
 $stmt->bindParam(":teacherName", $teacherName);
 $stmt->bindParam(":teacherEmail", $teacherEmail);
 $stmt->bindParam(":teacherPassword", $teacherPassword);
@@ -52,6 +54,7 @@ $stmt->bindParam(":teacherPhone", $teacherPhone);
 $stmt->bindParam(":teacherGender", $teacherGender);
 $stmt->bindParam(":subjectId", $subjectId);
 $stmt->bindParam(":section", $section);
+$stmt->bindParam(":joiningDate", $joiningDate);
 $stmt->bindParam(":addedIpAddress", $addedIpAddress);
 $stmt->bindParam(":addedDateTime", $addedDateTime);
 $stmt->bindParam(":updatedIpAddress", $updatedIpAddress);
