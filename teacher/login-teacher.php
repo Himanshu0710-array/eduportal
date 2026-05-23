@@ -110,6 +110,13 @@
                 </div>
                 <?php } ?>
 
+                <?php if (isset($_REQUEST["err"]) && $_REQUEST["err"] == 4) { ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> Teacher ID not found.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <?php } ?>
+
                 <div class="mb-3">
                     <label class="form-label">Teacher ID</label>
                     <input class="form-control" type="number" name="teacherId" placeholder="Enter Teacher ID">
@@ -127,7 +134,8 @@
     <script>
     // Show loader when login form is submitted
     document.querySelector('form').addEventListener('submit', function() {
-        document.getElementById('page-loader').classList.remove('hidden');
+        var loader = document.getElementById('page-loader');
+        if(loader) loader.classList.remove('hidden');
     });
     </script>
   </body>

@@ -6,17 +6,15 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include "../database-connect.php";
 
-$teacherId = $_REQUEST['teacherId'];
-$teacherPassword = $_REQUEST['teacherPassword'];
+$teacherId = $_POST['teacherId'] ?? '';
+$teacherPassword = $_POST['teacherPassword'] ?? '';
 
-
-
-if (strlen($teacherId) == 0) {
+if (trim($teacherId) === '') {
     header("location:login-teacher.php?err=1");
     exit;
 }
 
-if (strlen($teacherPassword) == 0) {
+if (trim($teacherPassword) === '') {
     header("location:login-teacher.php?err=2");
     exit;
 }
@@ -28,7 +26,7 @@ $stmt->bindParam(":teacherId", $teacherId);
 $stmt->execute();
 $result = $stmt->fetch();
 if (!$result) {
-    header("location:login-teacher.php?err=3");
+    header("location:login-teacher.php?err=4");
     exit;
 }
 
