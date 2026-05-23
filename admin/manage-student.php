@@ -191,8 +191,7 @@ if (isset($_GET['err'])) {
                     <div class="mb-3">
                         <label class="form-label">Student Academic Year</label>
                         <div class="input-group">
-                            
-                            <input class="form-control" type="text" name="academicYearId" value=
+                            <input class="form-control" type="text" value=
                             "<?php
                                 $academicYearId = $row['academicYearId'];
                                 $stmt=$conn->prepare("SELECT * FROM tblAcademicYear WHERE academicYearId=:academicYearId");
@@ -202,6 +201,7 @@ if (isset($_GET['err'])) {
                                 echo $academicYear["academicYearName"];
                             ?>" 
                             placeholder="Academic Year" aria-label="default input example" readonly >
+                            <input type="hidden" name="academicYearId" value="<?php echo $row['academicYearId']; ?>">
                         </div>
                     </div>
                     <div class="mb-3">
