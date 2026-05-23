@@ -75,6 +75,14 @@
                         $stmt->bindParam(":teacherId",$teacherId);
                         $stmt->execute();
                         $result = $stmt->fetch();
+
+                        $subjectData = null;
+                        if (!empty($result['subjectId'])) {
+                            $subStmt = $conn->prepare("SELECT s.subjectName, c.courseName FROM tblsubject s JOIN tblcourse c ON s.courseId = c.courseId WHERE s.subjectId = :subjectId");
+                            $subStmt->bindParam(":subjectId", $result['subjectId']);
+                            $subStmt->execute();
+                            $subjectData = $subStmt->fetch();
+                        }
                         
                         if (!empty($result['picture'])) 
                         {
@@ -138,8 +146,12 @@
                 </div>
             </div>
             <div class="col-md-10 col-sm-10 right-side">
-                <div>
-                    <h3 class="welcome-text">Welcome, <span class="admin-name"><?php echo $result['teacherName']; ?></span></h3>
+                <div class="d-flex justify-content-between align-items-center mt-3 mb-2 flex-wrap">
+                    <h3 class="welcome-text mb-0">Welcome, <span class="admin-name"><?php echo $result['teacherName']; ?></span></h3>
+                    <div class="text-end">
+                        <span class="badge bg-primary fs-6 me-2">Subject: <?php echo htmlspecialchars($subjectData['subjectName'] ?? 'N/A'); ?> (<?php echo htmlspecialchars($subjectData['courseName'] ?? 'N/A'); ?>)</span>
+                        <span class="badge bg-secondary fs-6">Section(s): <?php echo htmlspecialchars($result['section'] ?: 'None'); ?></span>
+                    </div>
                 </div>
    
            

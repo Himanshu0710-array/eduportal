@@ -136,10 +136,14 @@
                         <label class="form-label"><b>Select Section</b></label>
                         <select class="form-select" name="section" id="section">
                             <option value="-1">--Select Section--</option>
-                            <option value="A" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'A') ? "selected" : ""; ?>>Section A</option>
-                            <option value="B" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'B') ? "selected" : ""; ?>>Section B</option>
-                            <option value="C" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'C') ? "selected" : ""; ?>>Section C</option>
-                            <option value="D" <?php echo (isset($_SESSION["section"]) && $_SESSION["section"] == 'D') ? "selected" : ""; ?>>Section D</option>
+                            <?php
+                            $teacherSections = !empty($result['section']) ? explode(',', $result['section']) : [];
+                            foreach ($teacherSections as $sec) {
+                                $sec = trim($sec);
+                                $selected = (isset($_SESSION["section"]) && $_SESSION["section"] == $sec) ? "selected" : "";
+                                echo "<option value=\"$sec\" $selected>Section $sec</option>";
+                            }
+                            ?>
                         </select>
                     </div>
 

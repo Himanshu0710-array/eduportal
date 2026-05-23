@@ -31,6 +31,11 @@ try {
 
     $conn = new PDO("mysql:host=$servername;port=$port;dbname=$dbname;charset=utf8", $username, $password, $options);
 
+    $checkColumn = $conn->query("SHOW COLUMNS FROM tblteacher LIKE 'section'");
+    if ($checkColumn->rowCount() == 0) {
+        $conn->query("ALTER TABLE tblteacher ADD COLUMN section VARCHAR(100) DEFAULT ''");
+    }
+
 } catch (PDOException $e) {
  
     die("Connection failed: " . $e->getMessage());

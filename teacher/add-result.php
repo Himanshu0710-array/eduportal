@@ -89,10 +89,13 @@
                     <label class="form-label"><b>Select Section</b></label>
                     <select class="form-select" name="section" id="section">
                         <option value="-1">--Select Section--</option>
-                        <option value="A">Section A</option>
-                        <option value="B">Section B</option>
-                        <option value="C">Section C</option>
-                        <option value="D">Section D</option>
+                        <?php
+                        $teacherSections = !empty($result['section']) ? explode(',', $result['section']) : [];
+                        foreach ($teacherSections as $sec) {
+                            $sec = trim($sec);
+                            echo "<option value=\"$sec\">Section $sec</option>";
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="mb-3">

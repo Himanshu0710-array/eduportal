@@ -6,9 +6,36 @@ include_once "../database-connect.php";
 include "teacher-dashboard-top.php";
 include "teacher-dashboard-content.php";
 include "fun-specialchar.php";
-$query="SELECT * FROM tblstudent";
-$stmt=$conn->prepare($query);
-$stmt->execute();
+$tstmt = $conn->prepare("SELECT * FROM tblteacher WHERE teacherId = :teacherId");
+$tstmt->bindParam(":teacherId", $_SESSION['teacherId']);
+$tstmt->execute();
+$teacher = $tstmt->fetch();
+
+$courseId = 0;
+$sections = [];
+if ($teacher && !empty($teacher['subjectId'])) {
+    $substmt = $conn->prepare("SELECT courseId FROM tblsubject WHERE subjectId = :subjectId");
+    $substmt->bindParam(":subjectId", $teacher['subjectId']);
+    $substmt->execute();
+    $sub = $substmt->fetch();
+    if ($sub) {
+        $courseId = $sub['courseId'];
+    }
+    if (!empty($teacher['section'])) {
+        $sections = explode(',', $teacher['section']);
+    }
+}
+
+if ($courseId > 0 && !empty($sections)) {
+    $placeholders = implode(',', array_fill(0, count($sections), '?'));
+    $query = "SELECT * FROM tblstudent WHERE courseId = ? AND section IN ($placeholders)";
+    $stmt = $conn->prepare($query);
+    $params = array_merge([$courseId], $sections);
+    $stmt->execute($params);
+} else {
+    $stmt = $conn->prepare("SELECT * FROM tblstudent WHERE 1=0");
+    $stmt->execute();
+}
 ?>
 <!doctype html>
 <html lang="en">
