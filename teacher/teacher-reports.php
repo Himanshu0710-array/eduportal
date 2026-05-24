@@ -166,7 +166,7 @@ include "teacher-dashboard-content.php";
                     <table class="table table-bordered table-striped">
                         <thead class="table-dark">
                             <tr>
-                                <th>Roll No</th>
+                                <th>Student ID</th>
                                 <th>Student Name</th>
                                 <th>Section</th>
                                 <th>Attendance %</th>
@@ -224,7 +224,7 @@ include "teacher-dashboard-content.php";
                                 $averageMarks = ($testCount > 0) ? round($totalMarks / $testCount, 2) : "N/A";
                             ?>
                                 <tr>
-                                    <td><?php echo $student['rollNo']; ?></td>
+                                    <td><?php echo $student['studentId']; ?></td>
                                     <td><?php echo $student['studentName']; ?></td>
                                     <td><?php echo $student['section']; ?></td>
                                     <td>

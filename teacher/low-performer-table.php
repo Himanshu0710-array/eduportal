@@ -7,7 +7,39 @@ include "../database-connect.php";
 include "teacher-dashboard-top.php";
 include "teacher-dashboard-content.php"; 
 
-$students = $conn->query("SELECT * FROM tblstudent")->fetchAll(PDO::FETCH_ASSOC);
+$teacherId = isset($_SESSION['teacherId']) ? $_SESSION['teacherId'] : (isset($_COOKIE['teacherId']) ? htmlspecialchars($_COOKIE['teacherId']) : '');
+$query = "SELECT * FROM tblteacher WHERE teacherId = :teacherId";
+$stmt = $conn->prepare($query);
+$stmt->bindParam(":teacherId", $teacherId);
+$stmt->execute();
+$result = $stmt->fetch();
+
+$teacherCourseId = -1;
+$teacherAcademicYearId = -1;
+if (!empty($result['subjectId'])) {
+    $subStmt = $conn->prepare("SELECT courseId, academicYearId FROM tblsubject WHERE subjectId = :subjectId");
+    $subStmt->bindParam(":subjectId", $result['subjectId']);
+    $subStmt->execute();
+    $subRow = $subStmt->fetch();
+    if ($subRow) {
+        $teacherCourseId = $subRow['courseId'];
+        $teacherAcademicYearId = $subRow['academicYearId'];
+    }
+}
+
+$teacherSections = !empty($result['section']) ? explode(',', $result['section']) : [];
+$teacherSections = array_map('trim', $teacherSections);
+if (empty($teacherSections)) $teacherSections[] = ''; // default empty to prevent sql error
+$placeholders = implode(',', array_fill(0, count($teacherSections), '?'));
+
+$stmtStudents = $conn->prepare("SELECT * FROM tblstudent WHERE courseId = ? AND academicYearId = ? AND section IN ($placeholders)");
+$params = [$teacherCourseId, $teacherAcademicYearId];
+foreach ($teacherSections as $sec) {
+    $params[] = $sec;
+}
+$stmtStudents->execute($params);
+$students = $stmtStudents->fetchAll(PDO::FETCH_ASSOC);
+
 $marks = $conn->query("SELECT * FROM tblresult")->fetchAll(PDO::FETCH_ASSOC);
 
 $lowPerformers = [];
@@ -48,6 +80,7 @@ foreach ($students as $student) {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f4f6f8;
     padding: 20px;
+    min-height: 100vh;
 }
 .low-performers-page .card {
     background: #fff;
