@@ -129,6 +129,7 @@
                       </button>
                       <ul class="dropdown-menu">
                         <li><a href="student-table.php" class="btn left-btn-1  w-100">Student Table</a></li>
+                        <li><a href="teacher-reports.php" class="btn left-btn-1  w-100">15-Day Reports</a></li>
                       </ul>
                     </div>
                     <button class="btn dropdown-toggle w-100 nav-link left-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">

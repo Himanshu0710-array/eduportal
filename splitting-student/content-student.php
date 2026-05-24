@@ -191,6 +191,9 @@
                     <a href="test-student.php" class="btn left-btn w-100 nav-link">
                         Test Details
                     </a>
+                    <a href="student-reports.php" class="btn left-btn w-100 nav-link">
+                        15-Day Reports
+                    </a>
                     <a href="meeting-student.php" class="btn left-btn w-100 nav-link">
                         Meeting
                     </a>
