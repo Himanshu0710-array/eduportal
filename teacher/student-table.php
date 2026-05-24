@@ -12,25 +12,27 @@ $tstmt->execute();
 $teacher = $tstmt->fetch();
 
 $courseId = 0;
+$academicYearId = 0;
 $sections = [];
 if ($teacher && !empty($teacher['subjectId'])) {
-    $substmt = $conn->prepare("SELECT courseId FROM tblsubject WHERE subjectId = :subjectId");
+    $substmt = $conn->prepare("SELECT courseId, academicYearId FROM tblsubject WHERE subjectId = :subjectId");
     $substmt->bindParam(":subjectId", $teacher['subjectId']);
     $substmt->execute();
     $sub = $substmt->fetch();
     if ($sub) {
         $courseId = $sub['courseId'];
+        $academicYearId = $sub['academicYearId'];
     }
     if (!empty($teacher['section'])) {
         $sections = explode(',', $teacher['section']);
     }
 }
 
-if ($courseId > 0 && !empty($sections)) {
+if ($courseId > 0 && $academicYearId > 0 && !empty($sections)) {
     $placeholders = implode(',', array_fill(0, count($sections), '?'));
-    $query = "SELECT * FROM tblstudent WHERE courseId = ? AND section IN ($placeholders)";
+    $query = "SELECT * FROM tblstudent WHERE courseId = ? AND academicYearId = ? AND section IN ($placeholders)";
     $stmt = $conn->prepare($query);
-    $params = array_merge([$courseId], $sections);
+    $params = array_merge([$courseId, $academicYearId], $sections);
     $stmt->execute($params);
 } else {
     $stmt = $conn->prepare("SELECT * FROM tblstudent WHERE 1=0");

@@ -136,7 +136,7 @@ include "teacher-dashboard-content.php";
             
             $attendancePercentage = ($totalClasses > 0) ? round(($attendedClasses / $totalClasses) * 100, 2) : 0;
             
-            $testStmt = $conn->prepare("SELECT t.testId, t.testName, t.dateOfTest, t.maximumMarks, r.marksObtained FROM tbltest t LEFT JOIN tblresult r ON t.testId = r.testId AND r.studentId = :studentId WHERE t.subjectId = :subjectId AND t.dateOfTest >= :startDate AND t.dateOfTest <= :endDate AND t.courseId = :courseId");
+            $testStmt = $conn->prepare("SELECT t.testId, td.testName, t.dateOfTest, td.maximumMarks, r.marksObtained FROM tbltest t JOIN tblTestDetail td ON t.testId = td.testId LEFT JOIN tblresult r ON t.testId = r.testId AND r.studentId = :studentId WHERE t.subjectId = :subjectId AND t.dateOfTest >= :startDate AND t.dateOfTest <= :endDate AND t.courseId = :courseId");
             $testStmt->bindParam(":studentId", $studentId);
             $testStmt->bindParam(":subjectId", $teacherSubjectId);
             $testStmt->bindParam(":startDate", $startDate);
