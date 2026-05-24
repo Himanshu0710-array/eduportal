@@ -9,11 +9,14 @@ function attendence($x , $y)
 
 $courseId = $_REQUEST["courseId"];
 $academicYearId = $_REQUEST["academicYearId"];
+$subjectId = $_REQUEST["subjectId"];
+$section = $_REQUEST["section"];
 $cutOffAttendence   =   $_REQUEST["cutOffAttendence"];
 
-$studentstmt=$conn->prepare("SELECT * FROM tblstudent WHERE courseId=:courseId AND academicYearId=:academicYearId");
+$studentstmt=$conn->prepare("SELECT * FROM tblstudent WHERE courseId=:courseId AND academicYearId=:academicYearId AND section=:section");
 $studentstmt->bindParam(":courseId",$courseId);
 $studentstmt->bindParam(":academicYearId",$academicYearId);
+$studentstmt->bindParam(":section",$section);
 $studentstmt->execute();
 
 
@@ -26,7 +29,8 @@ $studentstmt->execute();
       <th scope="col">Student</th>
       <th scope="col">Course</th>
       <th scope="col">Academic Year</th>
-      <th scope="col">Overall Attendence</th>
+      <th scope="col">Section</th>
+      <th scope="col">Subject Attendence</th>
     </tr>
 </thead>
 
@@ -36,25 +40,27 @@ while($student=$studentstmt->fetch()) {
 
 $studentId = $student["studentId"];
 
-$totalstmt=$conn->prepare("SELECT * FROM tblattendence WHERE courseId=:courseId AND academicYearId=:academicYearId AND studentId=:studentId");
+$totalstmt=$conn->prepare("SELECT * FROM tblattendence WHERE courseId=:courseId AND academicYearId=:academicYearId AND subjectId=:subjectId AND studentId=:studentId");
 $totalstmt->bindParam(":courseId",$courseId);
 $totalstmt->bindParam(":academicYearId",$academicYearId);
+$totalstmt->bindParam(":subjectId",$subjectId);
 $totalstmt->bindParam(":studentId",$studentId);
 $totalstmt->execute();
 
 $totalClasses = $totalstmt->rowCount();
 
 
-$attendstmt=$conn->prepare("SELECT * FROM tblattendence WHERE courseId=:courseId AND academicYearId=:academicYearId AND studentId=:studentId AND attendence = 1");
+$attendstmt=$conn->prepare("SELECT * FROM tblattendence WHERE courseId=:courseId AND academicYearId=:academicYearId AND subjectId=:subjectId AND studentId=:studentId AND attendence = 1");
 $attendstmt->bindParam(":courseId",$courseId);
 $attendstmt->bindParam(":academicYearId",$academicYearId);
+$attendstmt->bindParam(":subjectId",$subjectId);
 $attendstmt->bindParam(":studentId",$studentId);
 $attendstmt->execute();
 
 $ClassesAttended = $attendstmt->rowCount();
 
 $attendence = attendence($ClassesAttended,$totalClasses);
-if($attendence < $cutOffAttendence){
+if($totalClasses > 0 && $attendence < $cutOffAttendence){
 ?>
 <input type="hidden" value="<?php echo $student['studentId']; ?>" name="studentId[]">
 <tr>
@@ -79,7 +85,10 @@ if($attendence < $cutOffAttendence){
             $academicYear=$yearstmt->fetch();
             echo $academicYear["academicYearName"];
         ?>
-        </td>
+    </td>
+    <td>
+        <?php echo htmlspecialchars($student['section']); ?>
+    </td>
     <td>
         <span style="color: red;">
             <?php echo number_format($attendence, 2) . "%"; ?>

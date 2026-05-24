@@ -5,9 +5,19 @@
   include "teacher-dashboard-top.php";
   include "teacher-dashboard-content.php";
   include_once "../database-connect.php";
-  $query = "SELECT * FROM tblcourse";
-  $stmt=$conn->prepare($query);
-  $stmt->execute();
+
+  $teacherCourseId = -1;
+  $teacherAcademicYearId = -1;
+  if (!empty($result['subjectId'])) {
+      $subStmt = $conn->prepare("SELECT courseId, academicYearId FROM tblsubject WHERE subjectId = :subjectId");
+      $subStmt->bindParam(":subjectId", $result['subjectId']);
+      $subStmt->execute();
+      $subRow = $subStmt->fetch();
+      if ($subRow) {
+          $teacherCourseId = $subRow['courseId'];
+          $teacherAcademicYearId = $subRow['academicYearId'];
+      }
+  }
 ?>
 
 <!doctype html>
@@ -88,28 +98,93 @@
                     <h3>NOTICE FOR SHORT ATTENDENCE</h3>
                 </div>
                 <div class="mb-3">
-                    <label for="basic-url" class="form-label"><b>Select Course</b></label>
-                    <div class="input-group">
-                        <select class="form-select" aria-label="Default select example" name="courseId" id="courseId">
-                            <option value="-1" >--Select Course--</option>
-                            <?php
-                                    while($result=$stmt->fetch())
-                                    {
-                                ?>
-                                <option value="<?php echo $result['courseId'] ?>" ><?php echo $result['courseName'] ?></option>
-                                <?php
-                                    }
-                                ?>
-                        </select>
-                    </div>
+                    <label for="courseId" class="form-label"><b>Select Course</b></label>
+                    <select class="form-select" name="courseId" id="courseId">
+                        <option value="-1">--Select Course--</option>
+                        <?php
+                        $stmt = $conn->prepare("SELECT * FROM tblcourse");
+                        $stmt->execute();
+                        while ($course = $stmt->fetch()) {
+                            $selected = "";
+                            if (isset($_SESSION["courseId"]) && $_SESSION["courseId"] == $course['courseId']) {
+                                $selected = "selected";
+                            } elseif (!isset($_SESSION["courseId"]) && $course['courseId'] == $teacherCourseId) {
+                                $selected = "selected";
+                            }
+                        ?>
+                            <option value="<?php echo $course['courseId']; ?>" <?php echo $selected; ?>>
+                                <?php echo $course['courseName']; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
                 </div>
+
                 <div class="mb-3">
-                    <label for="basic-url" class="form-label"><b>Select Academic Year</b></label>  
-                    <div class="input-group">
-                        <select class="form-select" aria-label="Default select example" name="academicYearId" id="academicYearId">
-                            <option value="-1" >--Select Academic Year--</option>
-                        </select>
-                    </div>
+                    <label class="form-label"><b>Select Section</b></label>
+                    <select class="form-select" name="section" id="section">
+                        <option value="-1">--Select Section--</option>
+                        <?php
+                        $teacherSections = !empty($result['section']) ? explode(',', $result['section']) : [];
+                        foreach ($teacherSections as $index => $sec) {
+                            $sec = trim($sec);
+                            $selected = "";
+                            if (isset($_SESSION["section"]) && $_SESSION["section"] == $sec) {
+                                $selected = "selected";
+                            } elseif (!isset($_SESSION["section"]) && count($teacherSections) == 1) {
+                                $selected = "selected";
+                            } elseif (!isset($_SESSION["section"]) && $index == 0) {
+                                $selected = "selected";
+                            }
+                            echo "<option value=\"$sec\" $selected>Section $sec</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="academicYearId" class="form-label"><b>Select Academic Year</b></label>
+                    <select class="form-select" name="academicYearId" id="academicYearId">
+                        <option value="-1">--Select Academic Year--</option>
+                        <?php
+                        $stmt = $conn->prepare("SELECT * FROM tblAcademicYear");
+                        $stmt->execute();
+                        while ($year = $stmt->fetch()) {
+                            $selected = "";
+                            if (isset($_SESSION["academicYearId"]) && $_SESSION["academicYearId"] == $year['academicYearId']) {
+                                $selected = "selected";
+                            } elseif (!isset($_SESSION["academicYearId"]) && $year['academicYearId'] == $teacherAcademicYearId) {
+                                $selected = "selected";
+                            }
+                        ?>
+                            <option value="<?php echo $year['academicYearId']; ?>" <?php echo $selected; ?>>
+                                <?php echo $year['academicYearName']; ?>
+                            </option>
+                        <?php } ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><b>Select Subject</b></label>
+                    <select class="form-select" name="subjectId" id="subjectId">
+                        <option value="-1">--Select Subject--</option>
+                        <?php
+                        if ($teacherCourseId != -1 && $teacherAcademicYearId != -1) {
+                            $sstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId = :courseId AND academicYearId = :academicYearId AND status = 1");
+                            $sstmt->bindParam(":courseId", $teacherCourseId);
+                            $sstmt->bindParam(":academicYearId", $teacherAcademicYearId);
+                            $sstmt->execute();
+                            while ($subj = $sstmt->fetch()) {
+                                $selected = "";
+                                if (isset($_SESSION["subjectId"]) && $_SESSION["subjectId"] == $subj['subjectId']) {
+                                    $selected = "selected";
+                                } elseif (!isset($_SESSION["subjectId"]) && $subj['subjectId'] == $result['subjectId']) {
+                                    $selected = "selected";
+                                }
+                                echo '<option value="' . $subj['subjectId'] . '" ' . $selected . '>' . htmlspecialchars($subj['subjectName']) . '</option>';
+                            }
+                        }
+                        ?>
+                    </select>
                 </div>
                 <div>
                     <label for="exampleFormControlInput1" class="form-label"><b>Cut Off Attendence</b></label>
@@ -160,19 +235,21 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
    $(document).ready(function () {
-    $("#courseId").change(function () {
+    $("#courseId, #academicYearId").change(function () {
         var courseId = $("#courseId").val();
+        var academicYearId = $("#academicYearId").val();
 
-        if (courseId == "-1") {
-            $("#academicYearId").html('');
+        if (courseId == "-1" || academicYearId == "-1") {
+            $("#subjectId").html('<option value="-1">--Select Subject--</option>');
+            return;
         }
 
         $.ajax({
-            url: "get-academic-year.php",
+            url: "fetch-subject.php",
             type: "POST",
-            data: { courseId: courseId },
+            data: { courseId: courseId, academicYearId: academicYearId },
             success: function (response) {
-                $("#academicYearId").html(response);
+                $("#subjectId").html(response);
             }
         });
     });
@@ -180,15 +257,18 @@
     function fetchDefaulters() {
         var courseId = $("#courseId").val();
         var academicYearId = $("#academicYearId").val();
+        var subjectId = $("#subjectId").val();
+        var section = $("#section").val();
         var cutOffAttendence = $("#cutOffAttendence").val(); 
 
-        if (courseId == "-1" || academicYearId == "-1" || cutOffAttendence.length == 0) {
+        if (courseId == "-1" || academicYearId == "-1" || subjectId == "-1" || section == "-1" || cutOffAttendence.length == 0) {
+            $("#defaulterStudents").html("");
             return;
         } else {
             $.ajax({
                 url: "get-defaulter-students.php",
                 type: "POST",
-                data: { courseId: courseId, academicYearId: academicYearId, cutOffAttendence: cutOffAttendence },
+                data: { courseId: courseId, academicYearId: academicYearId, subjectId: subjectId, section: section, cutOffAttendence: cutOffAttendence },
                 success: function (response) {
                     $("#defaulterStudents").html(response);
                 }
@@ -196,8 +276,10 @@
         }
     }
 
-    $("#courseId, #academicYearId").change(fetchDefaulters);
+    $("#courseId, #academicYearId, #subjectId, #section").change(fetchDefaulters);
     $("#cutOffAttendence").keyup(fetchDefaulters);
+    
+    // Fetch on page load if default values are present
+    fetchDefaulters();
 });
-
 </script>

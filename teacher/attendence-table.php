@@ -5,6 +5,18 @@
   include "teacher-dashboard-top.php";
   include "teacher-dashboard-content.php";
   include_once "../database-connect.php";
+$teacherCourseId = -1;
+$teacherAcademicYearId = -1;
+if (!empty($result['subjectId'])) {
+    $subStmt = $conn->prepare("SELECT courseId, academicYearId FROM tblsubject WHERE subjectId = :subjectId");
+    $subStmt->bindParam(":subjectId", $result['subjectId']);
+    $subStmt->execute();
+    $subRow = $subStmt->fetch();
+    if ($subRow) {
+        $teacherCourseId = $subRow['courseId'];
+        $teacherAcademicYearId = $subRow['academicYearId'];
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -110,12 +122,39 @@
                             $stmt = $conn->prepare("SELECT * FROM tblcourse");
                             $stmt->execute();
                             while ($course = $stmt->fetch()) {
-                                $selected = (isset($_SESSION["courseId"]) && $_SESSION["courseId"] == $course['courseId']) ? "selected" : "";
+                                $selected = "";
+                                if (isset($_SESSION["courseId"]) && $_SESSION["courseId"] == $course['courseId']) {
+                                    $selected = "selected";
+                                } elseif (!isset($_SESSION["courseId"]) && $course['courseId'] == $teacherCourseId) {
+                                    $selected = "selected";
+                                }
                             ?>
                                 <option value="<?php echo $course['courseId']; ?>" <?php echo $selected; ?>>
                                     <?php echo $course['courseName']; ?>
                                 </option>
                             <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Select Section</b></label>
+                        <select class="form-select" name="section" id="section">
+                            <option value="-1">--Select Section--</option>
+                            <?php
+                            $teacherSections = !empty($result['section']) ? explode(',', $result['section']) : [];
+                            foreach ($teacherSections as $index => $sec) {
+                                $sec = trim($sec);
+                                $selected = "";
+                                if (isset($_SESSION["section"]) && $_SESSION["section"] == $sec) {
+                                    $selected = "selected";
+                                } elseif (!isset($_SESSION["section"]) && count($teacherSections) == 1) {
+                                    $selected = "selected";
+                                } elseif (!isset($_SESSION["section"]) && $index == 0) {
+                                    $selected = "selected";
+                                }
+                                echo "<option value=\"$sec\" $selected>Section $sec</option>";
+                            }
+                            ?>
                         </select>
                     </div>
 
@@ -127,7 +166,12 @@
                             $stmt = $conn->prepare("SELECT * FROM tblAcademicYear");
                             $stmt->execute();
                             while ($year = $stmt->fetch()) {
-                                $selected = (isset($_SESSION["academicYearId"]) && $_SESSION["academicYearId"] == $year['academicYearId']) ? "selected" : "";
+                                $selected = "";
+                                if (isset($_SESSION["academicYearId"]) && $_SESSION["academicYearId"] == $year['academicYearId']) {
+                                    $selected = "selected";
+                                } elseif (!isset($_SESSION["academicYearId"]) && $year['academicYearId'] == $teacherAcademicYearId) {
+                                    $selected = "selected";
+                                }
                             ?>
                                 <option value="<?php echo $year['academicYearId']; ?>" <?php echo $selected; ?>>
                                     <?php echo $year['academicYearName']; ?>
@@ -140,7 +184,23 @@
                         <label class="form-label"><b>Select Subject</b></label>
                         <select class="form-select" name="subjectId" id="subjectId">
                             <option value="-1">--Select Subject--</option>
-                            
+                            <?php
+                            if ($teacherCourseId != -1 && $teacherAcademicYearId != -1) {
+                                $sstmt = $conn->prepare("SELECT * FROM tblsubject WHERE courseId = :courseId AND academicYearId = :academicYearId AND status = 1");
+                                $sstmt->bindParam(":courseId", $teacherCourseId);
+                                $sstmt->bindParam(":academicYearId", $teacherAcademicYearId);
+                                $sstmt->execute();
+                                while ($subj = $sstmt->fetch()) {
+                                    $selected = "";
+                                    if (isset($_SESSION["subjectId"]) && $_SESSION["subjectId"] == $subj['subjectId']) {
+                                        $selected = "selected";
+                                    } elseif (!isset($_SESSION["subjectId"]) && $subj['subjectId'] == $result['subjectId']) {
+                                        $selected = "selected";
+                                    }
+                                    echo '<option value="' . $subj['subjectId'] . '" ' . $selected . '>' . htmlspecialchars($subj['subjectName']) . '</option>';
+                                }
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -232,7 +292,9 @@ $(document).ready(function() {
         var subjectId = $("#subjectId").val();
         var sessionId = $("#sessionId").val();
 
-        if (courseId == "-1" || academicYearId == "-1" || subjectId == "-1" || sessionId == "-1") {
+        var section = $("#section").val();
+
+        if (courseId == "-1" || academicYearId == "-1" || subjectId == "-1" || sessionId == "-1" || section == "-1") {
             alert("Please Fill All The Details");
             return;
         }
@@ -250,7 +312,8 @@ $(document).ready(function() {
                 courseId: courseId, 
                 academicYearId: academicYearId, 
                 subjectId: subjectId, 
-                sessionId: sessionId 
+                sessionId: sessionId,
+                section: section
             },
             success: function(response) {
                 $('#ajax-spinner').hide();
@@ -260,7 +323,8 @@ $(document).ready(function() {
                     + '&courseId=' + encodeURIComponent(courseId)
                     + '&academicYearId=' + encodeURIComponent(academicYearId)
                     + '&subjectId=' + encodeURIComponent(subjectId)
-                    + '&sessionId=' + encodeURIComponent(sessionId);
+                    + '&sessionId=' + encodeURIComponent(sessionId)
+                    + '&section=' + encodeURIComponent(section);
                 $('#download-area').html('<a href="' + downloadUrl + '" download class="btn btn-success btn-sm"><i class="bi bi-download me-1"></i> Download CSV</a>');
             },
             error: function() {
@@ -278,4 +342,5 @@ unset($_SESSION["courseId"]);
 unset($_SESSION["academicYearId"]);
 unset($_SESSION["subjectId"]);
 unset($_SESSION["sessionId"]);
+unset($_SESSION["section"]);
 ?>

@@ -6,16 +6,17 @@ $courseId         = $_GET["courseId"] ?? '';
 $academicYearId   = $_GET["academicYearId"] ?? '';
 $subjectId        = $_GET["subjectId"] ?? '';
 $sessionId        = $_GET["sessionId"] ?? '';
+$section          = $_GET["section"] ?? '';
 
 if (!$dateOfAttendence || !$courseId || !$academicYearId || !$subjectId || !$sessionId) {
     die("Missing parameters. Please go back and load the attendance first.");
 }
 
-// Fetch attendance records with student and course names
-$stmt = $conn->prepare("
+$query = "
     SELECT 
         a.studentId,
         s.studentName,
+        s.section,
         c.courseName,
         sub.subjectName,
         a.dateOfAttendence,
@@ -30,13 +31,25 @@ $stmt = $conn->prepare("
         a.academicYearId = :academicYearId AND
         a.subjectId = :subjectId AND
         a.sessionId = :sessionId
-    ORDER BY s.studentName ASC
-");
+";
+
+if (!empty($section) && $section !== '-1') {
+    $query .= " AND s.section = :section";
+}
+
+$query .= " ORDER BY s.studentName ASC";
+
+$stmt = $conn->prepare($query);
 $stmt->bindParam(":dateOfAttendence", $dateOfAttendence);
 $stmt->bindParam(":courseId", $courseId);
 $stmt->bindParam(":academicYearId", $academicYearId);
 $stmt->bindParam(":subjectId", $subjectId);
 $stmt->bindParam(":sessionId", $sessionId);
+
+if (!empty($section) && $section !== '-1') {
+    $stmt->bindParam(":section", $section);
+}
+
 $stmt->execute();
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -48,13 +61,14 @@ header('Content-Disposition: attachment; filename="' . $filename . '"');
 $output = fopen('php://output', 'w');
 
 // CSV Header Row
-fputcsv($output, ['Student ID', 'Student Name', 'Course', 'Subject', 'Date', 'Attendance']);
+fputcsv($output, ['Student ID', 'Student Name', 'Section', 'Course', 'Subject', 'Date', 'Attendance']);
 
 // CSV Data Rows
 foreach ($rows as $row) {
     fputcsv($output, [
         $row['studentId'],
         $row['studentName'],
+        $row['section'],
         $row['courseName'],
         $row['subjectName'],
         ' ' . $row['dateOfAttendence'], // Prepend space to force Excel to treat it as string
